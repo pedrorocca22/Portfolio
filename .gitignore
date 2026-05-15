@@ -1,0 +1,16 @@
+# Project source code (not included in portfolio)
+Biolight/Biolight.-main/
+Droplet_lab/Droplet-Lab/
+Droplet_lab/app/
+F3D_studio/F3D-studio/
+Labflow/LABflow/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,54 @@
+// ─── PORTFOLIO DATA ──────────────────────────────────────────────────────────
+// To add a new project: append one object to the PROJECTS array below.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PROJECTS = [
+  {
+    id: "biolight",
+    title: "Biolight",
+    category: "software",
+    tags: ["DLP Bioprinting", "Python", "React", "Three.js"],
+    year: 2025,
+    status: "beta",
+    summary: "Integrated DLP bioprinting platform with pixel-level light-dose control and biomimetic scaffold patterning.",
+    description: `<p>An integrated software platform for Digital Light Processing (DLP) bioprinting. Bridges the gap between conventional 3D printing workflows and the specific demands of working with living cells, hydrogels, and photocurable bioinks.</p><h4>Key Features</h4><ul><li><strong>3D Scene Preparation</strong> — Interactive Three.js viewport, multi-model support, .bpp project files.</li><li><strong>Slicing Engine</strong> — Integrated PrusaSlicer CLI with .sl1 post-processing and intensity map injection.</li><li><strong>Exposure Control</strong> — 256-level grayscale calibration for pixel-by-pixel light power variation.</li><li><strong>Pattern Engine</strong> — Six parametric scaffold patterns: sponge, vascular, lattice, linear, noise, trabecular.</li><li><strong>Range Segmentation</strong> — Per-vertical-segment flat or gradient irradiance parameters.</li><li><strong>Experiment Management</strong> — SQLite-backed history with metadata and replication.</li></ul>`,
+    images: ["assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png"],
+    github: "https://github.com/pedrorocca22/Biolight",
+  },
+  {
+    id: "droplet-lab",
+    title: "Droplet Lab",
+    category: "software",
+    tags: ["Web App", "Lab Automation", "WebSerial", "React", "G-Code"],
+    year: 2025,
+    status: "beta",
+    summary: "Wizard-driven web interface for precision biomaterial deposition onto standard laboratory substrates.",
+    description: `<p>Professional web application for orchestrating the deposition of hydrogels, biomaterials, and chemical compounds onto standard laboratory substrates via an automated dispensing system.</p><h4>5-Step Workflow</h4><ol><li><strong>Login</strong> — User traceability and hardware connection.</li><li><strong>Substrate Selection</strong> — SBS multiwell plates and custom platforms.</li><li><strong>Sequence Designer</strong> — Visual deposition point selection with volume tracking.</li><li><strong>Machine Configuration</strong> — Z-axis calibration and physical parameters.</li><li><strong>Execution</strong> — Real-time G-code terminal and console monitoring.</li></ol><p>Direct browser-to-machine via Web Serial API — no external drivers. Chrome, Edge, Opera.</p>`,
+    images: ["assets/droplet_lab/1.png","assets/droplet_lab/2.png"],
+    github: "https://github.com/pedrorocca22/Droplet-Lab",
+  },
+  {
+    id: "f3d-studio",
+    title: "F3D Studio",
+    category: "software",
+    tags: ["Bioprinting", "React", "TypeScript", "Three.js", "Python", "Flask"],
+    year: 2025,
+    status: "beta",
+    summary: "Professional suite for advanced bioprinting and FFF with multi-zone slicing, pore injection, and live Klipper integration.",
+    description: `<p>Comprehensive professional-grade software suite for advanced bioprinting workflows. Modern React/Three.js interface backed by Python/Flask bridges 3D slicing parameters with G-code generation.</p><h4>Key Features</h4><ul><li><strong>Real-Time 3D Viewport</strong> — Three.js renderer with G-code simulation and wireframe toggle.</li><li><strong>Multi-Zone Slicing</strong> — PrusaSlicer CLI with parametric Z-Zones for per-segment control.</li><li><strong>Pore Injection Logic</strong> — Per-segment biological material injection into infill pores.</li><li><strong>Hardware Integration</strong> — Direct Klipper/Moonraker API connection.</li><li><strong>Protocol Gallery</strong> — Save, tag, and reload past jobs for reproducibility.</li><li><strong>Live Monitoring</strong> — Built-in telemetry dashboard.</li></ul><p><em>Concept and workflow design by Pedro Rocca. Codebase implemented through AI-driven development.</em></p>`,
+    images: ["assets/f3d_studio/1.png","assets/f3d_studio/2.png","assets/f3d_studio/3.png","assets/f3d_studio/4.png"],
+    github: "https://github.com/pedrorocca22/F3D-studio",
+  },
+  {
+    id: "labflow",
+    title: "Labflow",
+    category: "software",
+    tags: ["Lab Automation", "React", "Vite", "G-Code", "Liquid Handling"],
+    year: 2025,
+    status: "beta",
+    summary: "Advanced web platform for orchestrating, simulating, and executing liquid handling protocols on automated pipetting robots.",
+    description: `<p>Advanced web platform for the orchestration, simulation, and execution of liquid handling protocols in automated laboratory environments. Mathematical precision eliminates friction when programming complex pipetting robot routines.</p><h4>Capabilities</h4><ul><li><strong>Dynamic Deck Configuration</strong> — Graphical 6-bay grid with universal labware and drag-and-drop well selection.</li><li><strong>Automated Wizards</strong> — ELISA, AlamarBlue, Serial Dilutions pre-programmed workflows.</li><li><strong>Fluid Simulator</strong> — Real-time per-well volume tracking with shortage/overflow alerts.</li><li><strong>Primitives</strong> — Transfer, Distribute, Consolidate, Aspirate, Wash, Mix, Pause, Comment.</li><li><strong>G-Code Generation</strong> — Automatic kinematic translation of logical steps.</li><li><strong>Klipper-Ready</strong> — Direct firmware injection for remote robot control.</li></ul>`,
+    images: ["assets/labflow/1.png"],
+    github: "https://github.com/pedrorocca22/LABflow",
+  },
+];

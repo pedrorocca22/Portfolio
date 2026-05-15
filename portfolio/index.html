@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedro Rocca — Portfolio</title>
+  <meta name="description" content="Portfolio of Pedro Rocca — software and industrial design projects focused on laboratory automation, bioprinting, and precision tooling." />
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- WebGL ambient background -->
+<canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+<!-- ────────────────────────────── NAV ──────────────────────────────────── -->
+<nav>
+  <div class="nav-spacer"></div>
+  <ul class="nav-links">
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#cv">CV</a></li>
+  </ul>
+</nav>
+
+<!-- ────────────────────────────── HERO ─────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <p class="hero-eyebrow reveal">Design &amp; Engineering</p>
+      <h1 class="hero-name reveal">Pedro<br>Rocca</h1>
+      <p class="hero-title reveal">
+        I design and build software tools for laboratory automation and advanced manufacturing —
+        from bioprinting interfaces to precision dispensing systems.
+      </p>
+      <div class="hero-cta reveal">
+        <a href="#projects" class="btn-primary">View Work</a>
+        <a href="#about"   class="btn-ghost">About me ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────── PROJECTS ─────────────────────────────── -->
+<section id="projects">
+  <div class="container">
+    <p class="reveal" id="projects-label">Selected Work</p>
+
+    <!-- Filter -->
+    <div class="filter-bar reveal" role="group" aria-label="Filter projects by category">
+      <button class="filter-btn active" data-filter="all"               id="filter-all">All</button>
+      <button class="filter-btn"        data-filter="software"          id="filter-software">Software</button>
+      <button class="filter-btn"        data-filter="industrial-design" id="filter-industrial">Industrial Design</button>
+    </div>
+
+    <!-- Grid — built from PROJECTS data -->
+    <div class="projects-grid" id="projects-grid">
+      <!-- Cards are injected by build-cards script below -->
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────── ABOUT ────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-left">
+        <p class="about-label reveal">About</p>
+        <h2 class="about-name reveal">Pedro Rocca</h2>
+        <p class="about-bio reveal">
+          I work at the intersection of engineering and design — building
+          software platforms and physical systems for research-grade laboratory
+          environments. My projects span bioprinting control suites, automated
+          liquid-handling interfaces, and DLP light-exposure pipelines, all
+          developed to production quality with an emphasis on precision and
+          usability.
+        </p>
+        <p class="about-bio reveal">
+          I conceptualise workflows, define product architectures, and drive
+          implementation through iterative development — always focused on the
+          researcher's experience at the bench.
+        </p>
+      </div>
+
+      <div class="about-right reveal">
+        <div class="about-photo-wrap">
+          <img src="assets/profile.png" alt="Pedro Rocca" class="about-photo" />
+        </div>
+        <div class="about-info-list">
+          <div class="about-info-item">
+            <span class="about-info-label">Discipline</span>
+            <span class="about-info-value">Software &amp; Industrial Design</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">Focus</span>
+            <span class="about-info-value">Laboratory Automation · Bioprinting · Precision Tools</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">Stack</span>
+            <span class="about-info-value">React · TypeScript · Python · Three.js · WebGL</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">Status</span>
+            <span class="about-info-value">Open to collaboration</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────── CV ───────────────────────────────────── -->
+<section id="cv">
+  <div class="container">
+    <div class="cv-grid">
+
+      <div class="cv-main">
+        <p class="cv-label reveal">Curriculum</p>
+
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Experience</h3>
+          <div class="cv-timeline">
+            <div class="cv-item">
+              <div class="cv-item-header">
+                <span class="cv-item-role">Industrial Designer / Product Developer</span>
+                <span class="cv-item-co">REGEMAT 3D</span>
+              </div>
+              <span class="cv-item-date">May 2021 — Present · Granada, Spain</span>
+              <ul class="cv-item-list">
+                <li>Mechanical design, prototyping and manufacturing of bioprinters, bioreactors and lab automation systems.</li>
+                <li>Control software and interfaces (Python, JavaScript, Flask) with firmware/hardware integration.</li>
+                <li>Specialised instrumentation: PCBs, sensors, UV optical calibration (365/405 nm), dose/irradiance control.</li>
+                <li>AI/ML for automation: protocol optimisation, computer vision applied to validation.</li>
+                <li>European project participation: design, prototyping, experimental validation, technical reporting.</li>
+                <li>End-user iteration with researchers and laboratories to refine functionality and documentation.</li>
+              </ul>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-header">
+                <span class="cv-item-role">3D Bioprinting Unit &amp; Technical Support</span>
+                <span class="cv-item-co">Hospital Italiano de La Plata</span>
+              </div>
+              <span class="cv-item-date">May 2017 — April 2021 · La Plata, Argentina</span>
+              <ul class="cv-item-list">
+                <li>Transformed diagnostic data (MRI/CT/DICOM) into physical anatomical models for surgical planning and medical training.</li>
+                <li>Designed workflows: image processing, segmentation, meshing, optimisation (3D Slicer, Meshmixer).</li>
+                <li>Technical support and maintenance of infrastructure (FDM/SLA printers, workstations).</li>
+                <li>Direct interaction with surgeons: understanding clinical needs, medical terminology, model validation.</li>
+              </ul>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-header">
+                <span class="cv-item-role">Production Engineer</span>
+                <span class="cv-item-co">ION Diseño Industrial</span>
+              </div>
+              <span class="cv-item-date">March 2015 — April 2017 · La Plata, Argentina</span>
+              <ul class="cv-item-list">
+                <li>Production of high-precision aluminum parts under ISO normative (ARSAT-1 satellite, Vex5e vector).</li>
+                <li>CNC machine operation and control; optimisation of machining processes.</li>
+                <li>Designed and built a large-volume 3D printer for technical parts production (FAN).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-sidebar">
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Summary</h3>
+          <p class="cv-text">
+            Industrial designer oriented towards product engineering and development of laboratory and bioengineering equipment.
+            I specialise in taking a system from user need to functional equipment: idea, design, low-scale prototype, iteration and final product.
+          </p>
+        </div>
+
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Education</h3>
+          <div class="cv-edu">
+            <span class="cv-edu-title">Industrial &amp; Product Design</span>
+            <span class="cv-edu-inst">Universidad Nacional de La Plata</span>
+            <span class="cv-edu-date">2006 — 2013 · Buenos Aires, Argentina</span>
+          </div>
+        </div>
+
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Certifications</h3>
+          <ul class="cv-cert-list">
+            <li>Claude AI 101 — Anthropic <span class="cv-cert-year">(2026)</span></li>
+            <li>Introduction to Additive Manufacturing Processes — Arizona State University</li>
+            <li>Introduction to AI and ML on Google Cloud — Google</li>
+            <li>Google AI Essentials — Google</li>
+            <li>Introduction to Computer Vision and Image Processing — IBM</li>
+          </ul>
+        </div>
+
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Languages</h3>
+          <div class="cv-lang">
+            <span>Spanish <em>Native</em></span>
+            <span>English <em>B2</em></span>
+          </div>
+        </div>
+
+        <div class="cv-block reveal">
+          <h3 class="cv-block-title">Skills</h3>
+          <div class="cv-tags">
+            <span class="tag">Mechanical Design</span>
+            <span class="tag">DFM/DFA</span>
+            <span class="tag">Additive Mfg</span>
+            <span class="tag">CNC Machining</span>
+            <span class="tag">PCB Design</span>
+            <span class="tag">UV Calibration</span>
+            <span class="tag">Python</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Flask</span>
+            <span class="tag">Computer Vision</span>
+            <span class="tag">AI/ML</span>
+            <span class="tag">IEC 61010-1</span>
+            <span class="tag">EN 12469</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────── FOOTER ───────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2025 Pedro Rocca</span>
+      <div class="footer-links">
+        <a href="https://linkedin.com/in/pedrorocca" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/pedrorocca22" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://behance.net/pedrorocca" target="_blank" rel="noopener">Behance</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ────────────────────────────── MODAL ────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <!-- Carousel -->
+    <div class="modal-carousel">
+      <div class="carousel-track" id="carousel-track"></div>
+      <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous image">&#8592;</button>
+      <button class="carousel-btn next" id="carousel-next" aria-label="Next image">&#8594;</button>
+      <div class="carousel-dots" id="carousel-dots"></div>
+    </div>
+    <!-- Content -->
+    <div class="modal-body">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2 class="modal-title" id="modal-title"></h2>
+          <p  class="modal-meta"  id="modal-meta"></p>
+        </div>
+        <button class="modal-close" id="modal-close" aria-label="Close">&#215;</button>
+      </div>
+      <div class="modal-tags"        id="modal-tags"></div>
+      <div class="modal-description" id="modal-description"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────── SCRIPTS ──────────────────────────────── -->
+<script src="projects.js"></script>
+
+<!-- Dynamically build project cards from PROJECTS data -->
+<script>
+(function buildCards() {
+  const grid = document.getElementById('projects-grid');
+  if (!grid || typeof PROJECTS === 'undefined') return;
+
+  PROJECTS.forEach(p => {
+    const card = document.createElement('article');
+    card.className = 'project-card';
+    card.dataset.id       = p.id;
+    card.dataset.category = p.category;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `View project: ${p.title}`);
+
+    card.innerHTML = `
+      <div class="card-image-wrap">
+        <img
+          src="${p.images[0]}"
+          alt="${p.title} screenshot"
+          loading="lazy"
+        />
+        ${p.status ? `<span class="card-badge">${p.status}</span>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-header-row">
+          <div class="card-meta">
+            <span class="card-year">${p.year}</span>
+            <span class="card-category">${p.category === 'software' ? 'Software' : 'Industrial Design'}</span>
+          </div>
+          ${p.github ? `<a href="${p.github}" class="card-github" target="_blank" rel="noopener" aria-label="View ${p.title} on GitHub" onclick="event.stopPropagation();">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </a>` : ''}
+        </div>
+        <h3 class="card-title">${p.title}</h3>
+        <p  class="card-summary">${p.summary}</p>
+        <div class="card-tags">
+          ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    `;
+
+    // Keyboard support
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') card.click();
+    });
+
+    grid.appendChild(card);
+  });
+})();
+</script>
+
+<script src="main.js"></script>
+</body>
+</html>
