@@ -14,6 +14,7 @@ const PROJECTS = [
     description: `<p>An integrated software platform for Digital Light Processing (DLP) bioprinting. Bridges the gap between conventional 3D printing workflows and the specific demands of working with living cells, hydrogels, and photocurable bioinks.</p><h4>Key Features</h4><ul><li><strong>3D Scene Preparation</strong> — Interactive Three.js viewport, multi-model support, .bpp project files.</li><li><strong>Slicing Engine</strong> — Integrated PrusaSlicer CLI with .sl1 post-processing and intensity map injection.</li><li><strong>Exposure Control</strong> — 256-level grayscale calibration for pixel-by-pixel light power variation.</li><li><strong>Pattern Engine</strong> — Six parametric scaffold patterns: sponge, vascular, lattice, linear, noise, trabecular.</li><li><strong>Range Segmentation</strong> — Per-vertical-segment flat or gradient irradiance parameters.</li><li><strong>Experiment Management</strong> — SQLite-backed history with metadata and replication.</li></ul>`,
     images: ["assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png"],
     github: "https://github.com/pedrorocca22/Biolight",
+    demoPath: "demos/biolight/index.html?demo=1",
   },
   {
     id: "droplet-lab",
@@ -39,6 +40,7 @@ const PROJECTS = [
     description: `<p>Comprehensive professional-grade software suite for advanced bioprinting workflows. Modern React/Three.js interface backed by Python/Flask bridges 3D slicing parameters with G-code generation.</p><h4>Key Features</h4><ul><li><strong>Real-Time 3D Viewport</strong> — Three.js renderer with G-code simulation and wireframe toggle.</li><li><strong>Multi-Zone Slicing</strong> — PrusaSlicer CLI with parametric Z-Zones for per-segment control.</li><li><strong>Pore Injection Logic</strong> — Per-segment biological material injection into infill pores.</li><li><strong>Hardware Integration</strong> — Direct Klipper/Moonraker API connection.</li><li><strong>Protocol Gallery</strong> — Save, tag, and reload past jobs for reproducibility.</li><li><strong>Live Monitoring</strong> — Built-in telemetry dashboard.</li></ul><p><em>Concept and workflow design by Pedro Rocca. Codebase implemented through AI-driven development.</em></p>`,
     images: ["assets/f3d_studio/1.png","assets/f3d_studio/2.png","assets/f3d_studio/3.png","assets/f3d_studio/4.png"],
     github: "https://github.com/pedrorocca22/F3D-studio",
+    demoPath: "demos/f3d-studio/index.html?demo=1",
   },
   {
     id: "labflow",
