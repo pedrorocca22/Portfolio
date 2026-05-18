@@ -11,7 +11,9 @@ Personal portfolio showcasing software and industrial design projects focused on
 
 ## Live Site
 
-https://pedrorocca22.github.io/Portfolio *(or open `portfolio/index.html` locally)*
+🌐 **https://pedrorocca22.github.io/Portfolio**
+
+The portfolio is automatically deployed to GitHub Pages via GitHub Actions on every push to `main`.
 
 ## Structure
 
