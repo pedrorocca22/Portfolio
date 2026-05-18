@@ -26,6 +26,7 @@ const PROJECTS = [
     description: `<p>Professional web application for orchestrating the deposition of hydrogels, biomaterials, and chemical compounds onto standard laboratory substrates via an automated dispensing system.</p><h4>5-Step Workflow</h4><ol><li><strong>Login</strong> — User traceability and hardware connection.</li><li><strong>Substrate Selection</strong> — SBS multiwell plates and custom platforms.</li><li><strong>Sequence Designer</strong> — Visual deposition point selection with volume tracking.</li><li><strong>Machine Configuration</strong> — Z-axis calibration and physical parameters.</li><li><strong>Execution</strong> — Real-time G-code terminal and console monitoring.</li></ol><p>Direct browser-to-machine via Web Serial API — no external drivers. Chrome, Edge, Opera.</p>`,
     images: ["assets/droplet_lab/1.png","assets/droplet_lab/2.png"],
     github: "https://github.com/pedrorocca22/Droplet-Lab",
+    demoPath: "demos/droplet-lab/index.html?demo=1",
   },
   {
     id: "f3d-studio",
@@ -50,5 +51,6 @@ const PROJECTS = [
     description: `<p>Advanced web platform for the orchestration, simulation, and execution of liquid handling protocols in automated laboratory environments. Mathematical precision eliminates friction when programming complex pipetting robot routines.</p><h4>Capabilities</h4><ul><li><strong>Dynamic Deck Configuration</strong> — Graphical 6-bay grid with universal labware and drag-and-drop well selection.</li><li><strong>Automated Wizards</strong> — ELISA, AlamarBlue, Serial Dilutions pre-programmed workflows.</li><li><strong>Fluid Simulator</strong> — Real-time per-well volume tracking with shortage/overflow alerts.</li><li><strong>Primitives</strong> — Transfer, Distribute, Consolidate, Aspirate, Wash, Mix, Pause, Comment.</li><li><strong>G-Code Generation</strong> — Automatic kinematic translation of logical steps.</li><li><strong>Klipper-Ready</strong> — Direct firmware injection for remote robot control.</li></ul>`,
     images: ["assets/labflow/1.png"],
     github: "https://github.com/pedrorocca22/LABflow",
+    demoPath: "demos/labflow/index.html?demo=1",
   },
 ];

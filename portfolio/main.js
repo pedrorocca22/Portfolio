@@ -188,9 +188,27 @@
   const metaEl   = document.getElementById('modal-meta');
   const tagsEl   = document.getElementById('modal-tags');
   const descEl   = document.getElementById('modal-description');
+  const demoBtn  = document.getElementById('modal-demo-btn');
+  const demoWrap = document.getElementById('modal-demo');
+  const demoBack = document.getElementById('modal-demo-back');
+  const iframe   = document.getElementById('modal-iframe');
+  const githubBtn = document.getElementById('modal-github');
+  const demoHint = document.getElementById('modal-demo-hint');
 
   let currentSlide = 0;
   let totalSlides  = 0;
+  let currentDemoPath = null;
+
+  function enterDemo() {
+    if (!currentDemoPath) return;
+    iframe.src = currentDemoPath;
+    backdrop.classList.add('demo-active');
+  }
+
+  function exitDemo() {
+    backdrop.classList.remove('demo-active');
+    iframe.src = '';
+  }
 
   function goTo(idx) {
     currentSlide = (idx + totalSlides) % totalSlides;
@@ -241,6 +259,20 @@
     tagsEl.innerHTML    = project.tags.map(t => `<span class="tag">${t}</span>`).join('');
     descEl.innerHTML    = project.description;
 
+    // Demo button & GitHub link
+    currentDemoPath = project.demoPath || null;
+    if (demoBtn) demoBtn.style.display = currentDemoPath ? 'inline-flex' : 'none';
+    if (demoHint) demoHint.style.display = currentDemoPath ? 'block' : 'none';
+    if (githubBtn) {
+      if (project.github) {
+        githubBtn.href = project.github;
+        githubBtn.style.display = 'inline-flex';
+      } else {
+        githubBtn.style.display = 'none';
+      }
+    }
+    exitDemo();
+
     backdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -248,9 +280,12 @@
   function closeModal() {
     backdrop.classList.remove('open');
     document.body.style.overflow = '';
+    setTimeout(exitDemo, 250); // clear after transition
   }
 
   closeBtn.addEventListener('click', closeModal);
+  if (demoBtn) demoBtn.addEventListener('click', enterDemo);
+  if (demoBack) demoBack.addEventListener('click', exitDemo);
 
   backdrop.addEventListener('click', e => {
     if (e.target === backdrop) closeModal();
