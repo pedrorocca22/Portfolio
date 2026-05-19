@@ -136,29 +136,14 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   2. Lenis Smooth Scroll + GSAP ScrollTrigger
+   2. Native anchor scroll + GSAP ScrollTrigger
    ═══════════════════════════════════════════════════════════════════════════ */
-(function initSmoothScroll() {
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-  });
-
-  lenis.on('scroll', ScrollTrigger.update);
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-
-  gsap.ticker.lagSmoothing(0);
-
-  // Sync anchor clicks with Lenis
+(function initAnchorScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
-      if (target) lenis.scrollTo(target, { offset: 0 });
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 })();
@@ -171,12 +156,12 @@
 
   gsap.utils.toArray('.reveal').forEach(el => {
     gsap.fromTo(el,
-      { y: 40, opacity: 0 },
+      { y: 24, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.9,
-        ease: 'power3.out',
+        duration: 0.6,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: el,
           start: 'top 88%',
@@ -376,34 +361,33 @@
     if (!img) return;
 
     gsap.to(img, {
-      yPercent: -8,
+      yPercent: -4,
       ease: 'none',
       scrollTrigger: {
         trigger: card,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
       },
     });
   });
 })();
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   6. Hero Scroll Animation
+   6. Hero Scroll Animation (subtle fade only)
    ═══════════════════════════════════════════════════════════════════════════ */
 (function initHeroScroll() {
   const hero = document.querySelector('#hero .hero-inner');
   if (!hero) return;
 
   gsap.to(hero, {
-    y: -60,
-    opacity: 0.3,
+    opacity: 0.25,
     ease: 'none',
     scrollTrigger: {
       trigger: '#hero',
       start: 'top top',
-      end: 'bottom top',
-      scrub: true,
+      end: '80% top',
+      scrub: 1,
     },
   });
 })();
