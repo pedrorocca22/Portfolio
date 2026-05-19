@@ -55,4 +55,15 @@ const PROJECTS = [
     github: "https://github.com/pedrorocca22/LABflow",
     demoPath: "demos/labflow/index.html?demo=1",
   },
+  {
+    id: "lamps",
+    title: "Luminaria",
+    category: "industrial-design",
+    tags: ["Industrial Design", "3D Printing", "Lighting", "Parametric Design"],
+    year: 2025,
+    status: "completed",
+    summary: "3D-printed luminaire family exploring how surface geometry modulates light, shadow, and atmosphere.",
+    description: `<p>This project stems from a simple yet profound question: <em>how does form alter the character of a space?</em></p><p>I designed and fabricated a family of 3D-printed luminaires where geometry is not merely aesthetic, but functional. Each piece explores how curves, undulating layers, and surface topology filter, soften, and project light in distinct ways. The organic texture — with its striations that evoke geological sediment or coral growth — is not an ornament: it is the mechanism that transforms the pinpoint source of an LED into a warm, enveloping glow.</p><h4>Design Approach</h4><ul><li><strong>Parametric Surfaces</strong> — Continuous undulations modulate light intensity and directionality across the shell.</li><li><strong>Day &amp; Night Object</strong> — Sculptural presence when off; atmosphere generator when illuminated.</li><li><strong>Additive Fabrication</strong> — FDM-printed PLA enables thin walls, variable sections, and textures impossible with molding.</li></ul><p>The collection includes pendant and table variants unified by a single formal language: shape as a tool for modeling the emotion of a place.</p>`,
+    images: ["assets/lamps/1.png","assets/lamps/2.png","assets/lamps/3.png","assets/lamps/4.png","assets/lamps/5.png"],
+  },
 ];
