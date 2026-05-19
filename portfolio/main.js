@@ -136,19 +136,55 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   2. Scroll Reveal
+   2. Lenis Smooth Scroll + GSAP ScrollTrigger
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function initSmoothScroll() {
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+
+  // Sync anchor clicks with Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) lenis.scrollTo(target, { offset: 0 });
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. Scroll Reveal (GSAP ScrollTrigger)
    ═══════════════════════════════════════════════════════════════════════════ */
 (function initScrollReveal() {
-  const els = document.querySelectorAll('.reveal');
-  const io  = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.fromTo(el,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
       }
-    });
-  }, { threshold: 0.08 });
-  els.forEach(el => io.observe(el));
+    );
+  });
 })();
 
 
@@ -310,20 +346,64 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   5. Card Reveal on Load (staggered)
+   5. Card Reveal + Parallax (GSAP ScrollTrigger)
    ═══════════════════════════════════════════════════════════════════════════ */
-(function staggerCards() {
-  const cards = document.querySelectorAll('.project-card');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
+(function initCardAnimations() {
+  gsap.registerPlugin(ScrollTrigger);
+
+  const cards = gsap.utils.toArray('.project-card');
+
+  // Staggered reveal
+  gsap.fromTo(cards,
+    { y: 60, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#projects-grid',
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  // Parallax on card images
+  cards.forEach(card => {
+    const img = card.querySelector('.card-image-wrap img');
+    if (!img) return;
+
+    gsap.to(img, {
+      yPercent: -8,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: card,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
     });
-  }, { threshold: 0.06 });
-  cards.forEach((card, i) => {
-    card.style.transitionDelay = `${i * 60}ms`;
-    io.observe(card);
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. Hero Scroll Animation
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function initHeroScroll() {
+  const hero = document.querySelector('#hero .hero-inner');
+  if (!hero) return;
+
+  gsap.to(hero, {
+    y: -60,
+    opacity: 0.3,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '#hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+    },
   });
 })();

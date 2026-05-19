@@ -271,17 +271,7 @@ nav {
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
   box-shadow: var(--shadow-card);
-  transition: transform var(--dur-base) var(--ease-out),
-              box-shadow var(--dur-base) var(--ease-out),
-              opacity var(--dur-base) var(--ease-out);
-  /* Reveal animation */
-  opacity: 0;
-  transform: translateY(16px);
-}
-
-.project-card.visible {
-  opacity: 1;
-  transform: translateY(0);
+  transition: box-shadow var(--dur-base) var(--ease-out);
 }
 
 .project-card:hover {
@@ -319,10 +309,25 @@ nav {
   border-radius: var(--r-sm);
   box-shadow: 0 8px 30px rgba(15,23,42,.12);
   transition: transform var(--dur-base) var(--ease-out);
+  transform: scale(1.08);
+}
+
+.project-card[data-category="industrial-design"] .card-image-wrap img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+  transform: scale(1.12);
 }
 
 .project-card:hover .card-image-wrap img {
-  transform: scale(1.01);
+  transform: scale(1.14);
+}
+
+.project-card[data-category="industrial-design"]:hover .card-image-wrap img {
+  transform: scale(1.2);
 }
 
 .card-badge {
@@ -888,17 +893,9 @@ footer {
   color: var(--color-text-primary);
 }
 
-/* ── Scroll Reveal ──────────────────────────────────────────────────────── */
+/* ── Scroll Reveal (handled by GSAP) ────────────────────────────────────── */
 .reveal {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity var(--dur-base) var(--ease-out),
-              transform var(--dur-base) var(--ease-out);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+  will-change: transform, opacity;
 }
 
 /* ── Modal Demo ─────────────────────────────────────────────────────────── */
