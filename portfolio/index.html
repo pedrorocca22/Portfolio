@@ -300,7 +300,7 @@
 
   PROJECTS.forEach(p => {
     const card = document.createElement('article');
-    card.className = 'project-card';
+    card.className = `project-card card-${p.category}`;
     card.dataset.id       = p.id;
     card.dataset.category = p.category;
     card.setAttribute('role', 'button');
@@ -320,7 +320,7 @@
         <div class="card-header-row">
           <div class="card-meta">
             <span class="card-year">${p.year}</span>
-            <span class="card-category">${p.category === 'software' ? 'Software' : 'Industrial Design'}</span>
+            <span class="card-category"><span class="category-dot"></span>${p.category === 'software' ? 'Software' : 'Industrial Design'}</span>
           </div>
           ${p.github ? `<a href="${p.github}" class="card-github" target="_blank" rel="noopener" aria-label="View ${p.title} on GitHub" onclick="event.stopPropagation();">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">

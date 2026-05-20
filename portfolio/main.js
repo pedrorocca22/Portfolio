@@ -276,7 +276,7 @@
 
     // Populate text
     titleEl.textContent = project.title;
-    metaEl.textContent  = `${project.year} · ${project.category === 'software' ? 'Software' : 'Industrial Design'}`;
+    metaEl.innerHTML    = `${project.year} &middot; <span class="modal-category-wrap card-${project.category}"><span class="category-dot"></span>${project.category === 'software' ? 'Software' : 'Industrial Design'}</span>`;
     tagsEl.innerHTML    = project.tags.map(t => `<span class="tag">${t}</span>`).join('');
     descEl.innerHTML    = project.description;
 
