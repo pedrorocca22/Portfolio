@@ -143,6 +143,11 @@
                   </div>
                 </div>
 
+                <div style="display: flex; gap: 8px; margin-top: 12px; align-items: center;">
+                  <input type="text" id="image-url-input" placeholder="O introduce la ruta/URL de la imagen (ej: assets/proyecto/1.png)" style="flex: 1; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--color-border); background: rgba(255,255,255,0.05); color: var(--color-text-primary); font-size: 13px;">
+                  <button type="button" class="btn" id="btn-add-image-url" style="padding: 10px 16px; font-size: 13px; height: 38px; white-space: nowrap;">Añadir Ruta</button>
+                </div>
+
                 <div class="images-preview-grid" id="images-preview-grid">
                   <!-- Thumbnails populated dynamically -->
                 </div>
@@ -376,33 +381,59 @@
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const storageRef = storage.ref(`projects/${projId}/${Date.now()}_${file.name}`);
-        const uploadTask = storageRef.put(file);
+        try {
+          const storageRef = storage.ref(`projects/${projId}/${Date.now()}_${file.name}`);
+          const uploadTask = storageRef.put(file);
 
-        await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed', 
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              progressFill.style.width = progress + '%';
-            }, 
-            (error) => {
-              console.error("Upload error:", error);
-              alert("Error al subir archivo: " + error.message);
-              reject(error);
-            }, 
-            () => {
-              uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                currentUploadedImages.push(downloadURL);
-                resolve();
-              });
-            }
-          );
-        });
+          await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed', 
+              (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressFill.style.width = progress + '%';
+              }, 
+              (error) => {
+                console.error("Upload error:", error);
+                reject(error);
+              }, 
+              () => {
+                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                  currentUploadedImages.push(downloadURL);
+                  resolve();
+                });
+              }
+            );
+          });
+        } catch (storageErr) {
+          console.warn("Storage upload failed or not enabled. Using local file name fallback.", storageErr);
+          // Fallback: If Firebase Storage is not configured or fails, we can just use the local file name inside assets
+          const localPath = `assets/${file.name}`;
+          currentUploadedImages.push(localPath);
+          alert(`Storage no activo: se ha añadido la ruta '${localPath}' como referencia local.`);
+        }
       }
 
       progressBar.style.display = 'none';
       progressFill.style.width = '0%';
       renderImagesPreview();
+    });
+
+    // Add Manual Image URL/Path
+    document.getElementById('btn-add-image-url').addEventListener('click', () => {
+      const urlInput = document.getElementById('image-url-input');
+      const url = urlInput.value.trim();
+      if (url) {
+        currentUploadedImages.push(url);
+        renderImagesPreview();
+        urlInput.value = '';
+      }
+    });
+
+    // Also support pressing Enter key on the URL input
+    document.getElementById('image-url-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btn-add-image-url').click();
+      }
     });
 
     // Select project for editing
