@@ -70,12 +70,19 @@
       // Authenticated
       if (loginSection) loginSection.style.display = 'none';
       if (dashSection) dashSection.style.display = 'flex';
+      if (adminClose) adminClose.style.display = 'none'; // Hide close button when logged in
       loadProjectsCMS();
       loadAnalyticsDashboard();
     } else {
       // Unauthenticated
       if (loginSection) loginSection.style.display = 'flex';
       if (dashSection) dashSection.style.display = 'none';
+      if (adminClose) adminClose.style.display = 'flex'; // Show close button when logged out (on login card)
+      
+      // Clear credentials
+      if (loginForm) loginForm.reset();
+      if (loginEmail) loginEmail.value = '';
+      if (loginPassword) loginPassword.value = '';
     }
   });
 
