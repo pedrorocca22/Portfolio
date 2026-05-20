@@ -1,352 +1,386 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pedro Rocca — Portfolio</title>
-  <meta name="description" content="Portfolio de Pedro Rocca — proyectos de software y diseño industrial enfocados en automatización de laboratorio, bioimpresión y equipos de precisión." />
+  <meta name="description"
+    content="Portfolio de Pedro Rocca — proyectos de software y diseño industrial enfocados en automatización de laboratorio, bioimpresión y equipos de precisión." />
 
   <!-- Design System -->
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- WebGL ambient background -->
-<canvas id="webgl-canvas" aria-hidden="true"></canvas>
+  <!-- WebGL ambient background -->
+  <canvas id="webgl-canvas" aria-hidden="true"></canvas>
 
-<!-- ────────────────────────────── NAV ──────────────────────────────────── -->
-<nav>
-  <ul class="nav-links">
-    <li><a href="#projects">Proyectos</a></li>
-    <li><a href="#about">Sobre mí</a></li>
-    <li><a href="#cv">CV</a></li>
-    <li><a href="#objectives">Objetivos</a></li>
-  </ul>
-</nav>
+  <!-- ────────────────────────────── NAV ──────────────────────────────────── -->
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#projects">Proyectos</a></li>
+      <li><a href="#about">Sobre mí</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="#objectives">Objetivos</a></li>
+    </ul>
+  </nav>
 
 
-<!-- ────────────────────────────── PROJECTS ─────────────────────────────── -->
-<section id="projects">
-  <div class="container">
+  <!-- ────────────────────────────── PROJECTS ─────────────────────────────── -->
+  <section id="projects">
+    <div class="container">
 
-    <!-- Filter -->
-    <div class="filter-bar reveal" role="group" aria-label="Filtrar proyectos por categoría">
-      <button class="filter-btn active" data-filter="all"               id="filter-all">Todos</button>
-      <button class="filter-btn"        data-filter="software"          id="filter-software">Software</button>
-      <button class="filter-btn"        data-filter="industrial-design" id="filter-industrial">Diseño Industrial</button>
-    </div>
-
-    <!-- Grid — built from PROJECTS data -->
-    <div class="projects-grid" id="projects-grid">
-      <!-- Cards are injected by build-cards script below -->
-    </div>
-  </div>
-</section>
-
-<!-- ────────────────────────────── ABOUT ────────────────────────────────── -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-
-      <div class="about-left">
-        <p class="about-label reveal">Sobre mí</p>
-        <h2 class="about-name reveal">Pedro Rocca</h2>
-        <p class="about-bio reveal">
-          Trabajo en la intersección entre la ingeniería y el diseño, construyendo
-          plataformas de software y sistemas físicos para entornos de laboratorio de
-          grado de investigación. Mis proyectos abarcan suites de control para bioimpresión,
-          interfaces automatizadas de manejo de líquidos y pipelines de exposición a la luz DLP,
-          todos desarrollados con calidad de producción y un enfoque riguroso en la precisión y la
-          usabilidad.
-        </p>
-        <p class="about-bio reveal">
-          Conceptualizo flujos de trabajo, defino arquitecturas de producto y lidero la
-          implementación a través de un desarrollo iterativo, siempre enfocado en la
-          experiencia del investigador en el laboratorio.
-        </p>
+      <!-- Filter -->
+      <div class="filter-bar reveal" role="group" aria-label="Filtrar proyectos por categoría">
+        <button class="filter-btn active" data-filter="all" id="filter-all">Todos</button>
+        <button class="filter-btn" data-filter="software" id="filter-software">Software</button>
+        <button class="filter-btn" data-filter="industrial-design" id="filter-industrial">Diseño Industrial</button>
       </div>
 
-      <div class="about-right reveal">
-        <div class="about-photo-wrap">
-          <img src="assets/profile.png" alt="Pedro Rocca" class="about-photo" />
-        </div>
-        <div class="about-info-list">
-          <div class="about-info-item">
-            <span class="about-info-label">Disciplina</span>
-            <span class="about-info-value">Software y Diseño Industrial</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Enfoque</span>
-            <span class="about-info-value">Automatización de Laboratorio · Bioimpresión · Equipos de Precisión</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Stack</span>
-            <span class="about-info-value">React · TypeScript · Python · Three.js · WebGL</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Estado</span>
-            <span class="about-info-value">Abierto a colaboraciones</span>
-          </div>
-        </div>
+      <!-- Grid — built from PROJECTS data -->
+      <div class="projects-grid" id="projects-grid">
+        <!-- Cards are injected by build-cards script below -->
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ────────────────────────────── CV ───────────────────────────────────── -->
-<section id="cv">
-  <div class="container">
-    <div class="cv-grid">
+  <!-- ────────────────────────────── ABOUT ────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
 
-      <div class="cv-main">
-        <p class="cv-label reveal">Currículum</p>
-
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Experiencia</h3>
-          <div class="cv-timeline">
-            <div class="cv-item">
-              <div class="cv-item-header">
-                <span class="cv-item-role">Diseñador Industrial / Desarrollador de Producto</span>
-                <span class="cv-item-co">REGEMAT 3D</span>
-              </div>
-              <span class="cv-item-date">Mayo 2021 — Presente · Granada, España</span>
-              <ul class="cv-item-list">
-                <li>Diseño mecánico, prototipado y fabricación de bioimpresoras, biorreactores y sistemas de automatización de laboratorio.</li>
-                <li>Software de control e interfaces (Python, JavaScript, Flask) con integración de firmware/hardware.</li>
-                <li>Instrumentación especializada: PCBs, sensores, calibración óptica UV (365/405 nm), control de dosis/irradiancia.</li>
-                <li>AI/ML para automatización: optimización de protocolos, computer vision aplicada a validación.</li>
-                <li>Participación en proyectos europeos: diseño, prototipado, validación experimental, informes técnicos.</li>
-                <li>Iteración con el usuario final, investigadores y laboratorios para perfeccionar la funcionalidad y documentación.</li>
-              </ul>
-            </div>
-            <div class="cv-item">
-              <div class="cv-item-header">
-                <span class="cv-item-role">Unidad de Bioimpresión 3D y Soporte Técnico</span>
-                <span class="cv-item-co">Hospital Italiano de La Plata</span>
-              </div>
-              <span class="cv-item-date">Mayo 2017 — Abril 2021 · La Plata, Argentina</span>
-              <ul class="cv-item-list">
-                <li>Transformación de datos de diagnóstico (MRI/CT/DICOM) en modelos anatómicos físicos para planificación quirúrgica y entrenamiento médico.</li>
-                <li>Diseño de flujos de trabajo: procesamiento de imágenes, segmentación, generación de mallas y optimización (3D Slicer, Meshmixer).</li>
-                <li>Soporte técnico y mantenimiento de infraestructura (impresoras FDM/SLA, estaciones de trabajo).</li>
-                <li>Interacción directa con cirujanos: comprensión de necesidades clínicas, terminología médica y validación de modelos.</li>
-              </ul>
-            </div>
-            <div class="cv-item">
-              <div class="cv-item-header">
-                <span class="cv-item-role">Ingeniero de Producción</span>
-                <span class="cv-item-co">ION Diseño Industrial</span>
-              </div>
-              <span class="cv-item-date">Marzo 2015 — Abril 2017 · La Plata, Argentina</span>
-              <ul class="cv-item-list">
-                <li>Producción de piezas de aluminio de alta precisión bajo normativa ISO (satélite ARSAT-1, vector Vex5e).</li>
-                <li>Operación y control de maquinaria CNC; optimización de procesos de mecanizado.</li>
-                <li>Diseño y fabricación de una impresora 3D de gran volumen para la producción de piezas técnicas (FAN).</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cv-sidebar">
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Resumen</h3>
-          <p class="cv-text">
-            Diseñador industrial orientado a ingeniería de producto y desarrollo de equipos para laboratorio y bioingeniería.
-            Me especializo en llevar un sistema desde la necesidad del usuario hasta un equipo funcional: idea, diseño, prototipo a baja escala, iteración y producto final.
+        <div class="about-left">
+          <p class="about-label reveal">Sobre mí</p>
+          <h2 class="about-name reveal">Pedro Rocca</h2>
+          <p class="about-bio reveal">
+            Trabajo en la intersección entre la ingeniería y el diseño, construyendo
+            plataformas de software y sistemas físicos para entornos de laboratorio de
+            grado de investigación. Mis proyectos abarcan suites de control para bioimpresión,
+            interfaces automatizadas de manejo de líquidos y pipelines de exposición a la luz DLP,
+            todos desarrollados con calidad de producción y un enfoque riguroso en la precisión y la
+            usabilidad.
+          </p>
+          <p class="about-bio reveal">
+            Conceptualizo flujos de trabajo, defino arquitecturas de producto y lidero la
+            implementación a través de un desarrollo iterativo, siempre enfocado en la
+            experiencia del investigador en el laboratorio.
           </p>
         </div>
 
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Educación</h3>
-          <div class="cv-edu">
-            <span class="cv-edu-title">Diseño Industrial y de Producto</span>
-            <span class="cv-edu-inst">Universidad Nacional de La Plata</span>
-            <span class="cv-edu-date">2006 — 2013 · Buenos Aires, Argentina</span>
+        <div class="about-right reveal">
+          <div class="about-photo-wrap">
+            <img src="assets/profile.png" alt="Pedro Rocca" class="about-photo" />
+          </div>
+          <div class="about-info-list">
+            <div class="about-info-item">
+              <span class="about-info-label">Disciplina</span>
+              <span class="about-info-value">Software y Diseño Industrial</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Enfoque</span>
+              <span class="about-info-value">Automatización de Laboratorio · Bioimpresión · Equipos de Precisión</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Stack</span>
+              <span class="about-info-value">React · TypeScript · Python · Three.js · WebGL</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Estado</span>
+              <span class="about-info-value">Abierto a colaboraciones</span>
+            </div>
           </div>
         </div>
 
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Certificaciones</h3>
-          <ul class="cv-cert-list">
-            <li>Claude AI 101 — Anthropic <span class="cv-cert-year">(2026)</span></li>
-            <li>Introducción a los Procesos de Fabricación Aditiva — Arizona State University</li>
-            <li>Introducción a AI y ML en Google Cloud — Google</li>
-            <li>Google AI Essentials — Google</li>
-            <li>Introducción a Computer Vision y Procesamiento de Imágenes — IBM</li>
-          </ul>
-        </div>
-
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Idiomas</h3>
-          <div class="cv-lang">
-            <span>Español <em>Nativo</em></span>
-            <span>Inglés <em>B2</em></span>
-          </div>
-        </div>
-
-        <div class="cv-block reveal">
-          <h3 class="cv-block-title">Habilidades</h3>
-          <div class="cv-tags">
-            <span class="tag">Mechanical Design</span>
-            <span class="tag">DFM/DFA</span>
-            <span class="tag">Additive Mfg</span>
-            <span class="tag">CNC Machining</span>
-            <span class="tag">PCB Design</span>
-            <span class="tag">UV Calibration</span>
-            <span class="tag">Python</span>
-            <span class="tag">JavaScript</span>
-            <span class="tag">Flask</span>
-            <span class="tag">Computer Vision</span>
-            <span class="tag">AI/ML</span>
-            <span class="tag">IEC 61010-1</span>
-            <span class="tag">EN 12469</span>
-          </div>
-        </div>
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ────────────────────────────── OBJECTIVES ─────────────────────────────── -->
-<section id="objectives">
-  <div class="container">
-    <div class="objectives-grid">
+  <!-- ────────────────────────────── CV ───────────────────────────────────── -->
+  <section id="cv">
+    <div class="container">
+      <div class="cv-grid">
 
-      <div class="objectives-left">
-        <p class="objectives-label reveal">Objetivos</p>
-        <h2 class="objectives-title reveal">Oportunidad & Propuesta</h2>
-        
-        <p class="objectives-intro reveal">
-          Desarrollo una metodología de creación de producto especializada en bioingeniería y equipamiento científico, diseñada para traducir requisitos técnicos de alta complejidad en sistemas funcionales de gran valor. Mediante una integración completa de diseño industrial, ingeniería mecánica, electrónica y desarrollo de software de control, reduzco drásticamente la fricción, los tiempos de desarrollo y la dependencia de proveedores externos en comparación con esquemas tradicionales fragmentados.
-        </p>
+        <div class="cv-main">
+          <p class="cv-label reveal">Currículum</p>
 
-        <div class="objectives-blocks">
-          <div class="objectives-block reveal">
-            <h3 class="objectives-block-title">Base Técnica</h3>
-            <p class="objectives-block-text">
-              Experiencia consolidada en bioimpresión DLP UV, impresión 3D volumétrica por tomografía inversa, automatización de laboratorio e instrumentación óptica avanzada. Esta experiencia práctica, respaldada por la participación activa en proyectos de investigación europeos, me permite liderar la concepción de equipos con un enfoque riguroso de transferencia tecnológica y viabilidad regulatoria.
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Experiencia</h3>
+            <div class="cv-timeline">
+              <div class="cv-item">
+                <div class="cv-item-header">
+                  <span class="cv-item-role">Diseñador Industrial / Desarrollador de Producto</span>
+                  <span class="cv-item-co">REGEMAT 3D</span>
+                </div>
+                <span class="cv-item-date">Mayo 2021 — Presente · Granada, España</span>
+                <ul class="cv-item-list">
+                  <li>Diseño mecánico, prototipado y fabricación de bioimpresoras, biorreactores y sistemas de
+                    automatización de laboratorio.</li>
+                  <li>Software de control e interfaces (Python, JavaScript, Flask) con integración de firmware/hardware.
+                  </li>
+                  <li>Instrumentación especializada: PCBs, sensores, calibración óptica UV (365/405 nm), control de
+                    dosis/irradiancia.</li>
+                  <li>AI/ML para automatización: optimización de protocolos, computer vision aplicada a validación.</li>
+                  <li>Participación en proyectos europeos: diseño, prototipado, validación experimental, informes
+                    técnicos.</li>
+                  <li>Iteración con el usuario final, investigadores y laboratorios para perfeccionar la funcionalidad y
+                    documentación.</li>
+                </ul>
+              </div>
+              <div class="cv-item">
+                <div class="cv-item-header">
+                  <span class="cv-item-role">Unidad de Bioimpresión 3D y Soporte Técnico</span>
+                  <span class="cv-item-co">Hospital Italiano de La Plata</span>
+                </div>
+                <span class="cv-item-date">Mayo 2017 — Abril 2021 · La Plata, Argentina</span>
+                <ul class="cv-item-list">
+                  <li>Transformación de datos de diagnóstico (MRI/CT/DICOM) en modelos anatómicos físicos para
+                    planificación quirúrgica y entrenamiento médico.</li>
+                  <li>Diseño de flujos de trabajo: procesamiento de imágenes, segmentación, generación de mallas y
+                    optimización (3D Slicer, Meshmixer).</li>
+                  <li>Soporte técnico y mantenimiento de infraestructura (impresoras FDM/SLA, estaciones de trabajo).
+                  </li>
+                  <li>Interacción directa con cirujanos: comprensión de necesidades clínicas, terminología médica y
+                    validación de modelos.</li>
+                </ul>
+              </div>
+              <div class="cv-item">
+                <div class="cv-item-header">
+                  <span class="cv-item-role">Ingeniero de Producción</span>
+                  <span class="cv-item-co">ION Diseño Industrial</span>
+                </div>
+                <span class="cv-item-date">Marzo 2015 — Abril 2017 · La Plata, Argentina</span>
+                <ul class="cv-item-list">
+                  <li>Producción de piezas de aluminio de alta precisión bajo normativa ISO (satélite ARSAT-1, vector
+                    Vex5e).</li>
+                  <li>Operación y control de maquinaria CNC; optimización de procesos de mecanizado.</li>
+                  <li>Diseño y fabricación de una impresora 3D de gran volumen para la producción de piezas técnicas
+                    (FAN).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-sidebar">
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Resumen</h3>
+            <p class="cv-text">
+              Diseñador industrial orientado a ingeniería de producto y desarrollo de equipos para laboratorio y
+              bioingeniería.
+              Me especializo en llevar un sistema desde la necesidad del usuario hasta un equipo funcional: idea,
+              diseño, prototipo a baja escala, iteración y producto final.
             </p>
           </div>
 
-          <div class="objectives-block reveal">
-            <h3 class="objectives-block-title">Mercado y Foco</h3>
-            <p class="objectives-block-text">
-              Identifico una brecha competitiva clave en la bioingeniería avanzada y la automatización experimental. El crecimiento sostenido en medicina regenerativa, I+D farmacéutica y diagnóstico de precisión demanda equipos altamente personalizados que el catálogo comercial masivo no logra satisfacer de forma óptima.
-            </p>
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Educación</h3>
+            <div class="cv-edu">
+              <span class="cv-edu-title">Diseño Industrial y de Producto</span>
+              <span class="cv-edu-inst">Universidad Nacional de La Plata</span>
+              <span class="cv-edu-date">2006 — 2013 · Buenos Aires, Argentina</span>
+            </div>
           </div>
 
-          <div class="objectives-block reveal">
-            <h3 class="objectives-block-title">Propuesta de Valor</h3>
-            <ul class="objectives-list">
-              <li><strong>Integración end-to-end:</strong> Diseño, fabricación, instrumentación y software de control unificados.</li>
-              <li><strong>Reducción de fricción:</strong> Validación temprana y ciclos rápidos de iteración asistidos por AI.</li>
-              <li><strong>Diferenciación técnica:</strong> Soluciones a medida donde los sistemas estándar del mercado comercial no llegan.</li>
-              <li><strong>Eficiencia y cercanía:</strong> Prototipado ágil aditivo y trabajo colaborativo directo con investigadores en laboratorio.</li>
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Certificaciones</h3>
+            <ul class="cv-cert-list">
+              <li>Claude AI 101 — Anthropic <span class="cv-cert-year">(2026)</span></li>
+              <li>Introducción a los Procesos de Fabricación Aditiva — Arizona State University</li>
+              <li>Introducción a AI y ML en Google Cloud — Google</li>
+              <li>Google AI Essentials — Google</li>
+              <li>Introducción a Computer Vision y Procesamiento de Imágenes — IBM</li>
             </ul>
           </div>
-        </div>
-      </div>
 
-      <div class="objectives-right reveal">
-        <div class="objectives-card">
-          <h3 class="objectives-card-title">Visión y Meta</h3>
-          <p class="objectives-card-text">
-            Mi objetivo final es catalizar esta capacidad multidisciplinar para dar forma a la próxima generación de productos y plataformas escalables dentro del ecosistema bio/medtech, combinando rigor técnico con una profunda orientación al usuario final.
-          </p>
-          <div class="objectives-card-footer">
-            <span class="objectives-card-tag">Rigor Técnico</span>
-            <span class="objectives-card-tag">Usuario Final</span>
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Idiomas</h3>
+            <div class="cv-lang">
+              <span>Español <em>Nativo</em></span>
+              <span>Inglés <em>B2</em></span>
+            </div>
+          </div>
+
+          <div class="cv-block reveal">
+            <h3 class="cv-block-title">Habilidades</h3>
+            <div class="cv-tags">
+              <span class="tag">Mechanical Design</span>
+              <span class="tag">DFM/DFA</span>
+              <span class="tag">Additive Mfg</span>
+              <span class="tag">CNC Machining</span>
+              <span class="tag">PCB Design</span>
+              <span class="tag">UV Calibration</span>
+              <span class="tag">Python</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Flask</span>
+              <span class="tag">Computer Vision</span>
+              <span class="tag">AI/ML</span>
+              <span class="tag">IEC 61010-1</span>
+              <span class="tag">EN 12469</span>
+            </div>
           </div>
         </div>
-      </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- ────────────────────────────── FOOTER ───────────────────────────────── -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <span class="footer-copy">© 2025 Pedro Rocca</span>
-      <div class="footer-links">
-        <a href="https://linkedin.com/in/pedrorocca" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/pedrorocca22" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://behance.net/pedrorocca" target="_blank" rel="noopener">Behance</a>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<!-- ────────────────────────────── MODAL ────────────────────────────────── -->
-<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal">
-    <!-- Carousel -->
-    <div class="modal-carousel">
-      <div class="carousel-track" id="carousel-track"></div>
-      <button class="carousel-btn prev" id="carousel-prev" aria-label="Imagen anterior">&#8592;</button>
-      <button class="carousel-btn next" id="carousel-next" aria-label="Siguiente imagen">&#8594;</button>
-      <div class="carousel-dots" id="carousel-dots"></div>
-    </div>
-    <!-- Content -->
-    <div class="modal-body" id="modal-body">
-      <div class="modal-header">
-        <div class="modal-title-wrap">
-          <h2 class="modal-title" id="modal-title"></h2>
-          <p  class="modal-meta"  id="modal-meta"></p>
+  <!-- ────────────────────────────── OBJECTIVES ─────────────────────────────── -->
+  <section id="objectives">
+    <div class="container">
+      <div class="objectives-grid">
+
+        <div class="objectives-left">
+          <p class="objectives-label reveal">Objetivos</p>
+          <h2 class="objectives-title reveal"></h2>
+
+          <p class="objectives-intro reveal">
+            Desarrollo una metodología de creación de producto especializada en bioingeniería y equipamiento científico,
+            diseñada para traducir requisitos técnicos de alta complejidad en sistemas funcionales de gran valor.
+            Mediante una integración completa de diseño industrial, ingeniería mecánica, electrónica y desarrollo de
+            software de control, reduzco drásticamente la fricción, los tiempos de desarrollo y la dependencia de
+            proveedores externos en comparación con esquemas tradicionales fragmentados.
+          </p>
+
+          <div class="objectives-blocks">
+            <div class="objectives-block reveal">
+              <h3 class="objectives-block-title">Base Técnica</h3>
+              <p class="objectives-block-text">
+                Experiencia consolidada en bioimpresión DLP UV, impresión 3D volumétrica por tomografía inversa,
+                automatización de laboratorio e instrumentación óptica avanzada. Esta experiencia práctica, respaldada
+                por la participación activa en proyectos de investigación europeos, me permite liderar la concepción de
+                equipos con un enfoque riguroso de transferencia tecnológica y viabilidad regulatoria.
+              </p>
+            </div>
+
+            <div class="objectives-block reveal">
+              <h3 class="objectives-block-title">Mercado y Foco</h3>
+              <p class="objectives-block-text">
+                Identifico una brecha competitiva clave en la bioingeniería avanzada y la automatización experimental.
+                El crecimiento sostenido en medicina regenerativa, I+D farmacéutica y diagnóstico de precisión demanda
+                equipos altamente personalizados que el catálogo comercial masivo no logra satisfacer de forma óptima.
+              </p>
+            </div>
+
+            <div class="objectives-block reveal">
+              <h3 class="objectives-block-title">Propuesta de Valor</h3>
+              <ul class="objectives-list">
+                <li><strong>Integración end-to-end:</strong> Diseño, fabricación, instrumentación y software de control
+                  unificados.</li>
+                <li><strong>Reducción de fricción:</strong> Validación temprana y ciclos rápidos de iteración asistidos
+                  por AI.</li>
+                <li><strong>Diferenciación técnica:</strong> Soluciones a medida donde los sistemas estándar del mercado
+                  comercial no llegan.</li>
+                <li><strong>Eficiencia y cercanía:</strong> Prototipado ágil aditivo y trabajo colaborativo directo con
+                  investigadores en laboratorio.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="modal-header-actions">
-          <a class="btn-github-modal" id="modal-github" target="_blank" rel="noopener" style="display:none;" aria-label="Ver en GitHub">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            GitHub
-          </a>
-          <button class="btn-demo" id="modal-demo-btn" style="display:none;">Probar Demo</button>
-          <button class="modal-close" id="modal-close" aria-label="Cerrar">&#215;</button>
+
+        <div class="objectives-right reveal">
+          <div class="objectives-card">
+            <h3 class="objectives-card-title">Visión y Meta</h3>
+            <p class="objectives-card-text">
+              Mi objetivo final es catalizar esta capacidad multidisciplinar para dar forma a la próxima generación de
+              productos y plataformas escalables dentro del ecosistema bio/medtech, combinando rigor técnico con una
+              profunda orientación al usuario final.
+            </p>
+            <div class="objectives-card-footer">
+              <span class="objectives-card-tag">Rigor Técnico</span>
+              <span class="objectives-card-tag">Usuario Final</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── FOOTER ───────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Pedro Rocca</span>
+        <div class="footer-links">
+          <a href="https://linkedin.com/in/pedrorocca" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/pedrorocca22" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://behance.net/pedrorocca" target="_blank" rel="noopener">Behance</a>
         </div>
       </div>
-      <div class="modal-demo-hint" id="modal-demo-hint" style="display:none;">
-        <span class="modal-demo-hint-icon">🔒</span>
-        <span class="modal-demo-hint-text"><strong>Sandbox interactivo</strong> — explora el flujo de trabajo completo con hardware simulado. Sin máquina real conectada.</span>
-      </div>
-      <div class="modal-tags"        id="modal-tags"></div>
-      <div class="modal-description" id="modal-description"></div>
     </div>
+  </footer>
 
-    <!-- Demo iframe (hidden by default) -->
-    <div class="modal-demo" id="modal-demo">
-      <div class="modal-demo-bar">
-        <span class="modal-demo-label">🔒 Modo Demo — Sin hardware conectado</span>
-        <button class="btn-demo-back" id="modal-demo-back">Volver al Proyecto</button>
+  <!-- ────────────────────────────── MODAL ────────────────────────────────── -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <!-- Carousel -->
+      <div class="modal-carousel">
+        <div class="carousel-track" id="carousel-track"></div>
+        <button class="carousel-btn prev" id="carousel-prev" aria-label="Imagen anterior">&#8592;</button>
+        <button class="carousel-btn next" id="carousel-next" aria-label="Siguiente imagen">&#8594;</button>
+        <div class="carousel-dots" id="carousel-dots"></div>
       </div>
-      <iframe id="modal-iframe" src="" title="Demo del Proyecto"></iframe>
+      <!-- Content -->
+      <div class="modal-body" id="modal-body">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <h2 class="modal-title" id="modal-title"></h2>
+            <p class="modal-meta" id="modal-meta"></p>
+          </div>
+          <div class="modal-header-actions">
+            <a class="btn-github-modal" id="modal-github" target="_blank" rel="noopener" style="display:none;"
+              aria-label="Ver en GitHub">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+              </svg>
+              GitHub
+            </a>
+            <button class="btn-demo" id="modal-demo-btn" style="display:none;">Probar Demo</button>
+            <button class="modal-close" id="modal-close" aria-label="Cerrar">&#215;</button>
+          </div>
+        </div>
+        <div class="modal-demo-hint" id="modal-demo-hint" style="display:none;">
+          <span class="modal-demo-hint-icon">🔒</span>
+          <span class="modal-demo-hint-text"><strong>Sandbox interactivo</strong> — explora el flujo de trabajo completo
+            con hardware simulado. Sin máquina real conectada.</span>
+        </div>
+        <div class="modal-tags" id="modal-tags"></div>
+        <div class="modal-description" id="modal-description"></div>
+      </div>
+
+      <!-- Demo iframe (hidden by default) -->
+      <div class="modal-demo" id="modal-demo">
+        <div class="modal-demo-bar">
+          <span class="modal-demo-label">🔒 Modo Demo — Sin hardware conectado</span>
+          <button class="btn-demo-back" id="modal-demo-back">Volver al Proyecto</button>
+        </div>
+        <iframe id="modal-iframe" src="" title="Demo del Proyecto"></iframe>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ────────────────────────────── SCRIPTS ──────────────────────────────── -->
-<script src="projects.js"></script>
+  <!-- ────────────────────────────── SCRIPTS ──────────────────────────────── -->
+  <script src="projects.js"></script>
 
-<!-- Dynamically build project cards from PROJECTS data -->
-<script>
-(function buildCards() {
-  const grid = document.getElementById('projects-grid');
-  if (!grid || typeof PROJECTS === 'undefined') return;
+  <!-- Dynamically build project cards from PROJECTS data -->
+  <script>
+    (function buildCards() {
+      const grid = document.getElementById('projects-grid');
+      if (!grid || typeof PROJECTS === 'undefined') return;
 
-  PROJECTS.forEach(p => {
-    const card = document.createElement('article');
-    card.className = `project-card card-${p.category}`;
-    card.dataset.id       = p.id;
-    card.dataset.category = p.category;
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `Ver proyecto: ${p.title}`);
+      PROJECTS.forEach(p => {
+        const card = document.createElement('article');
+        card.className = `project-card card-${p.category}`;
+        card.dataset.id = p.id;
+        card.dataset.category = p.category;
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Ver proyecto: ${p.title}`);
 
-    card.innerHTML = `
+        card.innerHTML = `
       <div class="card-image-wrap">
         <img
           src="${p.images[0]}"
@@ -375,18 +409,19 @@
       </div>
     `;
 
-    // Keyboard support
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') card.click();
-    });
+        // Keyboard support
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') card.click();
+        });
 
-    grid.appendChild(card);
-  });
-})();
-</script>
+        grid.appendChild(card);
+      });
+    })();
+  </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="main.js"></script>
 </body>
+
 </html>
