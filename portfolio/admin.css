@@ -19,20 +19,68 @@
   --r-lg: 16px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* *, *::before, *::after removed to prevent style bleed */
 
-body {
+.admin-portal-overlay {
   font-family: var(--font);
   background: var(--bg-dark);
   color: var(--color-text-primary);
-  min-height: 100vh;
-  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
   flex-direction: column;
+  overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   background-image: 
     radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
     radial-gradient(at 90% 90%, rgba(245, 158, 11, 0.06) 0px, transparent 50%);
   background-attachment: fixed;
+  animation: fadeInPortal 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes fadeInPortal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Floating premium close button */
+.admin-portal-close {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 24px;
+  font-weight: 300;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 10100;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.admin-portal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .admin-portal-close {
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
 }
 
 /* ── Login Screen ───────────────────────────────────────────────────────── */
@@ -296,14 +344,14 @@ header.dash-header {
   overflow-x: auto;
 }
 
-table {
+.admin-portal-overlay table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
   font-size: 13px;
 }
 
-th {
+.admin-portal-overlay th {
   color: var(--color-text-secondary);
   font-weight: 600;
   text-transform: uppercase;
@@ -313,14 +361,14 @@ th {
   border-bottom: 1px solid var(--color-border);
 }
 
-td {
+.admin-portal-overlay td {
   padding: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   color: var(--color-text-primary);
   white-space: nowrap;
 }
 
-tr:hover td {
+.admin-portal-overlay tr:hover td {
   background: rgba(255, 255, 255, 0.02);
 }
 

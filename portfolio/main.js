@@ -286,12 +286,7 @@
     if (demoBtn) demoBtn.style.display = currentDemoPath ? 'inline-flex' : 'none';
     if (demoHint) demoHint.style.display = currentDemoPath ? 'block' : 'none';
     if (githubBtn) {
-      if (project.github) {
-        githubBtn.href = project.github;
-        githubBtn.style.display = 'inline-flex';
-      } else {
-        githubBtn.style.display = 'none';
-      }
+      githubBtn.style.display = 'none';
     }
     exitDemo();
 
