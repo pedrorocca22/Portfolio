@@ -598,11 +598,14 @@ nav {
 .modal-description li { margin-bottom: var(--sp-1); }
 
 /* ── About ──────────────────────────────────────────────────────────────── */
-.about-grid {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
+.about-header {
+  margin-bottom: var(--sp-6);
+}
+
+.about-body {
+  display: flex;
   gap: var(--sp-8);
-  align-items: start;
+  align-items: flex-start;
 }
 
 .about-label {
@@ -612,7 +615,7 @@ nav {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin-bottom: var(--sp-6);
+  margin-bottom: var(--sp-4);
   padding: 6px 12px;
   background: rgba(255,255,255,.6);
   border: 1px solid var(--color-border);
@@ -625,19 +628,7 @@ nav {
   letter-spacing: -.02em;
   line-height: 1.15;
   color: var(--color-text-primary);
-  margin-bottom: var(--sp-4);
-}
-
-.about-bio {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  margin-bottom: var(--sp-5);
-}
-
-.about-right {
-  display: grid;
-  gap: var(--sp-5);
+  margin-bottom: 0;
 }
 
 .about-photo-wrap {
@@ -1157,7 +1148,7 @@ footer {
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .about-grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .about-body { flex-direction: column; gap: var(--sp-6); }
   .cv-grid { grid-template-columns: 1fr; gap: var(--sp-6); }
   .objectives-grid { grid-template-columns: 1fr; gap: var(--sp-6); }
   .projects-grid { grid-template-columns: 1fr; }
