@@ -178,7 +178,6 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 (function initFilter() {
   const btns  = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.project-card');
 
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -186,6 +185,8 @@
       btn.classList.add('active');
       const filter = btn.dataset.filter;
 
+      // Query cards dynamically inside click handler because cards are re-rendered from Firestore
+      const cards = document.querySelectorAll('.project-card');
       cards.forEach(card => {
         const match = filter === 'all' || card.dataset.category === filter;
         card.classList.toggle('hidden', !match);
@@ -319,14 +320,22 @@
     if (e.key === 'ArrowRight') goTo(currentSlide + 1);
   });
 
-  // Attach cards
-  document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => {
+  // Event delegation on the projects grid to open modal (supports dynamically loaded cards)
+  const grid = document.getElementById('projects-grid');
+  if (grid) {
+    grid.addEventListener('click', e => {
+      // Find the closest project card that was clicked
+      const card = e.target.closest('.project-card');
+      if (!card) return;
+      
+      // If click was on a github link, let the browser handle it naturally
+      if (e.target.closest('.card-github')) return;
+      
       const id = card.dataset.id;
       const project = PROJECTS.find(p => p.id === id);
       if (project) openModal(project);
     });
-  });
+  }
 })();
 
 

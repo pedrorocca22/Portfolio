@@ -139,7 +139,17 @@
       <div class="cv-grid">
 
         <div class="cv-main">
-          <p class="cv-label reveal">Currículum</p>
+          <div class="cv-header-row reveal">
+            <p class="cv-label">Currículum</p>
+            <button onclick="window.print();" class="cv-btn-print" aria-label="Descargar Currículum en PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Descargar PDF
+            </button>
+          </div>
 
           <div class="cv-block reveal">
             <h3 class="cv-block-title">Experiencia</h3>
@@ -329,15 +339,31 @@
   </div>
 
   <!-- ────────────────────────────── SCRIPTS ──────────────────────────────── -->
+  <!-- Local projects database (Immediate Fallback) -->
   <script src="projects.js"></script>
 
-  <!-- Dynamically build project cards from PROJECTS data -->
-  <script>
-    (function buildCards() {
-      const grid = document.getElementById('projects-grid');
-      if (!grid || typeof PROJECTS === 'undefined') return;
+  <!-- Firebase Compat SDKs (CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
-      PROJECTS.forEach(p => {
+  <!-- Firebase Initializer -->
+  <script src="firebase-config.js"></script>
+
+  <!-- Traceability Tracker -->
+  <script src="tracker.js"></script>
+
+  <!-- Reusable cards builder -->
+  <script>
+    // Global function to build cards dynamically
+    function renderProjectCards(projectsList) {
+      const grid = document.getElementById('projects-grid');
+      if (!grid || !projectsList) return;
+      
+      grid.innerHTML = ''; // clear current cards
+
+      projectsList.forEach(p => {
         const card = document.createElement('article');
         card.className = `project-card card-${p.category}`;
         card.dataset.id = p.id;
@@ -347,33 +373,33 @@
         card.setAttribute('aria-label', `Ver proyecto: ${p.title}`);
 
         card.innerHTML = `
-      <div class="card-image-wrap">
-        <img
-          src="${p.images[0]}"
-          alt="Captura de ${p.title}"
-          loading="lazy"
-        />
-        ${p.status ? `<span class="card-badge">${p.status}</span>` : ''}
-      </div>
-      <div class="card-body">
-        <div class="card-header-row">
-          <div class="card-meta">
-            <span class="card-year">${p.year}</span>
-            <span class="card-category"><span class="category-dot"></span>${p.category === 'software' ? 'Software' : 'Diseño Industrial'}</span>
+          <div class="card-image-wrap">
+            <img
+              src="${p.images[0]}"
+              alt="Captura de ${p.title}"
+              loading="lazy"
+            />
+            ${p.status ? `<span class="card-badge">${p.status}</span>` : ''}
           </div>
-          ${p.github ? `<a href="${p.github}" class="card-github" target="_blank" rel="noopener" aria-label="Ver ${p.title} en GitHub" onclick="event.stopPropagation();">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-          </a>` : ''}
-        </div>
-        <h3 class="card-title">${p.title}</h3>
-        <p  class="card-summary">${p.summary}</p>
-        <div class="card-tags">
-          ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-        </div>
-      </div>
-    `;
+          <div class="card-body">
+            <div class="card-header-row">
+              <div class="card-meta">
+                <span class="card-year">${p.year}</span>
+                <span class="card-category"><span class="category-dot"></span>${p.category === 'software' ? 'Software' : 'Diseño Industrial'}</span>
+              </div>
+              ${p.github ? `<a href="${p.github}" class="card-github" target="_blank" rel="noopener" aria-label="Ver ${p.title} en GitHub" onclick="event.stopPropagation();">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+              </a>` : ''}
+            </div>
+            <h3 class="card-title">${p.title}</h3>
+            <p class="card-summary">${p.summary}</p>
+            <div class="card-tags">
+              ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
+          </div>
+        `;
 
         // Keyboard support
         card.addEventListener('keydown', e => {
@@ -382,7 +408,35 @@
 
         grid.appendChild(card);
       });
-    })();
+    }
+
+    // 1. Render immediately from offline static projects.js (zero loading delay)
+    if (typeof PROJECTS !== 'undefined') {
+      renderProjectCards(PROJECTS);
+    }
+
+    // 2. Asynchronously fetch fresh projects database from Firestore
+    if (typeof db !== 'undefined') {
+      db.collection("projects").orderBy("year", "desc").get().then(snapshot => {
+        const freshProjects = [];
+        snapshot.forEach(doc => {
+          freshProjects.push({ id: doc.id, ...doc.data() });
+        });
+        
+        if (freshProjects.length > 0) {
+          console.log("Loaded fresh projects database from Firestore.");
+          // Update global database array
+          if (typeof PROJECTS !== 'undefined') {
+            PROJECTS.length = 0;
+            PROJECTS.push(...freshProjects);
+          }
+          // Re-render
+          renderProjectCards(freshProjects);
+        }
+      }).catch(err => {
+        console.warn("Firestore not initialized or offline. Using static local projects.", err);
+      });
+    }
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
