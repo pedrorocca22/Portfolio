@@ -682,6 +682,18 @@ nav {
   color: var(--color-text-primary);
 }
 
+.about-contact-link {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.about-contact-link:hover {
+  border-bottom-color: var(--color-text-secondary);
+}
+
 /* ── CV ─────────────────────────────────────────────────────────────────── */
 .cv-grid {
   display: grid;
