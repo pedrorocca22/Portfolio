@@ -23,7 +23,6 @@
       <li><a href="#projects">Proyectos</a></li>
       <li><a href="#about">Sobre mí</a></li>
       <li><a href="#cv">CV</a></li>
-      <li><a href="#objectives">Objetivos</a></li>
     </ul>
   </nav>
 
@@ -49,47 +48,88 @@
   <!-- ────────────────────────────── ABOUT ────────────────────────────────── -->
   <section id="about">
     <div class="container">
+      <div class="about-grid">
 
-      <div class="about-header">
-        <p class="about-label reveal">Sobre mí</p>
-        <h2 class="about-name reveal">Pedro Rocca</h2>
-      </div>
+        <div class="about-left">
+          <p class="about-label reveal">Sobre mí</p>
+          <h2 class="about-name reveal">Pedro Rocca</h2>
 
-      <div class="about-body reveal">
-        <div class="about-photo-wrap">
-          <img src="assets/profile.png" alt="Pedro Rocca" class="about-photo" />
+          <p class="about-intro reveal">
+            Diseñador industrial con perfil híbrido de ingeniería de producto: integro diseño mecánico, fabricación aditiva, electrónica y software de control en un único flujo de desarrollo para construir equipos científicos especializados que no existen como producto comercial.
+          </p>
+
+          <div class="about-blocks">
+            <div class="about-block reveal">
+              <h3 class="about-block-title">Base Técnica</h3>
+              <p class="about-block-text">
+                Experiencia consolidada en bioimpresión DLP UV, impresión 3D volumétrica por tomografía inversa,
+                automatización de laboratorio e instrumentación óptica avanzada. Esta experiencia práctica, respaldada
+                por la participación activa en proyectos de investigación europeos, me permite liderar la concepción de
+                equipos con un enfoque riguroso de transferencia tecnológica y viabilidad regulatoria.
+              </p>
+            </div>
+
+            <div class="about-block reveal">
+              <h3 class="about-block-title">Mercado y Foco</h3>
+              <p class="about-block-text">
+                Identifico una brecha competitiva clave en la bioingeniería avanzada y la automatización experimental.
+                El crecimiento sostenido en medicina regenerativa, I+D farmacéutica y diagnóstico de precisión demanda
+                equipos altamente personalizados que el catálogo comercial masivo no logra satisfacer de forma óptima.
+              </p>
+            </div>
+
+            <div class="about-block reveal">
+              <h3 class="about-block-title">Propuesta de Valor</h3>
+              <ul class="about-list">
+                <li><strong>Integración end-to-end:</strong> Diseño, fabricación, instrumentación y software de control
+                  unificados.</li>
+                <li><strong>Reducción de fricción:</strong> Validación temprana y ciclos rápidos de iteración asistidos
+                  por AI.</li>
+                <li><strong>Diferenciación técnica:</strong> Soluciones a medida donde los sistemas estándar del mercado
+                  comercial no llegan.</li>
+                <li><strong>Eficiencia y cercanía:</strong> Prototipado ágil aditivo y trabajo colaborativo directo con
+                  investigadores en laboratorio.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="about-info-list">
-          <div class="about-info-item">
-            <span class="about-info-label">Disciplina</span>
-            <span class="about-info-value">Software y Diseño Industrial</span>
+
+        <div class="about-right reveal">
+          <div class="about-photo-wrap">
+            <img src="assets/profile.png" alt="Pedro Rocca" class="about-photo" />
           </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Enfoque</span>
-            <span class="about-info-value">Bioingeniería · Automatización · Equipos de Precisión</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Stack</span>
-            <span class="about-info-value">Python · JavaScript · Flask · Three.js · WebGL</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Ubicación</span>
-            <span class="about-info-value">Granada, España</span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Contacto</span>
-            <span class="about-info-value">
-              <a href="mailto:rocca022@gmail.com" class="about-contact-link">rocca022@gmail.com</a><br>
-              <a href="tel:+34661177253" class="about-contact-link">+34 661 177 253</a>
-            </span>
-          </div>
-          <div class="about-info-item">
-            <span class="about-info-label">Estado</span>
-            <span class="about-info-value">Abierto a colaboraciones</span>
+          <div class="about-info-list">
+            <div class="about-info-item">
+              <span class="about-info-label">Disciplina</span>
+              <span class="about-info-value">Software y Diseño Industrial</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Enfoque</span>
+              <span class="about-info-value">Bioingeniería · Automatización · Equipos de Precisión</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Stack</span>
+              <span class="about-info-value">Python · JavaScript · Flask · Three.js · WebGL</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Ubicación</span>
+              <span class="about-info-value">Granada, España</span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Contacto</span>
+              <span class="about-info-value">
+                <a href="mailto:rocca022@gmail.com" class="about-contact-link">rocca022@gmail.com</a><br>
+                <a href="tel:+34661177253" class="about-contact-link">+34 661 177 253</a>
+              </span>
+            </div>
+            <div class="about-info-item">
+              <span class="about-info-label">Estado</span>
+              <span class="about-info-value">Abierto a colaboraciones</span>
+            </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </section>
 
@@ -222,73 +262,6 @@
     </div>
   </section>
 
-  <!-- ────────────────────────────── OBJECTIVES ─────────────────────────────── -->
-  <section id="objectives">
-    <div class="container">
-      <div class="objectives-grid">
-
-        <div class="objectives-left">
-          <p class="objectives-label reveal">Objetivos</p>
-          <h2 class="objectives-title reveal">Oportunidad &amp; Propuesta</h2>
-
-          <p class="objectives-intro reveal">
-            Diseñador industrial con perfil híbrido de ingeniería de producto: integro diseño mecánico, fabricación aditiva, electrónica y software de control en un único flujo de desarrollo para construir equipos científicos especializados que no existen como producto comercial.
-          </p>
-
-          <div class="objectives-blocks">
-            <div class="objectives-block reveal">
-              <h3 class="objectives-block-title">Base Técnica</h3>
-              <p class="objectives-block-text">
-                Experiencia consolidada en bioimpresión DLP UV, impresión 3D volumétrica por tomografía inversa,
-                automatización de laboratorio e instrumentación óptica avanzada. Esta experiencia práctica, respaldada
-                por la participación activa en proyectos de investigación europeos, me permite liderar la concepción de
-                equipos con un enfoque riguroso de transferencia tecnológica y viabilidad regulatoria.
-              </p>
-            </div>
-
-            <div class="objectives-block reveal">
-              <h3 class="objectives-block-title">Mercado y Foco</h3>
-              <p class="objectives-block-text">
-                Identifico una brecha competitiva clave en la bioingeniería avanzada y la automatización experimental.
-                El crecimiento sostenido en medicina regenerativa, I+D farmacéutica y diagnóstico de precisión demanda
-                equipos altamente personalizados que el catálogo comercial masivo no logra satisfacer de forma óptima.
-              </p>
-            </div>
-
-            <div class="objectives-block reveal">
-              <h3 class="objectives-block-title">Propuesta de Valor</h3>
-              <ul class="objectives-list">
-                <li><strong>Integración end-to-end:</strong> Diseño, fabricación, instrumentación y software de control
-                  unificados.</li>
-                <li><strong>Reducción de fricción:</strong> Validación temprana y ciclos rápidos de iteración asistidos
-                  por AI.</li>
-                <li><strong>Diferenciación técnica:</strong> Soluciones a medida donde los sistemas estándar del mercado
-                  comercial no llegan.</li>
-                <li><strong>Eficiencia y cercanía:</strong> Prototipado ágil aditivo y trabajo colaborativo directo con
-                  investigadores en laboratorio.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="objectives-right reveal">
-          <div class="objectives-card">
-            <h3 class="objectives-card-title">Visión y Meta</h3>
-            <p class="objectives-card-text">
-              Mi objetivo final es catalizar esta capacidad multidisciplinar para dar forma a la próxima generación de
-              productos y plataformas escalables dentro del ecosistema bio/medtech, combinando rigor técnico con una
-              profunda orientación al usuario final.
-            </p>
-            <div class="objectives-card-footer">
-              <span class="objectives-card-tag">Rigor Técnico</span>
-              <span class="objectives-card-tag">Usuario Final</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
 
   <!-- ────────────────────────────── FOOTER ───────────────────────────────── -->
   <footer>
