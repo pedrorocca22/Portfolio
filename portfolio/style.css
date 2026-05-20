@@ -1041,16 +1041,16 @@ footer {
 }
 
 .objectives-intro {
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--color-text-secondary);
-  margin-bottom: var(--sp-8);
+  margin-bottom: var(--sp-6);
   max-width: 720px;
 }
 
 .objectives-blocks {
   display: grid;
-  gap: var(--sp-8);
+  gap: var(--sp-6);
 }
 
 .objectives-block {
@@ -1120,8 +1120,8 @@ footer {
 }
 
 .objectives-card-text {
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--color-text-secondary);
 }
 
