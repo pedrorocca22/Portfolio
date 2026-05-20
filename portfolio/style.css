@@ -95,7 +95,10 @@ body {
 section { padding-block: var(--sp-16); }
 
 /* Section visual distinction — alternating surface tones */
-#projects { background: var(--color-neutral); }
+#projects {
+  background: var(--color-neutral);
+  padding-top: 104px; /* accounts for fixed header ~56px + var(--sp-12) */
+}
 #about    { background: #F1F5F9; border-top: 1px solid #E2E8F0; }
 #cv       { background: var(--color-neutral); border-top: 1px solid #E2E8F0; }
 
@@ -129,63 +132,7 @@ nav {
 
 .nav-links a:hover { color: var(--color-text-primary); }
 
-/* ── Hero (Mini Bio) ────────────────────────────────────────────────────── */
-#hero {
-  min-height: auto;
-  display: flex;
-  align-items: center;
-  padding-top: 72px;
-  padding-bottom: var(--sp-8);
-}
 
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-}
-
-.hero-mini-bio {
-  font-size: 15px;
-  line-height: 1.75;
-  color: var(--color-text-secondary);
-  max-width: 720px;
-  letter-spacing: -0.015em;
-}
-
-.hero-mini-bio strong {
-  color: var(--color-text-primary);
-  font-weight: 500;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: 10px 20px;
-  background: var(--color-secondary);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity var(--dur-fast) var(--ease-out);
-}
-
-.btn-primary:hover { opacity: .8; }
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  transition: color var(--dur-fast) var(--ease-out);
-}
-
-.btn-ghost:hover { color: var(--color-text-primary); }
 
 /* ── Filter Bar ─────────────────────────────────────────────────────────── */
 .filter-bar {
