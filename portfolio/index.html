@@ -130,6 +130,23 @@
               <span class="about-info-value">Abierto a colaboraciones</span>
             </div>
           </div>
+          <!-- Configuración dinámica del CV (PDF) -->
+          <div class="about-cv-box reveal">
+            <span class="about-info-label">Configurar CV (PDF)</span>
+            <div class="cv-level-selector" role="group" aria-label="Nivel de información para el CV en PDF">
+              <button class="cv-level-btn active" data-level="1" title="CV Básico (Solo Experiencia y Datos)">Básico</button>
+              <button class="cv-level-btn" data-level="2" title="CV Profesional (+ Perfil Sobre mí)">Profesional</button>
+              <button class="cv-level-btn" data-level="3" title="CV Completo (+ Proyectos destacados)">Completo</button>
+            </div>
+            <button class="about-cv-download-btn" id="download-pdf-btn" aria-label="Descargar Currículum en PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Descargar PDF
+            </button>
+          </div>
         </div>
 
       </div>
@@ -144,14 +161,12 @@
         <div class="cv-main">
           <div class="cv-header-row reveal">
             <p class="cv-label">Currículum</p>
-            <button onclick="window.print();" class="cv-btn-print" aria-label="Descargar Currículum en PDF">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Descargar PDF
-            </button>
+          </div>
+
+          <!-- Bloque dinámico: Perfil (Sobre mí) - Nivel 2 y 3 -->
+          <div id="cv-profile-section" class="cv-block reveal" style="display: none;">
+            <h3 class="cv-block-title">Sobre mí</h3>
+            <p id="cv-profile-text" class="cv-text"></p>
           </div>
 
           <div class="cv-block reveal">
@@ -208,6 +223,14 @@
                     (FAN).</li>
                 </ul>
               </div>
+            </div>
+          </div>
+
+          <!-- Bloque dinámico: Proyectos Destacados - Nivel 3 -->
+          <div id="cv-projects-section" class="cv-block reveal" style="display: none;">
+            <h3 class="cv-block-title">Proyectos Destacados</h3>
+            <div id="cv-projects-list">
+              <!-- Cargado dinámicamente desde projects.js -->
             </div>
           </div>
         </div>

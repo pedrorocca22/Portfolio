@@ -419,19 +419,9 @@
 })();
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   7. Umami Traceability Events (CV & Contact Clicks)
+   7. Umami Traceability Events (Contact Clicks)
    ═══════════════════════════════════════════════════════════════════════════ */
 (function initUmamiTracking() {
-  // CV Download PDF
-  const cvBtn = document.querySelector('.cv-btn-print');
-  if (cvBtn) {
-    cvBtn.addEventListener('click', () => {
-      if (typeof umami !== 'undefined') {
-        umami.track('Download CV PDF');
-      }
-    });
-  }
-
   // Outbound and Contact Clicks
   document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"], a[href*="linkedin.com"], a[href*="github.com"]').forEach(link => {
     link.addEventListener('click', () => {
@@ -448,3 +438,98 @@
     });
   });
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8. Dynamic CV Controller (3 Levels & Relocated Print Trigger)
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function initDynamicCV() {
+  const levelBtns = document.querySelectorAll('.cv-level-btn');
+  const downloadBtn = document.getElementById('download-pdf-btn');
+  
+  const profileSection = document.getElementById('cv-profile-section');
+  const profileText = document.getElementById('cv-profile-text');
+  const projectsSection = document.getElementById('cv-projects-section');
+  const projectsList = document.getElementById('cv-projects-list');
+
+  let currentLevel = 1;
+
+  function renderCV(level) {
+    currentLevel = parseInt(level, 10);
+
+    // Update active state in UI buttons
+    levelBtns.forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === currentLevel);
+    });
+
+    if (currentLevel === 1) {
+      // Level 1: Basic (Hide Profile and Projects)
+      if (profileSection) profileSection.style.display = 'none';
+      if (projectsSection) projectsSection.style.display = 'none';
+    } else if (currentLevel === 2) {
+      // Level 2: Professional (Show Profile, Hide Projects)
+      if (profileSection) {
+        profileSection.style.display = 'block';
+        // Extract dynamically from DOM about intro
+        const aboutIntro = document.querySelector('.about-intro');
+        if (aboutIntro && profileText) {
+          profileText.textContent = aboutIntro.textContent.trim();
+        }
+      }
+      if (projectsSection) projectsSection.style.display = 'none';
+    } else if (currentLevel === 3) {
+      // Level 3: Complete (Show Profile & dynamic Projects from projects.js)
+      if (profileSection) {
+        profileSection.style.display = 'block';
+        const aboutIntro = document.querySelector('.about-intro');
+        if (aboutIntro && profileText) {
+          profileText.textContent = aboutIntro.textContent.trim();
+        }
+      }
+      if (projectsSection && projectsList && typeof PROJECTS !== 'undefined') {
+        projectsSection.style.display = 'block';
+        projectsList.innerHTML = PROJECTS.map(p => `
+          <div class="cv-project-item">
+            <div class="cv-project-header">
+              <span class="cv-project-title">${p.title}</span>
+              <span class="cv-project-year">${p.year}</span>
+            </div>
+            <span class="cv-project-meta">${p.category === 'software' ? 'Software' : 'Diseño Industrial'} &middot; ${p.tags.join(', ')}</span>
+            <p class="cv-project-summary">${p.summary}</p>
+          </div>
+        `).join('');
+      }
+    }
+  }
+
+  // Bind clicks to levels
+  levelBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const level = btn.dataset.level;
+      renderCV(level);
+
+      // Traceability Event
+      if (typeof umami !== 'undefined') {
+        umami.track('Configure CV Level', { level: level });
+      }
+    });
+  });
+
+  // Bind print click
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      // Traceability Event
+      if (typeof umami !== 'undefined') {
+        let levelName = 'basico';
+        if (currentLevel === 2) levelName = 'profesional';
+        else if (currentLevel === 3) levelName = 'completo';
+        umami.track('Download CV PDF', { level: levelName });
+      }
+      
+      window.print();
+    });
+  }
+
+  // Set default render (Level 1 - Básico)
+  renderCV(1);
+})();
+

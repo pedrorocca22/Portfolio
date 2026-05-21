@@ -805,6 +805,131 @@ nav {
 }
 
 
+/* ── CV Selector & Dynamic Elements ─────────────────────────────────────── */
+.about-cv-box {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.cv-level-selector {
+  display: flex;
+  gap: var(--sp-1);
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  width: 100%;
+}
+
+.cv-level-btn {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+  letter-spacing: .02em;
+  text-align: center;
+}
+
+.cv-level-btn.active {
+  background: var(--color-neutral);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-card);
+  font-weight: 600;
+}
+
+.cv-level-btn:not(.active):hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.about-cv-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  padding: 8px 16px;
+  background: rgba(255,255,255,.6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-card);
+  transition: all var(--dur-fast) var(--ease-out);
+  width: fit-content;
+}
+
+.about-cv-download-btn:hover {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+  color: var(--color-neutral);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.about-cv-download-btn svg {
+  flex-shrink: 0;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.about-cv-download-btn:hover svg {
+  transform: translateY(1px);
+}
+
+/* Dynamic CV project layout in screen mode */
+.cv-project-item {
+  margin-bottom: var(--sp-5);
+  page-break-inside: avoid;
+}
+
+.cv-project-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.cv-project-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.cv-project-year {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.cv-project-meta {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--sp-2);
+}
+
+.cv-project-summary {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+
 .cv-block {
   margin-bottom: var(--sp-6);
 }
@@ -1310,4 +1435,50 @@ footer {
     color: #000 !important;
     border-radius: 2px !important;
   }
+
+  /* Estilos específicos de impresión para secciones dinámicas del CV */
+  #cv-profile-section {
+    margin-bottom: 18pt !important;
+  }
+
+  #cv-projects-section {
+    margin-top: 18pt !important;
+    page-break-before: auto !important;
+  }
+
+  .cv-project-item {
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .cv-project-header {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .cv-project-title {
+    font-size: 9.5pt !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+  }
+
+  .cv-project-year {
+    font-size: 8.5pt !important;
+    color: #666 !important;
+  }
+
+  .cv-project-meta {
+    font-size: 8pt !important;
+    color: #555 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .cv-project-summary {
+    font-size: 8.5pt !important;
+    line-height: 1.35 !important;
+    color: #333 !important;
+  }
 }
+
