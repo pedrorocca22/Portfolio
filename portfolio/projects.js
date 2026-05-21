@@ -13,7 +13,7 @@ const PROJECTS = [
     updated: "Mayo 2026",
     summary: "Plataforma integrada de bioimpresión DLP con control de dosis de luz a nivel de píxel y patronaje de andamios biomiméticos.",
     description: `<p>Una plataforma de software integrada para bioimpresión Digital Light Processing (DLP). Cierra la brecha entre los flujos de trabajo de impresión 3D convencionales y las demandas específicas de trabajar con células vivas, hidrogeles y biotintas fotocurables.</p><h4>Características Clave</h4><ul><li><strong>Preparación de Escenas 3D</strong> — Viewport interactivo en Three.js, soporte multi-modelo y archivos de proyecto .bpp.</li><li><strong>Motor de Slicer</strong> — CLI de PrusaSlicer integrado con post-procesamiento .sl1 e inyección de mapas de intensidad.</li><li><strong>Control de Exposición</strong> — Calibración de escala de grises de 256 niveles para variación de potencia de luz píxel por píxel.</li><li><strong>Motor de Patrones</strong> — Seis patrones paramétricos de andamios (scaffolds): esponja, vascular, reticular (lattice), lineal, ruido y trabecular.</li><li><strong>Segmentación de Rangos</strong> — Parámetros de irradiancia planos o en gradiente por segmento vertical.</li><li><strong>Gestión de Experimentos</strong> — Historial respaldado por SQLite con metadatos y replicación.</li></ul>`,
-    images: ["assets/biolight/Prototype light system.mp4","assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png"],
+    images: ["assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png","assets/biolight/Prototype light system.mp4"],
     github: "https://github.com/pedrorocca22/Biolight",
     demoPath: "demos/biolight/index.html?demo=1",
     history: {
@@ -48,7 +48,7 @@ const PROJECTS = [
     updated: "Marzo 2026",
     summary: "Interfaz web basada en asistentes para la deposición de precisión de biomateriales sobre sustratos de laboratorio estándar.",
     description: `<p>Aplicación web profesional para orquestar la deposición de hidrogeles, biomateriales y compuestos químicos sobre sustratos estándar de laboratorio mediante un sistema de dispensación automatizado.</p><h4>Flujo de Trabajo en 5 Pasos</h4><ol><li><strong>Login</strong> — Trazabilidad de usuarios y conexión de hardware.</li><li><strong>Selección de Sustrato</strong> — Placas multiwell SBS y plataformas personalizadas.</li><li><strong>Diseñador de Secuencias</strong> — Selección visual de puntos de deposición con seguimiento de volumen.</li><li><strong>Configuración de la Máquina</strong> — Calibración del eje Z y parámetros físicos.</li><li><strong>Ejecución</strong> — Terminal de G-Code en tiempo real y monitoreo de consola.</li></ol><p>Conexión directa del navegador a la máquina a través de la Web Serial API, sin necesidad de drivers externos. Compatible con Chrome, Edge y Opera.</p>`,
-    images: ["assets/droplet_lab/Prototype moving system.mp4","assets/droplet_lab/1.png","assets/droplet_lab/2.png"],
+    images: ["assets/droplet_lab/1.png","assets/droplet_lab/2.png","assets/droplet_lab/Prototype moving system.mp4"],
     github: "https://github.com/pedrorocca22/Droplet-Lab",
     demoPath: "demos/droplet-lab/index.html?demo=1",
     history: {
@@ -110,7 +110,7 @@ const PROJECTS = [
     updated: "Mayo 2026",
     summary: "Plataforma web avanzada para orquestar, simular y ejecutar protocolos de manejo de líquidos en robots de pipeteo automatizados.",
     description: `<p>Plataforma web avanzada para la orquestación, simulación y ejecución de protocolos de manejo de líquidos en entornos de laboratorio automatizados. La precisión matemática elimina la fricción al programar rutinas complejas en robots de pipeteo.</p><h4>Capacidades</h4><ul><li><strong>Configuración Dinámica de la Bandeja (Deck)</strong> — Rejilla gráfica de 6 posiciones con material de laboratorio universal y selección de pocillos mediante drag-and-drop.</li><li><strong>Asistentes Automatizados</strong> — Flujos de trabajo preprogramados para ELISA, AlamarBlue y diluciones seriadas.</li><li><strong>Simulador de Fluidos</strong> — Seguimiento de volumen en tiempo real pocillo por pocillo con alertas de escasez o desbordamiento.</li><li><strong>Primitivas</strong> — Transferir, distribuir, consolidar, aspirar, lavar, mezclar, pausar y comentar.</li><li><strong>Generación de G-Code</strong> — Traducción cinemática automática de pasos lógicos.</li><li><strong>Klipper-Ready</strong> — Inyección directa de firmware para el control remoto de robots.</li></ul>`,
-    images: ["assets/labflow/Prototype labflow system.mp4","assets/labflow/1.png"],
+    images: ["assets/labflow/1.png","assets/labflow/Prototype labflow system.mp4"],
     github: "https://github.com/pedrorocca22/LABflow",
     demoPath: "demos/labflow/index.html?demo=1",
     history: {
@@ -122,6 +122,14 @@ const PROJECTS = [
             { name: "Primitivas de Pipeteo", status: "past", date: "Q2 2025", desc: "Lógica interna de cálculo de diluciones y trayectorias básicas de pipeta." },
             { name: "Deck Visual e Intérprete", status: "current", date: "Mayo 2026", desc: "Editor de arrastrar y soltar con simulador de volúmenes reactivo y generación de G-Code." },
             { name: "Monitoreo por Visión", status: "future", date: "Q1 2027", desc: "Integración de cámara en el cabezal para verificar volúmenes ópticamente mediante computer vision." }
+          ]
+        },
+        {
+          name: "Validación en Equipo (Hardware)",
+          phases: [
+            { name: "Diseño de Cabezal Dosificador", status: "past", date: "Q3 2025", desc: "Diseño mecánico en CAD de un cabezal dosificador de líquidos equipado con un sistema automático de expulsión de pipetas." },
+            { name: "Adaptación y Deck de Pruebas", status: "current", date: "Mayo 2026", desc: "Adaptación del cabezal a una impresora 3D convencional de gran formato. Creación del deck con bahías y elementos (multiwell, reservorio, rack de puntas) y realización de pruebas preliminares exitosas." },
+            { name: "Validación del Software", status: "future", date: "Q4 2026", desc: "Ejecución automatizada de protocolos complejos de manejo de líquidos y calibración fina de volumen dosificado." }
           ]
         }
       ]

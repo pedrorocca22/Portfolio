@@ -1157,6 +1157,26 @@ nav {
   gap: var(--sp-1);
 }
 
+.cv-skills-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.cv-skills-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cv-skills-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 footer {
   border-top: 1px solid var(--color-border);
@@ -1588,6 +1608,33 @@ footer {
     background: none !important;
     color: #000 !important;
     border-radius: 2px !important;
+  }
+
+  .cv-skills-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8pt !important;
+  }
+
+  .cv-skills-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3pt !important;
+  }
+
+  .cv-skills-group-title {
+    font-size: 7.5pt !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #444 !important;
+  }
+
+  /* GSAP / ScrollTrigger overrides to prevent invisible print text */
+  .reveal, .cv-block, .cv-item, .cv-project-item {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
   }
 
   /* Estilos específicos de impresión para secciones dinámicas del CV */
