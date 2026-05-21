@@ -109,7 +109,7 @@ const PROJECTS = [
     status: "Activo",
     updated: "Mayo 2026",
     summary: "Plataforma web avanzada para orquestar, simular y ejecutar protocolos de manejo de líquidos en robots de pipeteo automatizados.",
-    description: `<p>Plataforma web avanzada para la orquestación, simulación y ejecución de protocolos de manejo de líquidos en entornos de laboratorio automatizados. La precisión matemática elimina la fricción al programar rutinas complejas en robots de pipeteo.</p><h4>Capacidades</h4><ul><li><strong>Configuración Dinámica de la Bandeja (Deck)</strong> — Rejilla gráfica de 6 posiciones con material de laboratorio universal y selección de pocillos mediante drag-and-drop.</li><li><strong>Asistentes Automatizados</strong> — Flujos de trabajo preprogramados para ELISA, AlamarBlue y diluciones seriadas.</li><li><strong>Simulador de Fluidos</strong> — Seguimiento de volumen en tiempo real pocillo por pocillo con alertas de escasez o desbordamiento.</li><li><strong>Primitivas</strong> — Transferir, distribuir, consolidar, aspirar, lavar, mezclar, pausar y comentar.</li><li><strong>Generación de G-Code</strong> — Traducción cinemática automática de pasos lógicos.</li><li><strong>Klipper-Ready</strong> — Inyección directa de firmware para el control remoto de robots.</li></ul>`,
+    description: `<p>Plataforma web avanzada para la orquestación, simulación y ejecución de protocolos de manejo de líquidos en entornos de laboratorio automatizados. La precisión matemática elimina la fricción al programar rutinas complejas en robots de pipeteo.</p><h4>Capacidades de Software</h4><ul><li><strong>Configuración Dinámica de la Bandeja (Deck)</strong> — Rejilla gráfica de 6 posiciones con material de laboratorio universal y selección de pocillos mediante drag-and-drop.</li><li><strong>Asistentes Automatizados</strong> — Flujos de trabajo preprogramados para ELISA, AlamarBlue y diluciones seriadas.</li><li><strong>Simulador de Fluidos</strong> — Seguimiento de volumen en tiempo real pocillo por pocillo con alertas de escasez o desbordamiento.</li><li><strong>Primitivas de Pipeteo</strong> — Transferir, distribuir, consolidar, aspirar, lavar, mezclar, pausar y comentar.</li><li><strong>Generación de G-Code</strong> — Traducción cinemática automática de pasos lógicos.</li><li><strong>Klipper-Ready</strong> — Inyección directa de firmware para el control remoto de robots.</li></ul><h4>Validación Física y Prototipo de Equipo</h4><p>Para validar experimentalmente la plataforma de software LABflow, diseñé y construí un sistema físico de dosificación de líquidos compuesto por:</p><ul><li><strong>Cabezal Dosificador Especializado</strong> — Equipado con un mecanismo de expulsión mecánica automática de pipetas para permitir el intercambio desatendido de puntas durante ensayos complejos.</li><li><strong>Adaptación a Gran Formato</strong> — Adapté y monté este cabezal dosificador sobre una impresora 3D convencional de gran formato, reconfigurándola mediante firmware para su uso en el manejo de fluidos.</li><li><strong>Mesa Experimental Organizada</strong> — Definí y calibré un deck experimental físico con bahías estandarizadas para elementos universales SBS, incluyendo placas multiwell, reservorios de reactivos y racks de puntas de pipeta.</li><li><strong>Pruebas Funcionales Preliminares</strong> — Realicé ensayos piloto ejecutando trayectorias cinemáticas completas generadas por el software, validando el correcto acople, aspiración, dispensación y expulsión automática de puntas.</li></ul>`,
     images: ["assets/labflow/1.png","assets/labflow/Prototype labflow system.mp4"],
     github: "https://github.com/pedrorocca22/LABflow",
     demoPath: "demos/labflow/index.html?demo=1",
@@ -160,4 +160,59 @@ const PROJECTS = [
       ]
     }
   },
+];
+
+// ─── CV SPECIFIC PROJECTS ──────────────────────────────────────────────────
+// These are the 6 official projects curated specifically for the resume sheets
+// (matching the content in CV Pedro Rocca.pdf)
+// ─────────────────────────────────────────────────────────────────────────────
+const CV_PROJECTS = [
+  {
+    title: "Volumetric Bioprinting (Computed Axial Lithography / CAL)",
+    year: 2026,
+    category: "software",
+    status: "Activo",
+    tags: ["Computed Axial Lithography", "Tomografía Inversa", "Proyección UV", "GelMA/PEGDA"],
+    summary: "Sistema de impresión volumétrica basado en proyección UV y reconstrucción tomográfica inversa para polimerizar material fotosensible dentro de un vial giratorio. Impresión sin capas, sin soportes, en segundos. Enfoque: bioimpresión con hidrogeles (GelMA, PEGDA), scaffolds, microfluídica. Control preciso dosis/irradiancia, calibración para repetibilidad. Proceso sin extrusión, baja agresión mecánica, compatible con trabajo celular. Desarrollo completo: algoritmo reconstrucción, control hardware (proyector DLP UV, motor, sincronización), interfaz, calibración óptica."
+  },
+  {
+    title: "Biolight – Plataforma de Bioimpresión DLP UV",
+    year: 2026,
+    category: "software",
+    status: "Activo",
+    tags: ["DLP Bioprinting", "Algoritmo Voronoi", "Calibración Irradiancia", "Three.js"],
+    summary: "Ecosistema de bioimpresión DLP UV de alta precisión. Algoritmos: generación redes microvasculares (Voronoi), corrección dispersión óptica (anti-bleeding), modulación rigidez tisular (grayscale). Integración HW/SW: control proyector DLP UV, calibración irradiancia, interfaz slicing. Orientado a ingeniería de tejidos: scaffolds con gradientes de rigidez y arquitecturas vasculares complejas reproducibles."
+  },
+  {
+    title: "LABflow",
+    year: 2026,
+    category: "software",
+    status: "Activo",
+    tags: ["Lab Automation", "G-Code", "Manejo de Líquidos", "Validación Física"],
+    summary: "Aplicación para diseñar, simular y ejecutar protocolos de manejo de líquidos. Interfaz intuitiva, integración con hardware (bombas, válvulas, sensores), validación por simulación. Incluye validación física mediante prototipo de cabezal dosificador con expulsión automática de pipetas adaptado a impresora 3D convencional de gran formato, con deck experimental (multiwell, reservorio, racks)."
+  },
+  {
+    title: "UVLab Scan – Medidor portátil irradiancia UV (405nm)",
+    year: 2025,
+    category: "industrial-design",
+    status: "Finalizado",
+    tags: ["Instrumentación UV", "Medidor Portátil", "Calidad Bioimpresión", "Calibración Óptica"],
+    summary: "Medidor portátil irradiancia UV (405nm): control potencia (mW/cm²), cálculo dosis. Validación sistemas DLP UV, cumplimiento normativas, control calidad bioimpresión. Diseñado bajo estándares de usabilidad, con carcasa ergonómica y sensor de alta precisión."
+  },
+  {
+    title: "Scaffold Lab Designer",
+    year: 2026,
+    category: "software",
+    status: "Activo",
+    tags: ["Diseño Algorítmico", "Scaffolds", "Parametrización Canales", "Optimización Geometría"],
+    summary: "Herramienta de diseño algorítmico para scaffolds: parametrización porosidad, tamaño poro, conectividad. Geometrías optimizadas para DLP/FDM. Generación paramétrica interactiva para control fino de la porosidad del andamio celular."
+  },
+  {
+    title: "IDEX Bioprinter – Bioimpresora con doble extrusión independiente",
+    year: 2026,
+    category: "industrial-design",
+    status: "Activo",
+    tags: ["IDEX Bioprinting", "Multimaterial", "Klipper Firmware", "Prototipo Físico"],
+    summary: "Bioimpresora con doble extrusión independiente (IDEX). Cada cabezal opera independientemente; cuando no imprime, se aparta (sin goteo/contaminación). Impresión multimaterial, control firmware Klipper, slicing adaptado. Utilizada activamente para la validación física en movimiento y deposición del software Droplet Lab."
+  }
 ];

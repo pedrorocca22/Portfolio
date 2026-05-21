@@ -542,10 +542,10 @@
       // Level Bio: Hide Projects
       if (projectsSection) projectsSection.style.display = 'none';
     } else if (currentLevel === 'proyectos') {
-      // Level Proyectos: Show dynamic Projects from projects.js
-      if (projectsSection && projectsList && typeof PROJECTS !== 'undefined') {
+      // Level Proyectos: Show dynamic Projects from projects.js using CV_PROJECTS
+      if (projectsSection && projectsList && typeof CV_PROJECTS !== 'undefined') {
         projectsSection.style.display = 'block';
-        projectsList.innerHTML = PROJECTS.map(p => `
+        projectsList.innerHTML = CV_PROJECTS.map(p => `
           <div class="cv-project-item">
             <div class="cv-project-header">
               <span class="cv-project-title">${p.title}</span>
