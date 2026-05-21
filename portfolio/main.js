@@ -185,6 +185,11 @@
       btn.classList.add('active');
       const filter = btn.dataset.filter;
 
+      // Traceability Event
+      if (typeof umami !== 'undefined') {
+        umami.track('Filter Projects', { category: filter });
+      }
+
       // Query cards dynamically inside click handler because cards are re-rendered from Firestore
       const cards = document.querySelectorAll('.project-card');
       cards.forEach(card => {
@@ -220,11 +225,16 @@
   let currentSlide = 0;
   let totalSlides  = 0;
   let currentDemoPath = null;
+  let currentProject = null;
 
   function enterDemo() {
     if (!currentDemoPath) return;
     iframe.src = currentDemoPath;
     backdrop.classList.add('demo-active');
+
+    if (typeof umami !== 'undefined' && currentProject) {
+      umami.track('Run Demo', { id: currentProject.id, title: currentProject.title });
+    }
   }
 
   function exitDemo() {
@@ -244,6 +254,13 @@
   nextBtn.addEventListener('click', () => goTo(currentSlide + 1));
 
   function openModal(project) {
+    currentProject = project;
+
+    // Traceability Event
+    if (typeof umami !== 'undefined') {
+      umami.track('View Project', { id: project.id, title: project.title, category: project.category });
+    }
+
     // Populate carousel
     track.innerHTML = '';
     dotsWrap.innerHTML = '';
@@ -286,7 +303,12 @@
     if (demoBtn) demoBtn.style.display = currentDemoPath ? 'inline-flex' : 'none';
     if (demoHint) demoHint.style.display = currentDemoPath ? 'block' : 'none';
     if (githubBtn) {
-      githubBtn.style.display = 'none';
+      if (project.github) {
+        githubBtn.href = project.github;
+        githubBtn.style.display = 'inline-flex';
+      } else {
+        githubBtn.style.display = 'none';
+      }
     }
     exitDemo();
 
@@ -393,5 +415,36 @@
       end: '80% top',
       scrub: 1,
     },
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7. Umami Traceability Events (CV & Contact Clicks)
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function initUmamiTracking() {
+  // CV Download PDF
+  const cvBtn = document.querySelector('.cv-btn-print');
+  if (cvBtn) {
+    cvBtn.addEventListener('click', () => {
+      if (typeof umami !== 'undefined') {
+        umami.track('Download CV PDF');
+      }
+    });
+  }
+
+  // Outbound and Contact Clicks
+  document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"], a[href*="linkedin.com"], a[href*="github.com"]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (typeof umami !== 'undefined') {
+        const href = link.getAttribute('href');
+        let type = 'Outbound';
+        if (href.startsWith('mailto:')) type = 'Email';
+        else if (href.startsWith('tel:')) type = 'Phone';
+        else if (href.includes('linkedin.com')) type = 'LinkedIn';
+        else if (href.includes('github.com')) type = 'GitHub Profile';
+
+        umami.track('Contact Click', { type: type, value: href });
+      }
+    });
   });
 })();

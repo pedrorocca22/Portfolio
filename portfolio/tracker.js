@@ -79,12 +79,12 @@
 
     // Reports active time spent back to Firestore
     function startDurationReporting(docId) {
-      // Periodic report every 15s
+      // Periodic report every 60s (optimized to reduce Firestore writes)
       setInterval(() => {
         db.collection('visits').doc(docId).update({
           duration: activeSeconds
         }).catch(err => {});
-      }, 15000);
+      }, 60000);
 
       // Final report on close/exit
       const reportFinal = () => {
