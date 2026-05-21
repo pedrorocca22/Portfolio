@@ -503,7 +503,8 @@ nav {
   padding: 24px;
 }
 
-.carousel-slide img {
+.carousel-slide img,
+.carousel-slide video {
   max-width: calc(100% - 48px);
   max-height: calc(100% - 48px);
   width: auto;
@@ -512,6 +513,7 @@ nav {
   display: block;
   border-radius: var(--r-sm);
   box-shadow: 0 8px 30px rgba(15,23,42,.12);
+  outline: none;
 }
 
 .carousel-btn {
@@ -778,6 +780,66 @@ nav {
 }
 
 /* ── CV ─────────────────────────────────────────────────────────────────── */
+/* ── CV ─────────────────────────────────────────────────────────────────── */
+.cv-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--color-border);
+  width: 100%;
+}
+
+.cv-name-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-name {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+}
+
+.cv-subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.cv-contact-details {
+  display: flex;
+  gap: var(--sp-5);
+  align-items: center;
+}
+
+.cv-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.cv-contact-item svg {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.cv-contact-item a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.cv-contact-item a:hover {
+  color: var(--color-text-primary);
+}
+
 .cv-grid {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
@@ -1285,6 +1347,8 @@ footer {
   .cv-item-header { flex-direction: column; gap: 0; }
   .footer-inner { flex-direction: column; gap: var(--sp-3); }
   .about-photo-wrap { width: 96px; height: 96px; }
+  .cv-top-header { flex-direction: column; align-items: flex-start; gap: var(--sp-4); }
+  .cv-contact-details { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
 }
 
 /* ── Print CV Stylesheet ─────────────────────────────────────────────────── */
@@ -1320,6 +1384,60 @@ footer {
     max-width: 100% !important;
     margin: 0 !important;
     padding: 20pt 30pt !important;
+  }
+
+  .cv-top-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    margin-bottom: 20pt !important;
+    padding-bottom: 10pt !important;
+    border-bottom: 2px solid #000 !important;
+    width: 100% !important;
+  }
+
+  .cv-name-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .cv-name {
+    font-size: 24pt !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    margin: 0 !important;
+    line-height: 1.1 !important;
+  }
+
+  .cv-subtitle {
+    font-size: 10pt !important;
+    color: #444 !important;
+    margin-top: 3pt !important;
+    font-weight: 500 !important;
+  }
+
+  .cv-contact-details {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 3pt !important;
+  }
+
+  .cv-contact-item {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 8.5pt !important;
+    color: #222 !important;
+  }
+
+  .cv-contact-item svg {
+    display: none !important;
+  }
+
+  .cv-contact-item a {
+    color: #222 !important;
+    text-decoration: none !important;
   }
 
   /* Exquisite 2-column resume grid */

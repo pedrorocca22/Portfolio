@@ -13,7 +13,7 @@ const PROJECTS = [
     updated: "Mayo 2026",
     summary: "Plataforma integrada de bioimpresión DLP con control de dosis de luz a nivel de píxel y patronaje de andamios biomiméticos.",
     description: `<p>Una plataforma de software integrada para bioimpresión Digital Light Processing (DLP). Cierra la brecha entre los flujos de trabajo de impresión 3D convencionales y las demandas específicas de trabajar con células vivas, hidrogeles y biotintas fotocurables.</p><h4>Características Clave</h4><ul><li><strong>Preparación de Escenas 3D</strong> — Viewport interactivo en Three.js, soporte multi-modelo y archivos de proyecto .bpp.</li><li><strong>Motor de Slicer</strong> — CLI de PrusaSlicer integrado con post-procesamiento .sl1 e inyección de mapas de intensidad.</li><li><strong>Control de Exposición</strong> — Calibración de escala de grises de 256 niveles para variación de potencia de luz píxel por píxel.</li><li><strong>Motor de Patrones</strong> — Seis patrones paramétricos de andamios (scaffolds): esponja, vascular, reticular (lattice), lineal, ruido y trabecular.</li><li><strong>Segmentación de Rangos</strong> — Parámetros de irradiancia planos o en gradiente por segmento vertical.</li><li><strong>Gestión de Experimentos</strong> — Historial respaldado por SQLite con metadatos y replicación.</li></ul>`,
-    images: ["assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png"],
+    images: ["assets/biolight/Prototype light system.mp4","assets/biolight/1.png","assets/biolight/2.png","assets/biolight/3.png"],
     github: "https://github.com/pedrorocca22/Biolight",
     demoPath: "demos/biolight/index.html?demo=1",
     history: {
@@ -48,18 +48,26 @@ const PROJECTS = [
     updated: "Marzo 2026",
     summary: "Interfaz web basada en asistentes para la deposición de precisión de biomateriales sobre sustratos de laboratorio estándar.",
     description: `<p>Aplicación web profesional para orquestar la deposición de hidrogeles, biomateriales y compuestos químicos sobre sustratos estándar de laboratorio mediante un sistema de dispensación automatizado.</p><h4>Flujo de Trabajo en 5 Pasos</h4><ol><li><strong>Login</strong> — Trazabilidad de usuarios y conexión de hardware.</li><li><strong>Selección de Sustrato</strong> — Placas multiwell SBS y plataformas personalizadas.</li><li><strong>Diseñador de Secuencias</strong> — Selección visual de puntos de deposición con seguimiento de volumen.</li><li><strong>Configuración de la Máquina</strong> — Calibración del eje Z y parámetros físicos.</li><li><strong>Ejecución</strong> — Terminal de G-Code en tiempo real y monitoreo de consola.</li></ol><p>Conexión directa del navegador a la máquina a través de la Web Serial API, sin necesidad de drivers externos. Compatible con Chrome, Edge y Opera.</p>`,
-    images: ["assets/droplet_lab/1.png","assets/droplet_lab/2.png"],
+    images: ["assets/droplet_lab/Prototype moving system.mp4","assets/droplet_lab/1.png","assets/droplet_lab/2.png"],
     github: "https://github.com/pedrorocca22/Droplet-Lab",
     demoPath: "demos/droplet-lab/index.html?demo=1",
     history: {
       title: "Desarrollo del Orquestador",
       tracks: [
         {
-          name: "Comunicación Serial",
+          name: "Software de Control",
           phases: [
             { name: "Driver WebSerial API", status: "past", date: "Q2 2025", desc: "Conexión directa puerto a puerto desde el navegador eliminando intermediarios de software." },
-            { name: "Diseño e Interfaz", status: "current", date: "Marzo 2026", desc: "Implementación del asistente visual de 5 pasos y rejilla multiwell reactiva." },
-            { name: "Nube y Exportación", status: "future", date: "Q3 2026", desc: "Guardado y compartición de plantillas en la nube para trazabilidad colectiva de ensayos." }
+            { name: "Asistente y Control", status: "current", date: "Marzo 2026", desc: "Implementación del asistente visual de 5 pasos y rejilla reactiva. Listo para empaquetado final." },
+            { name: "Lanzamiento y Cloud", status: "future", date: "Q3 2026", desc: "Empaquetado definitivo y guardado de plantillas en la nube para ensayos." }
+          ]
+        },
+        {
+          name: "Validación en Equipo (IDEX Hardware)",
+          phases: [
+            { name: "Diseño y Construcción", status: "past", date: "Q4 2025", desc: "Diseño y fabricación de bioimpresora 3D con doble cabezal independiente (IDEX) como plataforma física." },
+            { name: "Prototipo Funcional", status: "current", date: "Mayo 2026", desc: "Sistema de movimiento calibrado y funcional. Uso del equipo IDEX para validar las secuencias físicas del software." },
+            { name: "Validación de Extrusión", status: "future", date: "Q3 2026", desc: "Pruebas finales de deposición multi-material coordinada y calibración de doble cabezal." }
           ]
         }
       ]
@@ -102,7 +110,7 @@ const PROJECTS = [
     updated: "Mayo 2026",
     summary: "Plataforma web avanzada para orquestar, simular y ejecutar protocolos de manejo de líquidos en robots de pipeteo automatizados.",
     description: `<p>Plataforma web avanzada para la orquestación, simulación y ejecución de protocolos de manejo de líquidos en entornos de laboratorio automatizados. La precisión matemática elimina la fricción al programar rutinas complejas en robots de pipeteo.</p><h4>Capacidades</h4><ul><li><strong>Configuración Dinámica de la Bandeja (Deck)</strong> — Rejilla gráfica de 6 posiciones con material de laboratorio universal y selección de pocillos mediante drag-and-drop.</li><li><strong>Asistentes Automatizados</strong> — Flujos de trabajo preprogramados para ELISA, AlamarBlue y diluciones seriadas.</li><li><strong>Simulador de Fluidos</strong> — Seguimiento de volumen en tiempo real pocillo por pocillo con alertas de escasez o desbordamiento.</li><li><strong>Primitivas</strong> — Transferir, distribuir, consolidar, aspirar, lavar, mezclar, pausar y comentar.</li><li><strong>Generación de G-Code</strong> — Traducción cinemática automática de pasos lógicos.</li><li><strong>Klipper-Ready</strong> — Inyección directa de firmware para el control remoto de robots.</li></ul>`,
-    images: ["assets/labflow/1.png"],
+    images: ["assets/labflow/Prototype labflow system.mp4","assets/labflow/1.png"],
     github: "https://github.com/pedrorocca22/LABflow",
     demoPath: "demos/labflow/index.html?demo=1",
     history: {

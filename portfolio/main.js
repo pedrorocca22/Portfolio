@@ -270,11 +270,23 @@
     project.images.forEach((src, i) => {
       const slide = document.createElement('div');
       slide.className = 'carousel-slide';
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = `${project.title} screenshot ${i + 1}`;
-      img.loading = 'lazy';
-      slide.appendChild(img);
+      if (src.endsWith('.mp4')) {
+        const video = document.createElement('video');
+        video.src = src;
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.setAttribute('playsinline', '');
+        video.playsInline = true;
+        video.controls = true;
+        slide.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `${project.title} screenshot ${i + 1}`;
+        img.loading = 'lazy';
+        slide.appendChild(img);
+      }
       track.appendChild(slide);
 
       const dot = document.createElement('button');
@@ -500,11 +512,20 @@
   let currentLevel = 'bio';
 
   function renderCV(level) {
-    currentLevel = level;
+    // Normalise level to support both strings ('bio', 'proyectos') and legacy numbers ('1', '2', '3')
+    let normLevel = 'bio';
+    if (level === 'proyectos' || level === '2' || level === '3' || level === 2 || level === 3) {
+      normLevel = 'proyectos';
+    } else {
+      normLevel = 'bio';
+    }
+    currentLevel = normLevel;
 
     // Update active state in UI buttons
     levelBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.level === currentLevel);
+      const btnLevel = btn.dataset.level;
+      const btnNorm = (btnLevel === 'proyectos' || btnLevel === '2' || btnLevel === '3') ? 'proyectos' : 'bio';
+      btn.classList.toggle('active', btnNorm === currentLevel);
     });
 
     // Both levels (bio and proyectos) include the "Sobre mí" profile section
