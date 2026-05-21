@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "timestamp": "20260521_105424",
+  "run_name": "CAL_rx0_ry0_dh0.820_dl0.70_cosine",
+  "model": "trifurcatedvasculature.stl",
+  "output_dir": "output_demo",
+  "params": {
+    "method": "CAL",
+    "resolution": 128,
+    "num_angles": 360,
+    "filter": "cosine",
+    "n_iter": 250,
+    "d_h": 0.82,
+    "d_l": 0.7
+  },
+  "crop_metadata": {
+    "crop_x": 155,
+    "crop_y": 202,
+    "crop_w": 1088,
+    "crop_h": 1344,
+    "full_w": 1398,
+    "full_h": 1748,
+    "savings_pct": 40.2
+  },
+  "orient": {
+    "rx": 0.0,
+    "ry": 0.0,
+    "rz": 0.0
+  },
+  "score": 100.0,
+  "score_bio": 86.83,
+  "verdict": "EXCELENTE",
+  "penalties": [],
+  "metrics": {
+    "cv": 0.037115,
+    "ver": 0.000315,
+    "pw": 0.047085,
+    "ipdr": 0.202765,
+    "min_gel_dose": 0.797235,
+    "max_gel_dose": 1.0,
+    "mean_gel_dose": 0.889023,
+    "max_void_dose": 0.84432,
+    "mean_void_dose": 0.336505,
+    "dose_contrast": 1.052945,
+    "final_error": 0.000315,
+    "initial_error": 0.11531,
+    "error_improvement": 0.114994,
+    "n_valid_iters": 10,
+    "converged_iter": -1,
+    "elapsed_time": 10.664269,
+    "export_time": 13.974543,
+    "total_time": 77.950607,
+    "n_active_layers": 128,
+    "cv_z_mean": 0.034539,
+    "cv_z_std": 0.006945,
+    "cv_z_p95": 0.041858,
+    "cv_z_worst": 0.044147,
+    "pw_z_mean": 0.052719,
+    "pw_z_std": 0.021409,
+    "pw_z_p5": 0.031825,
+    "pw_z_worst": -0.047085,
+    "pct_layers_overlap": 0.78125,
+    "score_bio": 86.826915,
+    "bio_multiplier": 0.868269
+  },
+  "files": {
+    "frames_dir": "output_demo",
+    "metrics_csv": "output_demo\\metricas.csv",
+    "reconstruction_slices": "output_demo\\reconstruction_slices.png",
+    "layer_profile": "output_demo\\layer_profile.png",
+    "dose_histogram": "output_demo\\dose_histogram.png"
+  }
+}

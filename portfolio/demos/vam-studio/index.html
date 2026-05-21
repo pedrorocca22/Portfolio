@@ -1,821 +1,1091 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VAM Studio · Volumetric Simulator</title>
-  <script>
-    try {
-      if (new URLSearchParams(location.search).get('demo') === '1') {
-        document.title = 'VAM Studio · Demo';
-      }
-    } catch (e) {}
-  </script>
-  <!-- Tailwind CSS -->
+  <title>VAM Studio · Suite Profesional de Litografía Volumétrica</title>
+  <!-- Tailwind CSS para layouts rápidos -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Outfit (UI) & JetBrains Mono (Telemetry/Logs) -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: DM Sans, Outfit y JetBrains Mono (para datos y consola) -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Three.js & OrbitControls -->
+  <!-- Three.js y OrbitControls para la escena 3D física -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  
+
   <script>
     tailwind.config = {
-      darkMode: "class",
       theme: {
         extend: {
+          fontFamily: {
+            sans: ["'DM Sans'", "Outfit", "sans-serif"],
+            mono: ["'JetBrains Mono'", "monospace"],
+          },
           colors: {
             brand: {
-              50: "#e0f2fe",
-              100: "#bae6fd",
-              500: "#3b82f6",
-              600: "#2563eb",
+              50: "#eff6ff",
+              100: "#dbeafe",
+              500: "#2563eb",
+              600: "#1d4ed8",
               900: "#1e3a8a",
             },
-            cyan: {
-              400: "#22d3ee",
-              500: "#06b6d4",
-              600: "#0891b2",
-            },
-            dark: {
-              950: "#0b0f19",
-              900: "#111827",
-              800: "#1f2937",
-              700: "#374151",
+            slate: {
+              50: "#f8fafc",
+              100: "#f1f5f9",
+              200: "#e2e8f0",
+              300: "#cbd5e1",
+              400: "#94a3b8",
+              500: "#64748b",
+              600: "#475569",
+              700: "#334155",
+              800: "#1e293b",
+              900: "#0f172a",
             }
-          },
-          fontFamily: {
-            sans: ["Outfit", "sans-serif"],
-            mono: ["JetBrains Mono", "monospace"],
-          },
-        },
-      },
+          }
+        }
+      }
     };
   </script>
+
   <style>
     body {
-      font-family: 'Outfit', sans-serif;
-      background-color: #0b0f19;
+      font-family: 'DM Sans', sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
     }
     
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 5px;
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
+    ::-webkit-scrollbar-track {
       background: transparent;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 99px;
+    ::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 2px;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
+    ::-webkit-scrollbar-thumb:hover {
+      background: #cbd5e1;
     }
-    
-    /* Glowing effects */
-    .glow-cyan {
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
-    }
-    .glow-cyan-strong {
-      box-shadow: 0 0 35px rgba(6, 182, 212, 0.45);
-    }
-    .glow-blue {
-      box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
-    }
-    .glow-uv {
-      box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+
+    /* Estilo de botones y paneles */
+    .sec-title {
+      font-size: 10px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+      font-weight: 600;
     }
     
-    /* Keyframe animations */
-    @keyframes pulse-slow {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.6; }
+    /* Animación de pulso continuo de hardware */
+    @keyframes pulse-stabilizing {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.15); }
     }
-    .animate-pulse-slow {
-      animation: pulse-slow 3s infinite;
+    .pulse-dot {
+      animation: pulse-stabilizing 1.5s infinite ease-in-out;
     }
-    
-    @keyframes beam-flicker {
-      0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5)); }
-      50% { opacity: 0.98; filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.8)); }
+
+    /* Animación del haz del proyector UV */
+    @keyframes beam-shimmer {
+      0%, 100% { opacity: 0.25; filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4)); }
+      50% { opacity: 0.40; filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.7)); }
     }
-    .animate-beam {
-      animation: beam-flicker 0.15s infinite;
+    .uv-beam-anim {
+      animation: beam-shimmer 0.12s infinite;
     }
-    
-    /* Glassmorphism utility */
-    .glass-panel {
-      background: rgba(17, 24, 39, 0.65);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+
+    /* Animación indefinida de carga */
+    @keyframes indeterminate-progress {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .animate-indeterminate {
+      background: linear-gradient(90deg, transparent, #2563eb, transparent);
+      background-size: 200% 100%;
+      animation: indeterminate-progress 1.5s infinite linear;
+    }
+
+    /* Animación de rotación del spinner */
+    @keyframes custom-spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-custom-spin {
+      animation: custom-spin 0.8s linear infinite;
     }
   </style>
 </head>
-<body class="text-slate-100 overflow-hidden w-screen h-screen">
+<body class="overflow-hidden w-screen h-screen select-none">
 
-  <!-- TOPBAR -->
-  <header class="fixed top-0 left-0 right-0 h-14 bg-dark-900/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 z-40">
+  <!-- TOPBAR — SIEMPRE MONTADO -->
+  <header class="fixed top-0 left-0 right-0 h-[48px] bg-white border-b border-slate-200 flex items-center justify-between px-5 z-40 shadow-sm">
     <div class="flex items-center gap-3">
-      <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse glow-cyan"></div>
-      <h1 class="font-extrabold text-sm tracking-wider uppercase bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
-        VAM Studio <span class="text-[10px] py-0.5 px-1.5 rounded-md border border-white/10 bg-white/5 text-white tracking-normal lowercase font-medium">simulador volumétrico</span>
-      </h1>
+      <div class="w-2 h-2 rounded-full bg-brand-500"></div>
+      <span class="font-extrabold text-[13px] tracking-wider uppercase text-slate-900 flex items-center gap-2">
+        VAM Studio <span id="header-config-badge" class="text-[10px] py-0.5 px-2 rounded-md border border-slate-200 bg-slate-50 text-slate-400 font-medium tracking-normal lowercase font-sans">CAL · cosine · 128³ · 360°</span>
+      </span>
     </div>
     
-    <!-- Navigation Options -->
-    <div class="flex gap-1.5">
-      <button id="btn-optimizer" class="px-4 py-1.5 rounded-lg bg-brand-600/25 border border-brand-500/30 text-cyan-400 text-xs font-bold transition duration-200">
-        Optimizador CAL
+    <!-- Navegación Principal -->
+    <div class="flex gap-1">
+      <button id="nav-btn-optimizer" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 bg-brand-50 text-brand-500 border border-brand-100">
+        Optimizador
       </button>
-      <button id="btn-library" class="px-4 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/5 text-slate-400 hover:text-white text-xs font-medium transition duration-200">
-        Biblioteca (1)
+      <button id="nav-btn-library" class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-600 border border-transparent transition-all duration-150 flex items-center gap-1.5">
+        Biblioteca <span id="library-count-badge" class="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">1</span>
       </button>
     </div>
 
-    <!-- CM4 connection controller -->
+    <!-- Conexión Directa a la CM4 -->
     <div class="flex items-center gap-4">
-      <div id="cm4-status-badge" class="px-3 py-1 rounded-md bg-red-950/40 border border-red-500/20 text-red-400 text-[10px] font-bold tracking-widest uppercase flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span> CM4 DESCONECTADO
+      <div class="flex items-center gap-2">
+        <div id="cm4-status-panel" class="relative flex items-center gap-2">
+          <!-- Desconectado por defecto -->
+          <button id="btn-discover-cm4" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-extrabold tracking-wide uppercase transition-all duration-200 active:scale-95 shadow-md shadow-brand-500/10">
+            CONECTAR
+          </button>
+          <div id="cm4-error-tag" class="hidden text-[9px] text-red-500 font-semibold absolute top-full right-0 mt-1 whitespace-nowrap"></div>
+        </div>
       </div>
-      <button id="btn-connect-cm4" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 active:scale-95 text-white text-xs font-bold tracking-wide shadow-lg shadow-brand-600/20 flex items-center gap-2 transition duration-200">
-        <i data-lucide="wifi"></i> CONECTAR HARDWARE
-      </button>
     </div>
   </header>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="absolute top-14 left-0 right-0 bottom-0 grid grid-cols-[290px_1fr_310px] overflow-hidden">
-    
-    <!-- LEFT SIDEBAR: CONFIGURATOR -->
-    <aside class="bg-dark-900 border-r border-white/5 p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar select-none z-20">
+  <!-- FIXED THREE.JS CANVAS EN EL FONDO (Siempre montado) -->
+  <div id="canvas-fixed-viewport" class="fixed top-[48px] left-[264px] right-[272px] bottom-0 bg-[#f8fafc] z-1">
+    <div id="three-container" class="w-full h-full relative">
+      <canvas id="three-canvas" class="w-full h-full block"></canvas>
       
-      <!-- STL Drag & Drop Simulation -->
-      <div>
-        <h3 class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">Modelo STL Volumétrico</h3>
-        <div id="stl-dropzone" class="border-2 border-dashed border-white/10 hover:border-cyan-400/40 rounded-xl p-5 text-center cursor-pointer bg-white/[0.02] hover:bg-cyan-500/[0.02] transition duration-300 relative group overflow-hidden">
-          <!-- Background glow on hover -->
-          <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/0 to-cyan-500/[0.02] opacity-0 group-hover:opacity-100 transition duration-300"></div>
-          <div class="relative z-10 flex flex-col items-center gap-2">
-            <div id="stl-icon-container" class="w-10 h-10 rounded-full bg-white/5 group-hover:bg-cyan-500/10 flex items-center justify-center text-slate-400 group-hover:text-cyan-400 transition duration-300">
-              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
-            </div>
-            <div id="stl-file-label" class="text-xs font-semibold text-slate-300">VascularScaffold_20.stl</div>
-            <p id="stl-sub-label" class="text-[10px] text-slate-500">Haz clic para simular carga STL</p>
+      <!-- Toolbar de Transformación / Rotación manual del STL -->
+      <div id="transform-toolbar" class="hidden absolute top-3 left-1/2 -translate-x-1/2 flex gap-1.5 items-center bg-white/95 backdrop-blur border border-slate-200 rounded-xl p-1.5 shadow-md z-10">
+        <button id="btn-gizmo-rotate" title="Rotar Modelo" class="w-8 h-8 rounded-lg text-brand-500 bg-brand-50 hover:bg-brand-100 flex items-center justify-center text-lg transition">
+          ↻
+        </button>
+        <button id="btn-snap-5" title="Snap 5°" class="h-8 px-2.5 rounded-lg text-slate-400 hover:text-slate-600 text-xs font-bold transition">
+          5°
+        </button>
+        <div class="w-px h-5 bg-slate-200 mx-1"></div>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-slate-600">
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-400 uppercase">X</span>
+            <input type="number" id="input-rot-x" value="0" step="5" class="w-10 h-6 border border-slate-200 rounded text-right px-1 outline-none text-slate-800" />
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-400 uppercase">Y</span>
+            <input type="number" id="input-rot-y" value="0" step="5" class="w-10 h-6 border border-slate-200 rounded text-right px-1 outline-none text-slate-800" />
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-400 uppercase">Z</span>
+            <input type="number" id="input-rot-z" value="0" step="5" class="w-10 h-6 border border-slate-200 rounded text-right px-1 outline-none text-slate-800" />
           </div>
         </div>
-      </div>
-
-      <!-- Acceleration mode -->
-      <div>
-        <h3 class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">Motor de Aceleración</h3>
-        <div class="grid grid-cols-2 gap-2">
-          <button id="acc-gpu" class="py-2 rounded-lg border border-brand-500/40 bg-brand-600/15 text-cyan-400 text-xs font-bold flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="zap" class="w-3.5 h-3.5"></i> GPU · CUDA
-          </button>
-          <button id="acc-cpu" class="py-2 rounded-lg border border-white/5 bg-white/5 text-slate-400 text-xs font-medium flex items-center justify-center gap-1.5 transition hover:bg-white/10">
-            <i data-lucide="cpu" class="w-3.5 h-3.5"></i> CPU
-          </button>
-        </div>
-      </div>
-
-      <!-- Advanced configuration -->
-      <div class="flex-1 flex flex-col gap-4">
-        <div class="rounded-xl border border-white/5 bg-white/[0.01] p-3 flex flex-col gap-3">
-          <h4 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase flex items-center gap-1.5">
-            <i data-lucide="settings" class="w-3 h-3 text-cyan-500"></i> CONFIGURACIÓN CAL
-          </h4>
-          
-          <!-- Algorithm -->
-          <div class="flex items-center justify-between py-1 border-b border-white/5">
-            <span class="text-[11px] text-slate-400 font-medium">Algoritmo</span>
-            <select id="cfg-method" class="bg-dark-900 border border-white/10 rounded-md text-xs font-bold text-slate-300 px-2 py-1 outline-none cursor-pointer">
-              <option value="CAL">Radon Inverso (CAL)</option>
-              <option value="MLEM">Iterativo (MLEM)</option>
-            </select>
-          </div>
-
-          <!-- Resolution -->
-          <div class="flex items-center justify-between py-1 border-b border-white/5">
-            <span class="text-[11px] text-slate-400 font-medium">Resolución</span>
-            <div class="flex gap-1.5">
-              <button class="res-btn px-2 py-1 rounded border border-white/5 bg-white/5 text-[10px] text-slate-400 font-bold hover:bg-white/10">64³</button>
-              <button class="res-btn px-2 py-1 rounded border border-cyan-500/40 bg-brand-500/10 text-[10px] text-cyan-400 font-extrabold">128³</button>
-              <button class="res-btn px-2 py-1 rounded border border-white/5 bg-white/5 text-[10px] text-slate-400 font-bold hover:bg-white/10">256³</button>
-            </div>
-          </div>
-
-          <!-- Angles -->
-          <div class="flex items-center justify-between py-1 border-b border-white/5">
-            <span class="text-[11px] text-slate-400 font-medium">Ángulos Proy.</span>
-            <div class="flex items-center gap-1.5">
-              <input id="cfg-angles" type="number" value="360" min="36" max="3600" class="w-16 bg-dark-900 border border-white/10 rounded-md text-xs font-mono font-bold text-slate-300 text-right px-2 py-1 outline-none" />
-              <span class="text-[10px] text-slate-500">°</span>
-            </div>
-          </div>
-
-          <!-- Filter -->
-          <div class="flex items-center justify-between py-1">
-            <span class="text-[11px] text-slate-400 font-medium">Filtro FBP</span>
-            <select id="cfg-filter" class="bg-dark-900 border border-white/10 rounded-md text-xs font-bold text-slate-300 px-2 py-1 outline-none cursor-pointer">
-              <option value="cosine">Cosine (Suave)</option>
-              <option value="shepp-logan">Shepp-Logan</option>
-              <option value="hann">Hann</option>
-              <option value="ram-lak">Ram-Lak</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Envelope details -->
-        <div class="rounded-xl border border-white/5 bg-white/[0.01] p-3 flex flex-col gap-2">
-          <h4 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase flex items-center gap-1.5">
-            <i data-lucide="box" class="w-3 h-3 text-cyan-500"></i> ENVELOPE DE IMPRESIÓN
-          </h4>
-          <div class="flex justify-between text-xs py-1 border-b border-white/5">
-            <span class="text-slate-500">Diámetro Vial</span>
-            <span class="font-mono text-slate-300">Ø 20.0 mm</span>
-          </div>
-          <div class="flex justify-between text-xs py-1">
-            <span class="text-slate-500">Altura de Curado</span>
-            <span class="font-mono text-slate-300">25.0 mm</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Button -->
-      <div class="mt-auto pt-4 flex flex-col gap-2">
-        <button id="btn-process" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 active:scale-[0.98] font-bold text-sm tracking-widest uppercase shadow-lg shadow-brand-600/10 flex items-center justify-center gap-2 transition duration-200">
-          <i data-lucide="play-circle" class="w-4 h-4"></i> PROCESAR MODELO
+        <div class="w-px h-5 bg-slate-200 mx-1"></div>
+        <button id="btn-reset-transform" title="Resetear Orientación" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+          ⟳
         </button>
       </div>
 
-    </aside>
+      <!-- Datos de Geometría / Instrucciones -->
+      <div class="absolute bottom-4 left-4 text-[10px] text-slate-400 leading-relaxed font-mono pointer-events-none select-none">
+        <div>Ø20 × 25 mm</div>
+        <div class="text-slate-300">Arrastrar · Scroll Zoom</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- CENTER WORKSPACE: 3D VIEW & CONSOLE -->
-    <section class="bg-dark-950 flex flex-col overflow-hidden relative border-r border-white/5">
+  <!-- VISTA PRINCIPAL: OPTIMIZADOR (Mapea el layout de App.tsx) -->
+  <div id="view-optimizer" class="relative pt-[48px] w-full h-full grid grid-cols-[264px_1fr_272px] pointer-events-none select-none z-10">
+    
+    <!-- LEFT SIDEBAR: CONFIGURATOR (264px) -->
+    <aside class="pointer-events-auto bg-white border-r border-slate-200 p-4.5 flex flex-col gap-4.5 overflow-y-auto select-none z-20 shadow-sm">
       
-      <!-- Three.js Container -->
-      <div class="flex-1 relative bg-dark-950 overflow-hidden">
-        <div id="three-container" class="w-full h-full"></div>
-        
-        <!-- Axis indicators & instructions -->
-        <div class="absolute bottom-4 left-4 font-mono text-[9px] text-slate-500 leading-relaxed pointer-events-none select-none z-10 bg-dark-900/60 p-2 rounded border border-white/5 backdrop-blur-sm">
-          <div class="flex items-center gap-1.5"><span class="w-2 h-0.5 bg-red-500"></span> Eje X (Giro)</div>
-          <div class="flex items-center gap-1.5"><span class="w-2 h-0.5 bg-green-500"></span> Eje Y (Altura)</div>
-          <div class="flex items-center gap-1.5"><span class="w-2 h-0.5 bg-blue-500"></span> Eje Z (Focal)</div>
-          <div class="text-[8px] mt-1 text-slate-400">Ø20 × H25 mm · Arrastrar / Scroll para rotar escena</div>
-        </div>
-        
-        <!-- Orientation toolbar -->
-        <div class="absolute top-4 left-4 flex gap-1 z-10">
-          <button id="btn-snap-5" class="h-8 px-3 rounded-lg border border-white/5 bg-dark-900/90 backdrop-blur text-[10px] font-bold text-slate-400 hover:text-white flex items-center justify-center gap-1 transition">
-            <i data-lucide="grid" class="w-3.5 h-3.5 text-cyan-500"></i> Snap 5°
-          </button>
-          <button id="btn-reset-orientation" class="h-8 w-8 rounded-lg border border-white/5 bg-dark-900/90 backdrop-blur text-slate-400 hover:text-white flex items-center justify-center transition" title="Resetear orientación">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-
-        <!-- Orientation angle outputs -->
-        <div class="absolute top-4 right-4 flex gap-2 font-mono text-[10px] z-10">
-          <div class="bg-dark-900/90 backdrop-blur border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center gap-1 text-slate-400">
-            <span>Rx:</span> <span id="val-rx" class="font-bold text-slate-200">0°</span>
-          </div>
-          <div class="bg-dark-900/90 backdrop-blur border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center gap-1 text-slate-400">
-            <span>Ry:</span> <span id="val-ry" class="font-bold text-slate-200">0°</span>
-          </div>
-          <div class="bg-dark-900/90 backdrop-blur border border-white/5 rounded-lg px-2.5 py-1.5 flex items-center gap-1 text-slate-400">
-            <span>Rz:</span> <span id="val-rz" class="font-bold text-slate-200">0°</span>
+      <!-- STL Upload simulator -->
+      <div>
+        <div class="sec-title">Modelo STL</div>
+        <div id="stl-dropzone" class="border-2 border-dashed border-slate-200 hover:border-brand-500/50 rounded-lg p-4 text-center cursor-pointer bg-slate-50 hover:bg-brand-50/20 transition duration-150">
+          <div id="stl-status-container" class="flex flex-col items-center gap-1">
+            <div id="stl-icon" class="text-lg text-emerald-500">✓</div>
+            <div id="stl-file-label" class="text-xs text-emerald-700 font-medium">trifurcatedvasculature.stl</div>
+            <p id="stl-sub-label" class="text-[10px] text-slate-400">Modelo cargado · 128³ vóxeles</p>
           </div>
         </div>
       </div>
 
-      <!-- CUDA / FBP LOG CONSOLE -->
-      <div class="h-44 border-t border-white/5 bg-dark-900 flex flex-col overflow-hidden relative select-none">
-        <div class="h-8 border-b border-white/5 flex items-center justify-between px-4 bg-dark-900/80">
+      <!-- CUDA / Hardware execution engine toggles -->
+      <div>
+        <div class="sec-title">Aceleración</div>
+        <div class="grid grid-cols-2 gap-1.5">
+          <button id="btn-use-gpu" class="py-1.5 rounded-lg border-2 border-brand-500 bg-brand-50 text-brand-500 text-[11px] font-bold transition">
+            GPU · CUDA
+          </button>
+          <button id="btn-use-cpu" class="py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 text-[11px] font-medium transition hover:bg-slate-100">
+            CPU
+          </button>
+        </div>
+      </div>
+
+      <!-- Parameter settings -->
+      <div>
+        <div class="sec-title">Configuración</div>
+        <div class="flex flex-col gap-1 text-xs">
+          <!-- Algorithm -->
+          <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+            <span class="text-slate-400 uppercase tracking-wider text-[10px]">Algoritmo</span>
+            <select id="cfg-method" class="bg-slate-50 border border-slate-200 rounded-md text-[11px] font-semibold text-slate-700 px-2 py-0.5 outline-none cursor-pointer">
+              <option value="CAL">CAL</option>
+            </select>
+          </div>
+          <!-- Resolution buttons -->
+          <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+            <span class="text-slate-400 uppercase tracking-wider text-[10px]">Resolución</span>
+            <div class="flex gap-1">
+              <button class="res-btn px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-400 font-medium hover:bg-slate-100">64</button>
+              <button class="res-btn px-1.5 py-0.5 rounded border-2 border-brand-500 bg-brand-50 text-[10px] text-brand-500 font-bold">128</button>
+              <button class="res-btn px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-400 font-medium hover:bg-slate-100">256</button>
+            </div>
+          </div>
+          <!-- Angles -->
+          <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+            <span class="text-slate-400 uppercase tracking-wider text-[10px]">Ángulos</span>
+            <input type="number" id="cfg-num-angles" value="360" min="36" max="3600" class="w-16 bg-slate-50 border border-slate-200 rounded-md text-right px-1.5 py-0.5 outline-none font-mono text-[11px] font-bold text-slate-700" />
+          </div>
+          <!-- Filter selection -->
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-slate-400 uppercase tracking-wider text-[10px]">Filtro FBP</span>
+            <select id="cfg-filter" class="bg-slate-50 border border-slate-200 rounded-md text-[11px] font-semibold text-slate-700 px-2 py-0.5 outline-none cursor-pointer">
+              <option value="cosine">cosine</option>
+              <option value="shepp-logan">shepp-logan</option>
+              <option value="ram-lak">ram-lak</option>
+              <option value="hann">hann</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vial boundaries envelope dimensions -->
+      <div class="flex-1 flex flex-col gap-4">
+        <div>
+          <div class="sec-title">Área de trabajo</div>
+          <div class="flex flex-col gap-1 text-[11px]">
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span class="text-[10px] text-slate-400 uppercase">Diámetro</span>
+              <span class="font-mono text-slate-700 font-semibold">Ø 20 mm</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-500">
+              <span class="text-[10px] text-slate-400 uppercase">Altura Z</span>
+              <span class="font-mono text-slate-700 font-semibold">25 mm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trigger Action button -->
+      <div class="mt-auto flex flex-col gap-2">
+        <div id="optimizer-action-container" class="flex flex-col gap-2">
+          <!-- Button triggers simulation -->
+          <button id="btn-run-optimization" class="w-full py-2.5 rounded-lg bg-brand-500 hover:bg-brand-600 active:scale-95 text-white text-xs font-bold tracking-widest uppercase shadow-md shadow-brand-500/10 transition">
+            PROCESAR
+          </button>
+        </div>
+        <div id="optimizer-error-tag" class="hidden text-xs text-red-500 bg-red-50 border border-red-200 p-2 rounded-lg leading-relaxed"></div>
+      </div>
+    </aside>
+
+    <!-- CENTER AREA STRETCH (Three.js lives behind here, keep pointerEvents none so users can rotate) -->
+    <div class="relative w-full h-full pointer-events-none select-none">
+      <!-- Radon/CUDA Engine Live Console overlay on the bottom -->
+      <div class="pointer-events-auto absolute bottom-0 left-0 right-0 h-[176px] border-t border-slate-200 bg-[#060913] flex flex-col overflow-hidden select-none z-10">
+        <div class="h-8 border-b border-slate-800 flex items-center justify-between px-4 bg-slate-900/60">
           <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-            <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Consola de Motor Radon/CUDA</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+            <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase font-sans">Consola de Motor Radon/CUDA</span>
           </div>
           <button id="btn-clear-console" class="text-[10px] font-semibold text-slate-500 hover:text-white flex items-center gap-1 transition">
-            <i data-lucide="trash-2" class="w-3 h-3"></i> Limpiar
+            Limpiar
           </button>
         </div>
-        <div id="console-logs" class="flex-1 p-3 font-mono text-[11px] text-green-400/90 overflow-y-auto custom-scrollbar flex flex-col gap-1 leading-relaxed bg-[#060913]">
-          <div class="text-slate-500">[VAM Studio v0.9.8 - Core inicializado]</div>
-          <div class="text-slate-500">Hardware mDNS local bound to 127.0.0.1</div>
-          <div class="text-slate-500">Listo para optimización tomográfica.</div>
+        <div id="console-logs" class="flex-1 p-3.5 font-mono text-[11px] text-[#22c55e]/90 overflow-y-auto flex flex-col gap-1 leading-relaxed bg-[#02050e]">
+          <div class="text-slate-500">[VAM Studio v1.1.0 - Core inicializado]</div>
+          <div class="text-slate-500">[VAMTorch] GPU Voxelizer Fallback to PyVista CPU — sin CUDA en este equipo</div>
+          <div class="text-slate-500">Malla STL 'trifurcatedvasculature.stl' cargada al área de vial. Resolución: 128³</div>
+          <div class="text-slate-400">[Auto-DH] mean_thickness=1.15 vóxeles · d_h sugerida: 0.82 (Ultra-delgado)</div>
+          <div class="text-[#22c55e] font-semibold">[CAL] Optimización completada en 10.66s · Score Bio: 86.83 · EXCELENTE</div>
+          <div class="text-slate-400">[export] 360 frames exportados · Bounding box 1088×1344px · Ahorro SPI: 40.2%</div>
         </div>
       </div>
+    </div>
 
-    </section>
-
-    <!-- RIGHT SIDEBAR: BIO-METRICS & PLAYER -->
-    <aside class="bg-dark-900 border-l border-white/5 p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar select-none z-20">
+    <!-- RIGHT SIDEBAR: METRICS REPORT SUMMARY (272px) -->
+    <aside class="pointer-events-auto bg-white border-l border-slate-200 p-4.5 flex flex-col gap-4 overflow-y-auto select-none z-20 shadow-sm">
+      <div id="right-sidebar-placeholder" class="flex-1 flex items-center justify-center text-slate-300 text-xs text-center leading-relaxed">
+        Carga un STL<br/>y ejecuta CAL<br/>para ver resultados
+      </div>
       
-      <!-- Bio-Metrics Card -->
-      <div id="metrics-card-container" class="opacity-50 transition duration-300">
-        <h3 class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">Veredicto y Score Biológico</h3>
-        <div id="metrics-card" class="rounded-xl border border-white/5 bg-white/[0.01] p-4 flex flex-col items-center gap-2 text-center relative overflow-hidden transition duration-300">
-          <!-- Score placeholder -->
-          <div class="text-[10px] text-slate-400 font-medium tracking-wide uppercase">Dose Quality</div>
-          <div id="metric-score" class="text-5xl font-extrabold text-slate-500 font-mono my-1 tracking-tight">—</div>
-          <div id="metric-verdict" class="text-xs px-3 py-1 rounded-full bg-white/5 text-slate-500 font-extrabold tracking-widest uppercase">SIN PROCESAR</div>
-          <div id="metric-summary" class="text-[10px] text-slate-500 mt-1 max-w-[200px] leading-relaxed">Ejecuta el optimizador tomográfico para calcular dosis óptimas.</div>
+      <div id="right-sidebar-results" class="hidden flex flex-col gap-4">
+        <!-- Bio score verdict card -->
+        <div id="results-verdict-card" class="p-3.5 rounded-xl text-center border border-[#059669]/20 bg-[#ecfdf5]">
+          <div class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Score Bio</div>
+          <div id="results-score-bio" class="text-4xl font-extrabold font-mono tracking-tight leading-none mb-1.5 text-[#059669]">86.8</div>
+          <div id="results-verdict-text" class="text-[11px] font-bold tracking-widest uppercase text-[#059669]">EXCELENTE</div>
         </div>
-      </div>
 
-      <!-- Quantitative parameters -->
-      <div id="quantitative-panel" class="opacity-50 transition duration-300 flex flex-col gap-3">
-        <div class="rounded-xl border border-white/5 bg-white/[0.01] p-3 flex flex-col gap-1">
-          <h4 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">PARÁMETROS CUANTITATIVOS</h4>
-          
-          <div class="flex justify-between text-xs py-1 border-b border-white/5">
-            <span class="text-slate-500" title="Volumetric Error Rate">Error Volumétrico (VER)</span>
-            <span id="val-ver" class="font-mono font-semibold text-slate-400">—</span>
-          </div>
-          <div class="flex justify-between text-xs py-1 border-b border-white/5">
-            <span class="text-slate-500" title="Process Window Match">Proporción de Voxel Cuidado (PW)</span>
-            <span id="val-pw" class="font-mono font-semibold text-slate-400">—</span>
-          </div>
-          <div class="flex justify-between text-xs py-1 border-b border-white/5">
-            <span class="text-slate-500">Fotogramas Sinograma</span>
-            <span id="val-frames" class="font-mono font-semibold text-slate-400">—</span>
-          </div>
-          <div class="flex justify-between text-xs py-1">
-            <span class="text-slate-500">Tiempo de Proceso GPU</span>
-            <span id="val-time" class="font-mono font-semibold text-slate-400">—</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Projection preview player -->
-      <div id="player-panel" class="opacity-50 transition duration-300 flex flex-col gap-2">
-        <h3 class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-1 flex items-center justify-between">
-          <span>Vista Previa Sinograma</span>
-          <span id="player-angle" class="font-mono text-cyan-400 text-right">0°</span>
-        </h3>
-        <div class="rounded-xl border border-white/5 bg-[#02050b] p-3 flex flex-col items-center gap-3 relative overflow-hidden group">
-          <!-- Sinogram screen -->
-          <div class="w-full aspect-square bg-[#050508] border border-white/5 rounded-lg overflow-hidden flex items-center justify-center relative glow-cyan/10">
-            <canvas id="sinogram-canvas" class="w-full h-full object-contain image-render-pixelated"></canvas>
-            <div id="player-frame-tag" class="absolute bottom-2 right-2 bg-black/60 border border-white/10 px-1.5 py-0.5 rounded font-mono text-[9px] text-cyan-400">F: 0/360</div>
-          </div>
-          
-          <!-- Slider timeline -->
-          <div class="w-full flex items-center gap-2 px-1">
-            <button id="btn-play" class="w-7 h-7 rounded bg-white/5 hover:bg-white/10 text-white flex items-center justify-center active:scale-95 transition">
-              <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            </button>
-            <input id="player-timeline" type="range" min="0" max="359" value="0" class="flex-1 accent-cyan-400 cursor-pointer h-1.5 bg-dark-700 rounded-lg outline-none" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Flashing controller -->
-      <div id="flasher-panel" class="mt-auto opacity-50 transition duration-300 pointer-events-none flex flex-col gap-2">
-        
-        <div class="grid grid-cols-2 gap-2 text-xs mb-1">
-          <div>
-            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Potencia UV</span>
-            <div class="flex items-center gap-1.5 bg-dark-900 border border-white/5 px-2 py-1.5 rounded-lg">
-              <input id="cfg-power" type="number" step="0.1" value="2.5" min="0.5" max="10.0" class="w-full bg-transparent outline-none text-xs font-mono font-bold text-slate-300" />
-              <span class="text-[9px] text-slate-500 font-bold shrink-0">mW</span>
+        <!-- Metric groups -->
+        <div>
+          <div class="sec-title">Calidad de dosis</div>
+          <div class="flex flex-col gap-1 text-[11px]">
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>VER</span> <span id="res-ver" class="font-mono text-slate-800">0.0003</span>
             </div>
-          </div>
-          <div>
-            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Ciclos (Vueltas)</span>
-            <div class="flex items-center gap-1.5 bg-dark-900 border border-white/5 px-2 py-1.5 rounded-lg">
-              <input id="cfg-loops" type="number" value="1" min="1" max="10" class="w-full bg-transparent outline-none text-xs font-mono font-bold text-slate-300" />
-              <span class="text-[9px] text-slate-500 font-bold shrink-0">Loops</span>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>CV</span> <span id="res-cv" class="font-mono text-slate-800">0.0371</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>PW</span> <span id="res-pw" class="font-mono text-slate-800">0.0471</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>IPDR</span> <span id="res-ipdr" class="font-mono text-slate-800">0.2028</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-500">
+              <span>Contraste</span> <span id="res-contrast" class="font-mono text-slate-800">1.053</span>
             </div>
           </div>
         </div>
 
-        <button id="btn-flash-cm4" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 active:scale-[0.98] font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-red-600/10 flex items-center justify-center gap-2 transition duration-200">
-          <i data-lucide="radio" class="w-4 h-4"></i> Enviar al Proyector
+        <div>
+          <div class="sec-title">Análisis Z</div>
+          <div class="flex flex-col gap-1 text-[11px]">
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>CV p95</span> <span id="res-cv-p95" class="font-mono text-slate-800">0.0419</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>PW p5</span> <span id="res-pw-p5" class="font-mono text-slate-800">0.0318</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-500">
+              <span>Solapamiento</span> <span id="res-overlap" class="font-mono text-slate-800">0.78%</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-title">Optimización</div>
+          <div class="flex flex-col gap-1 text-[11px]">
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>Score global</span> <span id="res-score-global" class="font-mono text-slate-800">100.0</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>Iteraciones</span> <span id="res-iters" class="font-mono text-slate-800">10</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100 text-slate-500">
+              <span>Rx / Ry / Rz</span> <span id="res-angles" class="font-mono text-slate-800">0.0° / 0.0° / 0.0°</span>
+            </div>
+            <div class="flex justify-between py-1 text-slate-500 font-medium">
+              <span>Tiempo total</span> <span id="res-total-time" class="font-mono text-brand-500 font-semibold">77.9s</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono leading-relaxed text-center">
+          360 frames · 1088×1344px real · listo para proyector DLP
+        </div>
+
+        <!-- Save Button -->
+        <button id="btn-save-to-library" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-lg transition shadow-md shadow-emerald-600/10">
+          💾 GUARDAR EN BIBLIOTECA
         </button>
       </div>
-
     </aside>
 
-  </main>
+  </div>
 
-  <!-- ════ RPi CM4 CONNECTION DIALOG ════ -->
-  <div id="cm4-dialog" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-    <div class="glass-panel w-96 rounded-2xl p-6 glow-blue relative max-w-sm flex flex-col gap-4 border border-white/10">
-      <button id="btn-close-cm4-dialog" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
+  <!-- VISTA: BIBLIOTECA (library View Overlay) -->
+  <div id="view-library" class="hidden fixed inset-0 pt-[48px] bg-slate-50 z-30 flex flex-col">
+    <div class="flex-1 p-8 overflow-y-auto">
+      <div class="max-w-[1000px] mx-auto mb-6 flex items-baseline gap-3">
+        <h2 class="text-lg font-bold text-slate-900">Biblioteca</h2>
+        <span id="library-status-count" class="text-xs text-slate-400">1 modelo guardado</span>
+      </div>
+      
+      <!-- List container -->
+      <div id="library-list-container" class="max-w-[1000px] mx-auto flex flex-col gap-3">
+        <!-- Replaced dynamically, but contains VascularScaffold_20 by default -->
+      </div>
+    </div>
+  </div>
 
-      <div class="flex flex-col items-center text-center gap-2">
-        <div class="w-12 h-12 rounded-full bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-cyan-400 mb-2">
-          <i data-lucide="cpu" class="w-6 h-6"></i>
-        </div>
-        <h2 class="text-base font-extrabold tracking-wide uppercase">Configurar Conexión CM4</h2>
-        <p class="text-xs text-slate-400 leading-relaxed">Conéctate directamente con el módulo de control Raspberry Pi CM4 local acoplado al rotor físico de la impresora.</p>
+  <!-- VISTA: DETALLE DE TRABAJO (detail View Overlay) -->
+  <div id="view-detail" class="hidden fixed inset-0 pt-[48px] bg-slate-50 z-30 grid grid-cols-[1fr_288px] overflow-hidden">
+    
+    <!-- TOPBAR DETALLE (Overlay superior para cerrar/exportar) -->
+    <div class="absolute top-[48px] left-0 right-0 h-[48px] bg-white border-b border-slate-200 px-5 flex items-center justify-between z-30 shadow-sm">
+      <div class="flex items-center gap-3">
+        <button id="btn-back-to-library" class="px-3 py-1.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-600 text-xs hover:bg-slate-100 transition">
+          ← Biblioteca
+        </button>
+        <div class="w-px h-5 bg-slate-200"></div>
+        <span id="detail-model-title" class="font-bold text-slate-900 text-sm">TrifurcatedVasculature</span>
+        <span id="detail-timestamp" class="text-xs text-slate-400 font-mono">21/05/2026 09:15</span>
       </div>
 
-      <div class="flex flex-col gap-3">
-        <!-- Hostname -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] font-bold text-slate-500 tracking-wide uppercase">Enlace mDNS del Servidor</label>
-          <input type="text" id="cm4-input-host" value="http://localhost:8000" class="bg-dark-900 border border-white/10 rounded-lg p-2.5 font-mono text-xs text-slate-300 outline-none focus:border-brand-500/50 transition" />
+      <div class="flex items-center gap-3">
+        <div id="detail-verdict-badge" class="px-3.5 py-1 rounded-full text-xs font-bold tracking-widest uppercase border">
+          EXCELENTE · 86.8
         </div>
-        <!-- Local SSID (Virtual) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] font-bold text-slate-500 tracking-wide uppercase">Red Local WiFi</label>
-          <div class="flex justify-between items-center bg-dark-900 border border-white/5 rounded-lg px-3 py-2 text-xs font-mono text-slate-400 select-none">
-            <span class="flex items-center gap-1.5"><i data-lucide="wifi" class="w-3.5 h-3.5 text-green-400"></i> LAB_VAM_WIFI</span>
-            <span class="text-green-500 text-[10px] font-bold uppercase">Activo</span>
+        <button id="btn-export-json" class="px-4 py-1.5 border border-slate-200 rounded-lg bg-white text-slate-600 text-xs font-semibold hover:bg-slate-100 transition">
+          📄 Exportar JSON
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN DIAGNOSTICS & PLAYER (Pestañas centrales) -->
+    <div class="pt-[48px] p-6 overflow-y-auto flex flex-col gap-4">
+      
+      <!-- Pestañas de Navegación -->
+      <div class="flex gap-1 bg-slate-200/60 p-1 rounded-lg w-fit">
+        <button id="tab-btn-images" class="px-4 py-1.5 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition">
+          Imágenes diagnóstico
+        </button>
+        <button id="tab-btn-frames" class="px-4 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-600 transition">
+          Preview proyección
+        </button>
+        <button id="tab-btn-metrics" class="px-4 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-600 transition">
+          Datos técnicos
+        </button>
+      </div>
+
+      <!-- CONTENIDO PESTAÑA: IMÁGENES DIAGNÓSTICO -->
+      <div id="tab-content-images" class="flex flex-col gap-6">
+        <div>
+          <div class="text-[11px] text-slate-400 uppercase tracking-widest font-semibold mb-2">Reconstrucción XY / XZ / YZ</div>
+          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white p-4 shadow-sm flex items-center justify-center">
+            <!-- Canvas científico emulado de rodajas -->
+            <canvas id="canvas-reconstruction-slices" class="w-full max-w-[800px] h-[240px] block"></canvas>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-widest font-semibold mb-2">Perfil por capa Z</div>
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white p-4 shadow-sm flex items-center justify-center">
+              <canvas id="canvas-layer-profile" class="w-full h-[220px] block"></canvas>
+            </div>
+          </div>
+          <div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-widest font-semibold mb-2">Histograma de dosis</div>
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white p-4 shadow-sm flex items-center justify-center">
+              <canvas id="canvas-dose-histogram" class="w-full h-[220px] block"></canvas>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="cm4-discovery-status" class="hidden text-center text-xs py-2 bg-brand-500/10 border border-brand-500/20 text-cyan-400 rounded-lg animate-pulse font-mono">
-        Buscando placa de control a través del bus...
+      <!-- CONTENIDO PESTAÑA: PREVIEW PROYECCIÓN (SINOGRAM MOVIE) -->
+      <div id="tab-content-frames" class="hidden flex flex-col items-center gap-3">
+        <!-- Alternar entre 8-bit y 1-bit planos de bits -->
+        <div class="flex gap-1.5 mb-2 justify-center">
+          <button id="btn-frame-mode-1bit" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brand-500 text-white shadow transition-all duration-150">
+            ▶ Bitplanes 1-bit (1080 frames)
+          </button>
+          <button id="btn-frame-mode-8bit" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-slate-200 text-slate-600 hover:bg-slate-300 transition-all duration-150">
+            8-bit original (360 frames)
+          </button>
+        </div>
+        
+        <!-- Frame metadata info -->
+        <div id="frame-metadata" class="text-[11px] text-slate-400 font-mono text-center mb-1">
+          1024×1024px · 19µm/px · 6.0°/s → 60s/vuelta · SPI 55ms/frame
+        </div>
+
+        <!-- Sinogram Canvas Screen container -->
+        <div class="bg-slate-900 border border-slate-200 rounded-xl overflow-hidden flex items-center justify-center relative shadow-md flex-shrink-0" style="width: 256px; height: 256px;">
+          <canvas id="sinogram-canvas" class="w-full h-full object-contain"></canvas>
+          <div id="frame-count-tag" class="absolute bottom-2.5 right-2.5 bg-black/60 border border-white/10 px-2 py-0.5 rounded font-mono text-[10px] text-brand-100">
+            1/1080
+          </div>
+        </div>
+
+        <div class="text-[10px] text-slate-400 text-center">
+          Visualización 256px · nativo 1024×1024px para proyector DLP
+        </div>
+
+        <!-- Zoom slider slider -->
+        <div class="flex items-center gap-3 w-full max-w-[420px] mt-2">
+          <span class="text-[10px] text-slate-400 min-w-[24px]">128</span>
+          <input type="range" id="frame-zoom-slider" min="128" max="512" step="16" value="256" class="flex-1 accent-brand-500 cursor-pointer h-1 bg-slate-200 rounded-lg outline-none" />
+          <span class="text-[10px] text-slate-400 min-w-[24px]">512</span>
+          <span id="frame-zoom-label" class="text-xs font-mono text-slate-700 min-w-[40px]">256px</span>
+        </div>
+
+        <!-- Player control timelines -->
+        <div class="flex items-center gap-3 w-full max-w-[420px] mt-1">
+          <button id="btn-player-play" class="px-4 py-2 border-0 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-semibold shadow-md active:scale-95 transition min-w-[100px]">
+            ▶ Reproducir
+          </button>
+          <input type="range" id="player-timeline" min="0" max="1079" value="0" class="flex-1 accent-brand-500 cursor-pointer h-1.5 bg-slate-200 rounded-lg outline-none" />
+          <span id="player-angle-tag" class="text-xs font-mono font-semibold text-slate-700 min-w-[48px] text-right">0.0°</span>
+        </div>
       </div>
 
-      <div class="flex gap-3 mt-2">
-        <button id="btn-dialog-connect" class="flex-1 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition">
-          CONECTAR
-        </button>
-        <button id="btn-dialog-cancel" class="px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-semibold transition">
+      <!-- CONTENIDO PESTAÑA: DATOS TÉCNICOS DETALLADOS -->
+      <div id="tab-content-metrics" class="hidden grid grid-cols-2 gap-4">
+        <!-- Tables of original quantitative groups -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-2">
+          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Calidad de dosis</div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">VER</span> <span class="font-mono text-slate-700 font-semibold" id="td-ver">0.0003</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">CV</span> <span class="font-mono text-slate-700 font-semibold" id="td-cv">0.0371</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">PW</span> <span class="font-mono text-slate-700 font-semibold" id="td-pw">0.0471</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">IPDR</span> <span class="font-mono text-slate-700 font-semibold" id="td-ipdr">0.2028</span>
+          </div>
+          <div class="flex justify-between py-1.5 text-xs">
+            <span class="text-slate-400">Dose Contrast</span> <span class="font-mono text-slate-700 font-semibold" id="td-contrast">1.053</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-2">
+          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Dosis gel / void</div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Mín gel</span> <span class="font-mono text-slate-700 font-semibold">0.7972</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Máx gel</span> <span class="font-mono text-slate-700 font-semibold">1.0000</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Media gel</span> <span class="font-mono text-slate-700 font-semibold">0.8890</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Máx void</span> <span class="font-mono text-slate-700 font-semibold">0.8443</span>
+          </div>
+          <div class="flex justify-between py-1.5 text-xs">
+            <span class="text-slate-400">Media void</span> <span class="font-mono text-slate-700 font-semibold">0.3365</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-2">
+          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Análisis Z</div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Capas activas</span> <span class="font-mono text-slate-700 font-semibold">128</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">CV z worst</span> <span class="font-mono text-slate-700 font-semibold">0.0441</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">PW z worst</span> <span class="font-mono text-slate-700 font-semibold">-0.0471</span>
+          </div>
+          <div class="flex justify-between py-1.5 text-xs">
+            <span class="text-slate-400">Solapamiento</span> <span class="font-mono text-slate-700 font-semibold">0.78%</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-2">
+          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Convergencia</div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Score Global</span> <span class="font-mono text-slate-700 font-semibold">100.0</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Iteraciones</span> <span class="font-mono text-slate-700 font-semibold">10</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Conv. iter</span> <span class="font-mono text-slate-700 font-semibold">N/A</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-xs">
+            <span class="text-slate-400">Error inicial</span> <span class="font-mono text-slate-700 font-semibold">0.1153</span>
+          </div>
+          <div class="flex justify-between py-1.5 text-xs">
+            <span class="text-slate-400">Error final / Mejora</span> <span class="font-mono text-slate-700 font-semibold">0.0003 / 99.7%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR (Ajustes de impresión del proyector DLP) -->
+    <div class="pt-[48px] border-l border-slate-200 bg-white p-5 flex flex-col gap-5 overflow-y-auto">
+      
+      <!-- Verdict report -->
+      <div id="detail-verdict-card" class="p-4 rounded-xl border text-center">
+        <div class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Score Bio</div>
+        <div id="detail-score-bio" class="text-5xl font-extrabold font-mono tracking-tighter leading-none mb-1.5 text-[#059669]">86.8</div>
+        <div id="detail-verdict" class="text-xs font-bold text-[#059669] tracking-widest uppercase">EXCELENTE</div>
+        <div class="text-[10px] text-slate-400 mt-2 leading-relaxed">Score global calculado: 100.0</div>
+      </div>
+
+      <!-- Technical summary -->
+      <div>
+        <div class="sec-title">Resumen</div>
+        <div class="flex flex-col gap-1 text-[11px]">
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-slate-500">
+            <span>VER</span> <span class="font-mono text-slate-700 font-semibold">0.0003</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-slate-500">
+            <span>PW</span> <span class="font-mono text-slate-700 font-semibold">0.0471</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100 text-slate-500">
+            <span>Fotogramas</span> <span id="detail-frames-count" class="font-mono text-slate-700 font-semibold">360</span>
+          </div>
+          <div class="flex justify-between py-1.5 text-brand-500 font-medium">
+            <span>Tiempo</span> <span class="font-mono font-semibold text-brand-500">77.9s</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-2.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono leading-relaxed">
+        360 frames · 1088×1344px real · listo para proyector DLP
+      </div>
+
+      <!-- Hardware Projection Print parameters -->
+      <div>
+        <div class="sec-title">Ajustes de Impresión</div>
+        <div class="flex flex-col gap-3">
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500 mb-1.5">Potencia UV (mW/cm²)</div>
+            <input type="number" id="detail-cfg-power" value="2.5" step="0.1" min="0.5" max="10.0" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-xs text-slate-700 outline-none focus:border-brand-500/50" />
+            <div class="text-[9px] text-slate-400 mt-1">*Pendiente calibrar a PWM</div>
+          </div>
+          <div>
+            <div class="text-[11px] font-semibold text-slate-500 mb-1.5">Vueltas completas (Loops)</div>
+            <input type="number" id="detail-cfg-loops" value="1" min="1" max="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-xs text-slate-700 outline-none focus:border-brand-500/50" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Trigger Printing overlay button -->
+      <button id="btn-flash-vial" class="w-full mt-auto py-3 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-[13px] font-bold tracking-wider uppercase rounded-lg transition shadow-lg shadow-slate-900/10">
+        ▶ Enviar al proyector
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ════ OVERLAY MODAL: CONFIRMACIÓN IMPRESIÓN (window.confirm replacement) ════ -->
+  <div id="modal-confirm-print" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white max-w-[420px] w-full rounded-2xl p-6 shadow-2xl flex flex-col gap-4 border border-slate-200">
+      <h3 class="text-base font-bold text-slate-900">Confirmar Impresión</h3>
+      <p class="text-xs text-slate-500 leading-relaxed">
+        Vas a enviar el modelo <strong id="confirm-model-name" class="text-slate-800">VascularScaffold_20</strong> a la impresora a través del bus SPI.<br/><br/>
+        Ajustes de proyección activos:<br/>
+        • Emisión UV: <strong id="confirm-power-val" class="text-slate-800">2.5 mW/cm²</strong><br/>
+        • Giros de curado: <strong id="confirm-loops-val" class="text-slate-800">1 vueltas</strong><br/><br/>
+        ¿Deseas encender el LED óptico e iniciar el rotor físico ahora mismo?
+      </p>
+      <div class="flex gap-2 justify-end mt-2">
+        <button id="btn-confirm-print-cancel" class="px-4 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-xs font-semibold hover:bg-slate-100 transition">
           Cancelar
+        </button>
+        <button id="btn-confirm-print-action" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-md transition">
+          ▶ Iniciar Proyección
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ════ FULLSCREEN PRINTING TELEMETRY OVERLAY ════ -->
-  <div id="print-overlay" class="fixed inset-0 bg-[#060913]/95 backdrop-blur-md z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 select-none">
-    
-    <div class="w-full max-w-5xl h-[85vh] grid grid-cols-[1fr_400px] border border-white/10 rounded-3xl overflow-hidden glass-panel glow-uv flex-shrink-0">
+  <!-- ════ FULLSCREEN PRINTING TELEMETRY OVERLAY (RPi/CM4 Hardware Controller) ════ -->
+  <div id="print-overlay" class="hidden fixed inset-0 bg-[#060913]/98 backdrop-blur-md z-50 flex items-center justify-center select-none">
+    <div class="w-full max-w-[1000px] h-[85vh] grid grid-cols-[1fr_380px] border border-slate-800 rounded-3xl overflow-hidden bg-slate-950/70 shadow-2xl relative">
       
-      <!-- Left side: Live Physical Projection Simulation -->
-      <div class="relative bg-black flex flex-col justify-center items-center overflow-hidden border-r border-white/5">
-        
-        <!-- Rotating Vial container overlay -->
-        <div id="print-vial-container" class="w-full h-full relative z-10"></div>
+      <!-- Close button on top-right of modal -->
+      <button id="btn-force-close-overlay" title="Cerrar Ventana" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800/80 hover:bg-red-500/25 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-red-400 transition-all duration-150 z-30">
+        ✕
+      </button>
 
-        <!-- UV Gradient side projector beam -->
-        <div class="absolute top-0 right-0 bottom-0 left-1/2 bg-gradient-to-r from-violet-600/0 via-violet-600/25 to-violet-600/35 pointer-events-none z-20 animate-beam border-l border-violet-500/20 shadow-[inset_15px_0_40px_-10px_rgba(139,92,246,0.2)] flex items-center justify-end pr-8">
-          <div class="h-64 w-[1px] bg-violet-400 shadow-[0_0_20px_4px_rgba(139,92,246,0.8)] animate-pulse"></div>
+      <!-- Left: 3D Physics Vial continuous mechanical rotate viewport simulation -->
+      <div class="relative bg-black flex flex-col justify-center items-center overflow-hidden border-r border-slate-800">
+        <div id="print-vial-container" class="w-full h-full relative z-10">
+          <canvas id="print-vial-canvas" class="w-full h-full block"></canvas>
         </div>
 
-        <div class="absolute top-6 left-6 z-20 flex flex-col gap-1.5 font-mono text-[9px] text-violet-400 bg-violet-950/20 border border-violet-500/20 px-3 py-2 rounded-lg backdrop-blur-sm">
-          <div class="flex items-center gap-1.5 font-bold"><span class="w-2 h-2 rounded-full bg-violet-500 animate-ping"></span> PROYECTOR LUMINOSO UV</div>
+        <!-- Violet UV projector light beam simulation -->
+        <div class="absolute top-0 right-0 bottom-0 left-1/2 bg-gradient-to-r from-violet-600/0 via-violet-600/20 to-violet-600/35 pointer-events-none z-20 border-l border-violet-500/10 shadow-[inset_10px_0_30px_-5px_rgba(139,92,246,0.15)] flex items-center justify-end pr-8 uv-beam-anim">
+          <div class="h-64 w-[1px] bg-violet-400 shadow-[0_0_25px_4px_rgba(139,92,246,0.9)] animate-pulse"></div>
+        </div>
+
+        <div class="absolute top-6 left-6 z-20 flex flex-col gap-1 font-mono text-[9px] text-violet-400 bg-violet-950/30 border border-violet-500/20 px-3 py-2 rounded-lg backdrop-blur-sm">
+          <div class="flex items-center gap-1.5 font-bold"><span class="w-1.5 h-1.5 rounded-full bg-violet-500 pulse-dot"></span> PROYECTOR LUMINOSO UV</div>
           <div>Longitud de Onda: 405 nm</div>
           <div>Estabilidad Óptica: ± 0.05%</div>
         </div>
 
-        <div class="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-end pointer-events-none font-mono">
-          <div class="text-[10px] text-slate-500 bg-[#060913]/80 px-2 py-1.5 border border-white/5 rounded">
+        <div class="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-end pointer-events-none font-mono text-[10px]">
+          <div class="text-slate-500 bg-slate-900/80 px-2 py-1.5 border border-slate-800 rounded">
             ROTOR VIAL: <span class="text-slate-300">Continuous SPI Step</span>
           </div>
-          <div class="text-[10px] text-violet-400 bg-violet-950/40 px-2 py-1.5 border border-violet-500/20 rounded">
-            EMISOR: <span class="text-violet-300" id="print-overlay-power">2.5 mW/cm²</span>
+          <div class="text-violet-400 bg-violet-950/40 px-2 py-1.5 border border-violet-500/20 rounded">
+            EMISOR: <span class="text-violet-300" id="print-power-overlay-tag">2.5 mW/cm²</span>
           </div>
         </div>
       </div>
 
-      <!-- Right side: Real-time Telemetry Dashboard -->
-      <div class="p-8 flex flex-col gap-6 bg-dark-900/60 overflow-y-auto custom-scrollbar">
-        
-        <!-- Header -->
-        <div class="flex justify-between items-center border-b border-white/5 pb-4">
+      <!-- Right: Real-time telemetry dashboard & progress circular -->
+      <div class="p-8 flex flex-col gap-6 bg-slate-900/40 overflow-y-auto">
+        <!-- Dashboard title header -->
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div class="flex flex-col gap-1">
-            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">IMPRESIÓN EN PROGRESO</span>
-            <h2 id="print-model-name" class="text-lg font-extrabold tracking-wide uppercase text-white">VascularScaffold_20</h2>
+            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">IMPRESIÓN EN PROGRESO</span>
+            <h2 id="print-model-title-tag" class="text-base font-extrabold tracking-wide uppercase text-white">VascularScaffold_20</h2>
           </div>
-          <span id="print-badge" class="px-3 py-1 rounded bg-brand-500/10 border border-brand-500/20 text-cyan-400 text-[10px] font-bold tracking-widest uppercase">
-            ESTABILIZANDO
+          <span id="print-phase-badge" class="px-2.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-bold tracking-widest uppercase">
+            CARGANDO MODELO
           </span>
         </div>
 
-        <!-- Wheel Progress Circular -->
-        <div class="flex justify-center my-2 select-none relative">
-          <div class="relative w-44 h-44 flex items-center justify-center">
-            
-            <!-- SVG Circle Track -->
+        <!-- Wheel Progress Circular Loader SVG -->
+        <div class="flex justify-center my-1 select-none relative">
+          <div class="relative w-40 h-40 flex items-center justify-center">
             <svg class="w-full h-full transform -rotate-90">
-              <circle cx="88" cy="88" r="76" stroke-width="6" stroke="rgba(255,255,255,0.03)" fill="transparent" />
-              <circle id="print-circle-progress" cx="88" cy="88" r="76" stroke-width="8" stroke="url(#cyan-gradient)" fill="transparent" stroke-dasharray="477.5" stroke-dashoffset="477.5" stroke-linecap="round" />
+              <circle cx="80" cy="80" r="68" stroke-width="5" stroke="rgba(255,255,255,0.02)" fill="transparent" />
+              <circle id="print-circle-progress" cx="80" cy="80" r="68" stroke-width="7" stroke="url(#cyan-gradient)" fill="transparent" stroke-dasharray="427.2" stroke-dashoffset="427.2" stroke-linecap="round" />
               <defs>
                 <linearGradient id="cyan-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#3b82f6" />
-                  <stop offset="100%" stop-color="#22d3ee" />
+                  <stop offset="0%" stop-color="#2563eb" />
+                  <stop offset="100%" stop-color="#06b6d4" />
                 </linearGradient>
               </defs>
             </svg>
-            
             <div class="absolute flex flex-col items-center justify-center text-center">
-              <span id="print-percent" class="text-4xl font-black font-mono tracking-tighter text-white">0%</span>
+              <span id="print-progress-percent" class="text-3xl font-extrabold font-mono tracking-tighter text-white">0%</span>
               <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">PROGRESO</span>
             </div>
-
           </div>
         </div>
 
-        <!-- Telemetry Details Grid -->
-        <div class="grid grid-cols-2 gap-4">
-          
-          <div class="bg-white/[0.01] border border-white/5 rounded-xl p-3.5">
-            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Velocidad de Sincronía</span>
-            <div class="font-mono text-lg font-black text-slate-200">6.0 <span class="text-xs font-semibold text-cyan-400">FPS</span></div>
-            <span class="text-[8px] text-slate-500 block mt-0.5">*Estable (36.0°/s angular)</span>
+        <!-- Telemetry specifications grid -->
+        <div class="grid grid-cols-2 gap-3.5">
+          <div class="bg-white/[0.01] border border-slate-800 rounded-xl p-3">
+            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-0.5">Velocidad de Sincronía</span>
+            <div class="font-mono text-base font-black text-slate-200">6.0 <span class="text-xs font-semibold text-brand-500">FPS</span></div>
+            <span class="text-[8px] text-slate-500 block mt-0.5">*Estable (36.0°/s)</span>
           </div>
-
-          <div class="bg-white/[0.01] border border-white/5 rounded-xl p-3.5">
-            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Ángulo Actual</span>
-            <div class="font-mono text-lg font-black text-slate-200" id="print-angle">0.0 <span class="text-xs font-semibold text-slate-400">°</span></div>
-            <span class="text-[8px] text-slate-500 block mt-0.5">Sinograma (0 - 360°)</span>
+          <div class="bg-white/[0.01] border border-slate-800 rounded-xl p-3">
+            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-0.5">Ángulo Actual</span>
+            <div class="font-mono text-base font-black text-slate-200" id="print-current-angle">0.0 <span class="text-xs font-semibold text-slate-500">°</span></div>
+            <span class="text-[8px] text-slate-500 block mt-0.5">Sincronizado</span>
           </div>
-
-          <div class="bg-white/[0.01] border border-white/5 rounded-xl p-3.5">
-            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Fotograma Flasheado</span>
-            <div class="font-mono text-lg font-black text-slate-200" id="print-frame">0 / 360</div>
+          <div class="bg-white/[0.01] border border-slate-800 rounded-xl p-3">
+            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-0.5">Fotograma Actual</span>
+            <div class="font-mono text-base font-black text-slate-200" id="print-current-frame">0 / 1080</div>
             <span class="text-[8px] text-slate-500 block mt-0.5">Slicing axial</span>
           </div>
-
-          <div class="bg-white/[0.01] border border-white/5 rounded-xl p-3.5">
-            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Tiempo de Proyección</span>
-            <div class="font-mono text-lg font-black text-slate-200" id="print-timer">00:00 <span class="text-xs font-semibold text-slate-400">s</span></div>
-            <span class="text-[8px] text-slate-500 block mt-0.5" id="print-timer-loops">Loop 1 de 1</span>
-          </div>
-
-        </div>
-
-        <!-- Terminal Status RPi -->
-        <div class="flex-1 min-h-[80px] bg-black/60 rounded-xl border border-white/5 p-3 font-mono text-[10px] text-slate-400 flex flex-col gap-1 overflow-y-auto custom-scrollbar select-none leading-relaxed">
-          <div class="text-cyan-500/80 font-bold">[RPi CM4 Hardware Telemetry]</div>
-          <div id="print-hardware-logs" class="flex flex-col gap-1">
-            <div>CM4: Estableciendo puerto RNDIS seguro... OK</div>
-            <div>CM4: Descomprimiendo Payload ZIP en /tmp/... OK</div>
-            <div>CM4: Verificando firmas de sinogramas... 100% OK</div>
-            <div>CM4: Enlazando con el bus SPI del proyector DLP... OK</div>
+          <div class="bg-white/[0.01] border border-slate-800 rounded-xl p-3">
+            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-0.5">Tiempo Impresión</span>
+            <div class="font-mono text-base font-black text-slate-200" id="print-elapsed-time">00:00 <span class="text-xs font-semibold text-slate-500">s</span></div>
+            <span class="text-[8px] text-slate-500 block mt-0.5" id="print-loops-label">Loop 1 de 1</span>
           </div>
         </div>
 
-        <!-- Control Action Button -->
-        <button id="btn-cancel-print" class="w-full py-3 rounded-xl bg-red-950/30 hover:bg-red-500 active:scale-[0.98] border border-red-500/20 hover:border-transparent text-red-400 hover:text-white font-bold text-xs tracking-wider uppercase transition duration-200">
+        <!-- Terminal hardware logs -->
+        <div class="flex-1 min-h-[100px] bg-black/50 rounded-xl border border-slate-800 p-3.5 font-mono text-[10px] text-slate-400 flex flex-col gap-1 overflow-y-auto leading-relaxed select-none">
+          <div class="text-brand-500 font-bold">[RPi CM4 Hardware Telemetry]</div>
+          <div id="print-overlay-logs" class="flex flex-col gap-1">
+            <!-- Simulated logs added here -->
+          </div>
+        </div>
+
+        <button id="btn-abort-print" class="w-full py-3 bg-red-950/20 hover:bg-red-600 active:scale-95 border border-red-500/20 hover:border-transparent text-red-400 hover:text-white text-xs font-bold tracking-wider uppercase rounded-xl transition duration-150">
           Abortar Impresión Volumétrica
         </button>
-
       </div>
-
     </div>
-
   </div>
 
-  <!-- JS SIMULATION LOGIC -->
+  <!-- JS SIMULATION CORE LOGIC -->
   <script>
-    // Global simulation state
+    // 1. GLOBAL STATE DATABASE (Mocking API Layer)
     let isConnected = false;
     let isProcessed = false;
     let isPlaying = false;
     let isPrinting = false;
     
-    // Config states
     let activeResolution = 128;
     let activeAngles = 360;
     let activeFilter = 'cosine';
     let activeMethod = 'CAL';
     let isSnapState = false;
     let activeUseCuda = true;
-    
-    // Model state
-    let activeRotation = { x: 0, y: 0, z: 0 };
-    
-    // Mock metric result databases based on config
-    const mockDb = {
-      CAL: {
-        ver: 0.0211,
-        pw: 0.9822,
-        score: 9.3,
-        scoreBio: 9.5,
-        verdict: 'EXCELENTE',
-        time: 3.8
+    let activeTab = 'images';
+    let currentView = 'optimizer';
+    let isSaved = false;
+
+    // ── DATOS REALES DE OPTIMIZACIÓN CAL (cal_core.py) ───────────────────────
+    // Generados sobre trifurcatedvasculature.stl (128³, 360°, cosine filter)
+    // Score bio: 86.83 · VER: 0.000315 · Tiempo total CPU: 77.9s
+    const REAL_FRAMES = Array.from({length: 36}, (_, i) => {
+      const n = (i * 10).toString().padStart(4, '0');
+      return `data/frames/frame_${n}.png`;
+    });
+
+    const VascularScaffoldJob = {
+      job_id: "trifurcated_vasculature",
+      timestamp: "2026-05-21 10:54:24",
+      model_name: "TrifurcatedVasculature",
+      score: 100.0,
+      score_bio: 86.83,
+      verdict: "EXCELENTE",
+      total_time: 77.95,
+      n_frames: 360,
+      n_bitplanes: 1080,
+      has_bitplanes: false,
+      params: {
+        method: "CAL",
+        resolution: 128,
+        num_angles: 360,
+        filter: "cosine"
       },
-      MLEM: {
-        ver: 0.0435,
-        pw: 0.9412,
-        score: 8.4,
-        scoreBio: 8.7,
-        verdict: 'BUENO',
-        time: 14.5
+      metrics: {
+        ver: 0.000315,
+        cv: 0.037115,
+        pw: 0.047085,
+        ipdr: 0.202765,
+        dose_contrast: 1.052945
+      },
+      // frames reales (subconjunto de 36 de los 360)
+      realFrames: REAL_FRAMES,
+      // imágenes de diagnóstico reales
+      diagImages: {
+        reconstruction_slices: 'data/reconstruction_slices.png',
+        layer_profile: 'data/layer_profile.png'
       }
     };
-    
-    // Three.js instances
+
+    let libraryDatabase = [VascularScaffoldJob];
+    let selectedJob = null;
+
+    // 2. THREE.JS VIEWPORTS INSTANCES
     let scene, camera, renderer, orbitControls;
-    let glassVial, bioScaffold;
+    let glassVial, bioScaffold, workspaceGrid;
+    
     let overlayScene, overlayCamera, overlayRenderer, overlayControls;
     let overlayVial, overlayScaffold;
-    
-    // DOM Elements
-    const btnConnectCm4 = document.getElementById('btn-connect-cm4');
-    const cm4StatusBadge = document.getElementById('cm4-status-badge');
-    const btnOptimizer = document.getElementById('btn-optimizer');
-    const btnLibrary = document.getElementById('btn-library');
-    const btnProcess = document.getElementById('btn-process');
-    const btnFlashCm4 = document.getElementById('btn-flash-cm4');
-    const btnCancelPrint = document.getElementById('btn-cancel-print');
-    
-    const accGpu = document.getElementById('acc-gpu');
-    const accCpu = document.getElementById('acc-cpu');
-    const stlDropzone = document.getElementById('stl-dropzone');
-    const stlFileLabel = document.getElementById('stl-file-label');
-    const stlSubLabel = document.getElementById('stl-sub-label');
-    const stlIconContainer = document.getElementById('stl-icon-container');
-    
-    const cfgMethod = document.getElementById('cfg-method');
-    const cfgAngles = document.getElementById('cfg-angles');
-    const cfgFilter = document.getElementById('cfg-filter');
-    const btnSnap5 = document.getElementById('btn-snap-5');
-    const btnResetOrientation = document.getElementById('btn-reset-orientation');
-    
-    const valRx = document.getElementById('val-rx');
-    const valRy = document.getElementById('val-ry');
-    const valRz = document.getElementById('val-rz');
-    
-    const consoleLogs = document.getElementById('console-logs');
-    const btnClearConsole = document.getElementById('btn-clear-console');
-    
-    const metricsCardContainer = document.getElementById('metrics-card-container');
-    const metricsCard = document.getElementById('metrics-card');
-    const metricScore = document.getElementById('metric-score');
-    const metricVerdict = document.getElementById('metric-verdict');
-    const metricSummary = document.getElementById('metric-summary');
-    
-    const quantitativePanel = document.getElementById('quantitative-panel');
-    const valVer = document.getElementById('val-ver');
-    const valPw = document.getElementById('val-pw');
-    const valFrames = document.getElementById('val-frames');
-    const valTime = document.getElementById('val-time');
-    
-    const playerPanel = document.getElementById('player-panel');
-    const playerAngle = document.getElementById('player-angle');
-    const playerTimeline = document.getElementById('player-timeline');
-    const playerFrameTag = document.getElementById('player-frame-tag');
-    const btnPlay = document.getElementById('btn-play');
+
+    // Frame real preloader
+    let realFrameImages = [];
+    let realFramesLoaded = false;
+    function preloadRealFrames(frames) {
+      realFrameImages = [];
+      let loaded = 0;
+      frames.forEach((src, i) => {
+        const img = new Image();
+        img.onload = () => { loaded++; if (loaded === frames.length) realFramesLoaded = true; };
+        img.onerror = () => { loaded++; if (loaded === frames.length) realFramesLoaded = true; };
+        img.src = src;
+        realFrameImages.push(img);
+      });
+    }
+
+    // 3. CANVAS DOMS
     const sinogramCanvas = document.getElementById('sinogram-canvas');
     const ctxSino = sinogramCanvas.getContext('2d');
     
-    const flasherPanel = document.getElementById('flasher-panel');
-    const cfgPower = document.getElementById('cfg-power');
-    const cfgLoops = document.getElementById('cfg-loops');
-    
-    const cm4Dialog = document.getElementById('cm4-dialog');
-    const btnCloseCm4Dialog = document.getElementById('btn-close-cm4-dialog');
-    const btnDialogConnect = document.getElementById('btn-dialog-connect');
-    const btnDialogCancel = document.getElementById('btn-dialog-cancel');
-    const cm4InputHost = document.getElementById('cm4-input-host');
-    const cm4DiscoveryStatus = document.getElementById('cm4-discovery-status');
-    
-    const printOverlay = document.getElementById('print-overlay');
-    const printPercent = document.getElementById('print-percent');
-    const printBadge = document.getElementById('print-badge');
-    const printAngle = document.getElementById('print-angle');
-    const printFrame = document.getElementById('print-frame');
-    const printTimer = document.getElementById('print-timer');
-    const printTimerLoops = document.getElementById('print-timer-loops');
-    const printOverlayPower = document.getElementById('print-overlay-power');
-    const printCircleProgress = document.getElementById('print-circle-progress');
-    const printHardwareLogs = document.getElementById('print-hardware-logs');
-    
-    // Initialize Lucide Icons
-    lucide.createIcons();
-    
-    // ─── THREE.JS WORKSPACE SETUP ───
+    // Zoom control
+    const frameZoomSlider = document.getElementById('frame-zoom-slider');
+    const frameZoomLabel = document.getElementById('frame-zoom-label');
+
+    // 4. SINOGRAMA REAL — Renderiza frames reales del motor CAL (trifurcatedvasculature.stl)
+    //    Tenemos 36 frames pre-calculados que cubren los 360°
+    function drawSinogramSlice(frame, is1Bit = false) {
+      if (!ctxSino) return;
+      const w = sinogramCanvas.width;
+      const h = sinogramCanvas.height;
+      ctxSino.clearRect(0, 0, w, h);
+      
+      // Mapear frame al índice del subconjunto real (36 frames cada 10°)
+      const realCount = realFrameImages.length;
+      if (realCount > 0 && realFramesLoaded) {
+        const idx = frame % realCount;
+        const img = realFrameImages[idx];
+        if (img && img.complete && img.naturalWidth > 0) {
+          // Fondo oscuro (proyector DLP)
+          ctxSino.fillStyle = '#020508';
+          ctxSino.fillRect(0, 0, w, h);
+          // Dibujar frame real centrado con fit
+          const scale = Math.min(w / img.naturalWidth, h / img.naturalHeight);
+          const dw = img.naturalWidth * scale;
+          const dh = img.naturalHeight * scale;
+          const dx = (w - dw) / 2;
+          const dy = (h - dh) / 2;
+          ctxSino.drawImage(img, dx, dy, dw, dh);
+          // Overlay sutil azul si modo 8-bit (color científico)
+          if (!is1Bit) {
+            ctxSino.globalCompositeOperation = 'screen';
+            ctxSino.fillStyle = 'rgba(14, 165, 233, 0.08)';
+            ctxSino.fillRect(0, 0, w, h);
+            ctxSino.globalCompositeOperation = 'source-over';
+          }
+          return;
+        }
+      }
+      // Fallback: placeholder mientras cargan
+      ctxSino.fillStyle = '#020508';
+      ctxSino.fillRect(0, 0, w, h);
+      ctxSino.fillStyle = 'rgba(14,165,233,0.3)';
+      ctxSino.font = `bold ${Math.floor(w*0.06)}px monospace`;
+      ctxSino.textAlign = 'center';
+      ctxSino.fillText('Cargando...', w/2, h/2);
+    }
+
+    // 5. IMÁGENES DE DIAGNÓSTICO REALES — generadas por cal_core.py
+    function drawReconstructionSlices() {
+      const canvas = document.getElementById('canvas-reconstruction-slices');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth;
+      const h = canvas.height = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+      // Mostrar imagen de reconstrucción REAL generada por matplotlib
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, w, h);
+      img.src = 'data/reconstruction_slices.png';
+    }
+
+    function drawLayerProfile() {
+      const canvas = document.getElementById('canvas-layer-profile');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth;
+      const h = canvas.height = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+      // Mostrar perfil de capa REAL generado por matplotlib
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, w, h);
+      img.src = 'data/layer_profile.png';
+    }
+
+    function drawDoseHistogram() {
+      // Histograma de dosis reutiliza el layer_profile que ya incluye análisis Z completo
+      // Se usa la misma imagen de perfil de capa real
+      const canvas = document.getElementById('canvas-dose-histogram');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth;
+      const h = canvas.height = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+      // Reutilizar reconstruction_slices (segundo panel del análisis Z)
+      // Nota: en un despliegue real, dose_histogram.png también existe
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, w, h);
+      img.src = 'data/reconstruction_slices.png';
+    }
+
+    // 6. THREE.JS VIEWPORTS RENDERING (CAL OPTIMIZER)
     function initThree() {
       const container = document.getElementById('three-container');
+      const canvas = document.getElementById('three-canvas');
       const w = container.clientWidth;
       const h = container.clientHeight;
       
       scene = new THREE.Scene();
-      scene.background = new THREE.Color('#0c101c');
+      scene.background = new THREE.Color('#f1f5f9'); // Clean light gray/blue background
       
-      camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 1000);
+      camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
       camera.position.set(38, 30, 38);
       
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(w, h);
+      renderer.setSize(w, h, false);
       renderer.shadowMap.enabled = true;
-      container.appendChild(renderer.domElement);
       
       orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
       orbitControls.enableDamping = true;
       orbitControls.dampingFactor = 0.08;
       orbitControls.minDistance = 15;
-      orbitControls.maxDistance = 150;
-      orbitControls.target.set(0, 10, 0);
+      orbitControls.maxDistance = 120;
+      orbitControls.target.set(0, 12.5, 0); // Center of Ø20 x H25 vial
       orbitControls.update();
       
-      // Lights
-      scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+      // Soft clean lights
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
       
-      const sun = new THREE.DirectionalLight(0xffffff, 0.95);
-      sun.position.set(30, 60, 30);
+      const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+      sun.position.set(40, 60, 40);
       sun.castShadow = true;
       scene.add(sun);
       
-      const fillLight = new THREE.DirectionalLight(0x06b6d4, 0.65);
-      fillLight.position.set(-30, 10, -30);
+      const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.35);
+      fillLight.position.set(-40, 10, -40);
       scene.add(fillLight);
       
-      const violetGlow = new THREE.PointLight(0x8b5cf6, 0.45, 100);
-      violetGlow.position.set(0, 12, 0);
-      scene.add(violetGlow);
-      
-      // Grid & Floor
-      const gridHelper = new THREE.GridHelper(80, 24, 0x1f2937, 0x111827);
-      gridHelper.position.y = -0.1;
-      scene.add(gridHelper);
+      // Bottom Grid
+      workspaceGrid = new THREE.GridHelper(80, 24, 0xdde4ee, 0xdde4ee);
+      workspaceGrid.position.y = -0.1;
+      scene.add(workspaceGrid);
       
       // Glass Vial Cylinder (Ø20 x H25)
       const vialGeo = new THREE.CylinderGeometry(10, 10, 25, 64, 1, true);
       const vialMat = new THREE.MeshPhysicalMaterial({
-        color: 0x22d3ee,
+        color: 0x3b82f6,
         transparent: true,
-        opacity: 0.07,
+        opacity: 0.06,
         side: THREE.DoubleSide,
         depthWrite: false,
         roughness: 0.1,
-        metalness: 0.1,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.1,
+        metalness: 0.05,
         transmission: 0.95,
-        ior: 1.5
+        ior: 1.45
       });
       glassVial = new THREE.Mesh(vialGeo, vialMat);
       glassVial.position.y = 12.5;
       scene.add(glassVial);
       
-      // Vial borders (Metallic bases)
+      // Metallic rings limits
       const ringMat = new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        metalness: 0.95,
-        roughness: 0.15
+        color: 0x475569,
+        metalness: 0.85,
+        roughness: 0.2
       });
-      const topRing = new THREE.Mesh(new THREE.CylinderGeometry(10.2, 10.2, 1, 64), ringMat);
-      topRing.position.y = 25;
+      const topRing = new THREE.Mesh(new THREE.CylinderGeometry(10.15, 10.15, 0.8, 64), ringMat);
+      topRing.position.y = 12.5;
       glassVial.add(topRing);
       
-      const baseRotor = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 2, 64), ringMat);
-      baseRotor.position.y = 0;
-      glassVial.add(baseRotor);
+      const bottomBase = new THREE.Mesh(new THREE.CylinderGeometry(10.6, 10.6, 1.6, 64), ringMat);
+      bottomBase.position.y = -12.5;
+      glassVial.add(bottomBase);
       
-      // Biometric Vascular Scaffold model inside (TorusKnot representation)
-      const scaffoldGeo = new THREE.TorusKnotGeometry(4.8, 1.35, 128, 16, 3, 4);
+      // Target complex Vascular Scaffold 3D model inside (Represented via TorusKnot)
+      const scaffoldGeo = new THREE.TorusKnotGeometry(4.6, 1.4, 150, 16, 3, 5);
       const scaffoldMat = new THREE.MeshStandardMaterial({
-        color: 0x06b6d4,
-        roughness: 0.25,
+        color: 0x475569, // Gray metal/plastic when unoptimized
+        roughness: 0.4,
         metalness: 0.1,
         transparent: true,
-        opacity: 0.85,
-        wireframe: false
+        opacity: 0.9
       });
       bioScaffold = new THREE.Mesh(scaffoldGeo, scaffoldMat);
       bioScaffold.position.y = 12.5;
-      bioScaffold.castShadow = true;
-      bioScaffold.receiveShadow = true;
       scene.add(bioScaffold);
       
-      // ── Resize Observer ──
+      // Resize handles
       const resizeObserver = new ResizeObserver(() => {
         const w = container.clientWidth;
         const h = container.clientHeight;
         if (w === 0 || h === 0) return;
-        renderer.setSize(w, h);
+        renderer.setSize(w, h, false);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
       });
       resizeObserver.observe(container);
       
-      // ── Drag rotation handling for UI outputs ──
+      // Orbit interaction triggers coordinate outputs
       orbitControls.addEventListener('change', () => {
-        // Track the relative rotation of the scaffold if the user rotated it
-        // Simulating the user's manually adjusted printing angle
-        valRx.innerText = `${Math.round(bioScaffold.rotation.x * (180/Math.PI)) % 360}°`;
-        valRy.innerText = `${Math.round(bioScaffold.rotation.y * (180/Math.PI)) % 360}°`;
-        valRz.innerText = `${Math.round(bioScaffold.rotation.z * (180/Math.PI)) % 360}°`;
+        if (currentView === 'optimizer') {
+          updateManualOrientationDisplay();
+        }
       });
       
-      // Animation ticks
       function animate() {
         requestAnimationFrame(animate);
-        
         orbitControls.update();
         
-        // If playing sinogram, match rotation exactly
-        if (isPlaying && isProcessed) {
+        // Couple continuous rotation with play frames
+        if (currentView === 'detail' && activeTab === 'frames' && isPlaying) {
           const frame = Number(playerTimeline.value);
-          bioScaffold.rotation.y = (frame / 360) * Math.PI * 2;
-          glassVial.rotation.y = (frame / 360) * Math.PI * 2;
+          const maxFrame = Number(playerTimeline.max);
+          const rotationRad = (frame / maxFrame) * Math.PI * 2;
+          bioScaffold.rotation.y = rotationRad;
+          glassVial.rotation.y = rotationRad;
         }
         
         renderer.render(scene, camera);
@@ -823,46 +1093,55 @@
       animate();
     }
 
-    // ─── THREE.JS OVERLAY (PRINT DIALOG VIAL) SETUP ───
+    function updateManualOrientationDisplay() {
+      // Replicates the snapping snap degree manual adjustments
+      const rx = Math.round(bioScaffold.rotation.x * (180 / Math.PI));
+      const ry = Math.round(bioScaffold.rotation.y * (180 / Math.PI));
+      const rz = Math.round(bioScaffold.rotation.z * (180 / Math.PI));
+      
+      document.getElementById('input-rot-x').value = rx;
+      document.getElementById('input-rot-y').value = ry;
+      document.getElementById('input-rot-z').value = rz;
+    }
+
+    // 7. THREE.JS OVERLAY VIEWPORT RENDERING (CM4 PHYSICAL ROTATING CURING DIALOG)
     function initOverlayThree() {
       const container = document.getElementById('print-vial-container');
+      const canvas = document.getElementById('print-vial-canvas');
       const w = container.clientWidth;
       const h = container.clientHeight;
       
       overlayScene = new THREE.Scene();
-      overlayScene.background = new THREE.Color('#05070f');
+      overlayScene.background = new THREE.Color('#03050b'); // Dark overlay scene background
       
       overlayCamera = new THREE.PerspectiveCamera(40, w / h, 0.1, 1000);
       overlayCamera.position.set(32, 24, 32);
       
-      overlayRenderer = new THREE.WebGLRenderer({ antialias: true });
+      overlayRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
       overlayRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      overlayRenderer.setSize(w, h);
-      overlayRenderer.shadowMap.enabled = true;
-      container.appendChild(overlayRenderer.domElement);
+      overlayRenderer.setSize(w, h, false);
       
       overlayControls = new THREE.OrbitControls(overlayCamera, overlayRenderer.domElement);
       overlayControls.enableDamping = true;
       overlayControls.dampingFactor = 0.08;
       overlayControls.minDistance = 15;
       overlayControls.maxDistance = 100;
-      overlayControls.target.set(0, 10, 0);
+      overlayControls.target.set(0, 12.5, 0);
       overlayControls.update();
       
-      // Lights
+      // Soft ambient + intense lateral violet projection beams
       overlayScene.add(new THREE.AmbientLight(0xffffff, 0.15));
       
-      const sun = new THREE.DirectionalLight(0xffffff, 0.7);
+      const sun = new THREE.DirectionalLight(0xffffff, 0.65);
       sun.position.set(30, 60, 30);
       overlayScene.add(sun);
       
-      // Intense Violet Projection UV light hit
+      // Intense Violet Projection laser UV source hit
       const uvLight = new THREE.DirectionalLight(0x8b5cf6, 2.5);
-      uvLight.position.set(50, 12, 0); // Projects from the side (Right)
+      uvLight.position.set(50, 12.5, 0); // Casts from the side projection
       overlayScene.add(uvLight);
       
-      // Floor & grid
-      const grid = new THREE.GridHelper(80, 24, 0x1f2937, 0x111827);
+      const grid = new THREE.GridHelper(80, 24, 0x1e293b, 0x0f172a);
       grid.position.y = -0.1;
       overlayScene.add(grid);
       
@@ -871,7 +1150,7 @@
       const vialMat = new THREE.MeshPhysicalMaterial({
         color: 0x8b5cf6,
         transparent: true,
-        opacity: 0.15,
+        opacity: 0.12,
         side: THREE.DoubleSide,
         depthWrite: false,
         roughness: 0.05,
@@ -882,23 +1161,23 @@
       overlayVial.position.y = 12.5;
       overlayScene.add(overlayVial);
       
-      const ringMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.2 });
-      const topRing = new THREE.Mesh(new THREE.CylinderGeometry(10.2, 10.2, 1, 64), ringMat);
-      topRing.position.y = 25;
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.15 });
+      const topRing = new THREE.Mesh(new THREE.CylinderGeometry(10.1, 10.1, 0.8, 64), ringMat);
+      topRing.position.y = 12.5;
       overlayVial.add(topRing);
       
-      const baseRotor = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 2, 64), ringMat);
-      baseRotor.position.y = 0;
+      const baseRotor = new THREE.Mesh(new THREE.CylinderGeometry(10.6, 10.6, 1.6, 64), ringMat);
+      baseRotor.position.y = -12.5;
       overlayVial.add(baseRotor);
       
       // Biocured model represented inside (starts fully transparent, cures/glows in violet)
-      const scaffoldGeo = new THREE.TorusKnotGeometry(4.8, 1.35, 128, 16, 3, 4);
+      const scaffoldGeo = new THREE.TorusKnotGeometry(4.6, 1.4, 150, 16, 3, 5);
       const scaffoldMat = new THREE.MeshStandardMaterial({
-        color: 0xa78bfa, // Light purple/violet
+        color: 0xa78bfa, // Curing lavender purple/violet hue
         roughness: 0.3,
         metalness: 0.1,
         transparent: true,
-        opacity: 0.0 // invisible at start
+        opacity: 0.0 // Starts invisible, increments with doses
       });
       overlayScaffold = new THREE.Mesh(scaffoldGeo, scaffoldMat);
       overlayScaffold.position.y = 12.5;
@@ -908,7 +1187,7 @@
         const w = container.clientWidth;
         const h = container.clientHeight;
         if (w === 0 || h === 0) return;
-        overlayRenderer.setSize(w, h);
+        overlayRenderer.setSize(w, h, false);
         overlayCamera.aspect = w / h;
         overlayCamera.updateProjectionMatrix();
       });
@@ -918,10 +1197,10 @@
         requestAnimationFrame(animate);
         overlayControls.update();
         
-        // Continuous mechanical rotation
+        // Continuous mechanics rotation animation
         if (isPrinting) {
-          overlayVial.rotation.y += 0.01;
-          overlayScaffold.rotation.y += 0.01;
+          overlayVial.rotation.y += 0.008;
+          overlayScaffold.rotation.y += 0.008;
         }
         
         overlayRenderer.render(overlayScene, overlayCamera);
@@ -929,538 +1208,837 @@
       animate();
     }
 
-    // ─── MOCK SINOGRAM DRAWING ───
-    function drawSinogramSlice(frame) {
-      if (!ctxSino) return;
-      
-      const w = sinogramCanvas.width;
-      const h = sinogramCanvas.height;
-      ctxSino.clearRect(0, 0, w, h);
-      
-      // Center coordinates
-      const cx = w / 2;
-      const cy = h / 2;
-      
-      // Draw simulated tomographic FBP UV slices
-      ctxSino.fillStyle = '#020204';
-      ctxSino.fillRect(0, 0, w, h);
-      
-      // Draw background noise
-      ctxSino.fillStyle = 'rgba(6, 182, 212, 0.02)';
-      for (let i = 0; i < 20; i++) {
-        ctxSino.beginPath();
-        ctxSino.arc(Math.random() * w, Math.random() * h, Math.random() * 20, 0, Math.PI * 2);
-        ctxSino.fill();
-      }
-      
-      // Form radial 2D projection patterns based on frame angle and resolution
-      const angleRad = (frame / 360) * Math.PI * 2;
-      ctxSino.shadowBlur = 10;
-      ctxSino.shadowColor = 'rgba(34, 211, 238, 0.7)';
-      
-      // Draw projected structure slice
-      ctxSino.strokeStyle = 'rgba(34, 211, 238, 0.85)';
-      ctxSino.lineWidth = 4 + 2 * Math.sin(angleRad * 3);
-      
-      ctxSino.beginPath();
-      // Draw a complex multi-lobe mathematical shape resembling a vascular knot slice
-      const rBase = 32 + 8 * Math.sin(angleRad * 4);
-      for (let theta = 0; theta <= Math.PI * 2; theta += 0.05) {
-        const r = rBase + 12 * Math.sin(theta * 3 + angleRad * 2) * Math.cos(theta * 5 - angleRad);
-        const x = cx + r * Math.cos(theta);
-        const y = cy + r * Math.sin(theta);
-        if (theta === 0) ctxSino.moveTo(x, y);
-        else ctxSino.lineTo(x, y);
-      }
-      ctxSino.closePath();
-      ctxSino.stroke();
-      
-      // Draw inner support holes
-      ctxSino.fillStyle = '#020204';
-      ctxSino.shadowBlur = 0;
-      for (let j = 0; j < 3; j++) {
-        const offAngle = angleRad + (j * Math.PI * 2 / 3);
-        const hx = cx + 18 * Math.cos(offAngle);
-        const hy = cy + 18 * Math.sin(offAngle);
-        ctxSino.beginPath();
-        ctxSino.arc(hx, hy, 4 + 2 * Math.cos(angleRad * 2), 0, Math.PI * 2);
-        ctxSino.fill();
-      }
-    }
-
-    // Initialize Canvas Sizes
-    sinogramCanvas.width = 256;
-    sinogramCanvas.height = 256;
-    drawSinogramSlice(0);
-
-    // ─── CONSOLE LOGGER HELPERS ───
-    function appendLog(text, type = 'normal') {
-      const logDiv = document.createElement('div');
-      logDiv.innerText = text;
+    // 8. CONSOLE OUTPUT LOGGER HELPER
+    const consoleLogs = document.getElementById('console-logs');
+    
+    function log(text, type = 'normal') {
+      const line = document.createElement('div');
+      line.innerText = text;
       
       if (type === 'error') {
-        logDiv.className = 'text-red-400 font-bold';
+        line.className = 'text-red-400 font-bold';
       } else if (type === 'success') {
-        logDiv.className = 'text-emerald-400 font-bold';
+        line.className = 'text-[#22c55e] font-bold';
       } else if (type === 'warn') {
-        logDiv.className = 'text-amber-400 font-bold';
+        line.className = 'text-amber-400 font-medium';
       } else if (type === 'accent') {
-        logDiv.className = 'text-cyan-400 font-semibold';
+        line.className = 'text-sky-400 font-semibold';
       } else {
-        logDiv.className = 'text-green-400/80';
+        line.className = 'text-slate-400';
       }
       
-      consoleLogs.appendChild(logDiv);
+      consoleLogs.appendChild(line);
       consoleLogs.scrollTop = consoleLogs.scrollHeight;
     }
 
-    // ─── CONNECTIVITY PANEL EVENT HANDLERS ───
-    btnConnectCm4.addEventListener('click', () => {
-      cm4Dialog.classList.remove('opacity-0', 'pointer-events-none');
-    });
+    // 9. RE-DESIGNED MOCK LIBRARY UI GENERATOR
+    const libraryListContainer = document.getElementById('library-list-container');
+    const libraryStatusCount = document.getElementById('library-status-count');
+    const libraryCountBadge = document.getElementById('library-count-badge');
 
-    btnCloseCm4Dialog.addEventListener('click', closeDialog);
-    btnDialogCancel.addEventListener('click', closeDialog);
-    
-    function closeDialog() {
-      cm4Dialog.classList.add('opacity-0', 'pointer-events-none');
+    function renderLibraryItems() {
+      libraryListContainer.innerHTML = "";
+      libraryStatusCount.innerText = `${libraryDatabase.length} modelos guardados`;
+      libraryCountBadge.innerText = libraryDatabase.length;
+      
+      if (libraryDatabase.length === 0) {
+        libraryListContainer.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-20 gap-3 select-none">
+            <span class="text-4xl">📦</span>
+            <div class="text-xs text-slate-400 text-center">Aún no hay modelos guardados.<br/>Usa el botón "Guardar" tras una optimización.</div>
+          </div>
+        `;
+        return;
+      }
+      
+      libraryDatabase.forEach(item => {
+        // Build the precise VAM Studio layout for each item card
+        const card = document.createElement('div');
+        card.className = "grid grid-cols-[64px_2fr_1fr_120px_120px_48px] items-center gap-5 p-3.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-slate-400 hover:shadow-md transition-all duration-150 shadow-sm";
+        
+        card.innerHTML = `
+          <!-- Miniaturised projection preview (inline generated svg/canvas thumbnail) -->
+          <div class="w-16 h-16 rounded-lg bg-slate-900 border border-slate-100 overflow-hidden flex items-center justify-center flex-shrink-0">
+            <canvas id="thumb-canvas-${item.job_id}" width="64" height="64" class="w-full h-full object-contain"></canvas>
+          </div>
+          
+          <!-- Principal details -->
+          <div class="min-w-0">
+            <div class="text-sm font-extrabold text-slate-800 mb-0.5 truncate">${item.model_name}</div>
+            <div class="text-[10px] font-mono text-slate-400">${item.timestamp}</div>
+          </div>
+          
+          <!-- Optimization parameters -->
+          <div class="text-[11px] text-slate-500">
+            <div class="opacity-60 text-[9px] uppercase tracking-wider">${item.params.method} · Res/Ang</div>
+            <div class="font-bold text-slate-700">${item.params.resolution}³ · ${item.params.num_angles}°</div>
+          </div>
+          
+          <!-- Verdict pill -->
+          <div>
+            <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border border-emerald-500/20 bg-emerald-50 text-emerald-600">
+              ${item.verdict}
+            </span>
+          </div>
+          
+          <!-- Bio Score -->
+          <div>
+            <div class="text-[9px] text-slate-400 uppercase tracking-wider mb-0.5">Score Bio</div>
+            <div class="text-xl font-extrabold text-[#059669] leading-none font-mono">${item.score_bio.toFixed(1)}</div>
+          </div>
+          
+          <!-- Delete button action -->
+          <button id="btn-delete-${item.job_id}" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all duration-150">
+            🗑
+          </button>
+        `;
+        
+        // Navigate on card click
+        card.addEventListener('click', (e) => {
+          if (e.target.id === `btn-delete-${item.job_id}`) return;
+          openJobDetails(item);
+        });
+        
+        libraryListContainer.appendChild(card);
+        
+        // Draw miniature preview immediately on thumbnail canvas
+        const thumbCanvas = document.getElementById(`thumb-canvas-${item.job_id}`);
+        const thumbCtx = thumbCanvas.getContext('2d');
+        thumbCtx.fillStyle = '#040712';
+        thumbCtx.fillRect(0,0,64,64);
+        thumbCtx.strokeStyle = 'rgba(14, 165, 233, 0.85)';
+        thumbCtx.lineWidth = 1.5;
+        thumbCtx.beginPath();
+        thumbCtx.arc(32,32,16,0,Math.PI*2);
+        thumbCtx.stroke();
+        
+        // Delete button trigger listener
+        document.getElementById(`btn-delete-${item.job_id}`).addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm('¿Eliminar permanentemente este registro?')) {
+            libraryDatabase = libraryDatabase.filter(j => j.job_id !== item.job_id);
+            renderLibraryItems();
+            log(`[Biblioteca] Registro '${item.model_name}' eliminado permanentemente.`, 'warn');
+          }
+        });
+      });
     }
 
-    btnDialogConnect.addEventListener('click', () => {
-      const host = cm4InputHost.value;
-      cm4DiscoveryStatus.classList.remove('hidden');
-      btnDialogConnect.disabled = true;
-      btnDialogConnect.innerText = "CONECTANDO...";
+    // 10. DETAIL VIEW POPULATE AND TABS ROUTING
+    function openJobDetails(item) {
+      selectedJob = item;
       
+      // Update header details and metadata
+      document.getElementById('detail-model-title').innerText = item.model_name;
+      document.getElementById('detail-timestamp').innerText = item.timestamp;
+      
+      // Verdict colors mapping
+      const badge = document.getElementById('detail-verdict-badge');
+      const scoreBig = document.getElementById('detail-score-bio');
+      const verdictTxt = document.getElementById('detail-verdict');
+      const scoreCard = document.getElementById('detail-verdict-card');
+      
+      scoreBig.innerText = item.score_bio.toFixed(1);
+      verdictTxt.innerText = item.verdict;
+      badge.innerText = `${item.verdict} · ${item.score_bio.toFixed(1)}`;
+      
+      if (item.verdict === 'EXCELENTE') {
+        badge.className = "px-3.5 py-1 rounded-full text-xs font-bold tracking-widest uppercase border border-[#059669]/20 bg-[#ecfdf5] text-[#059669]";
+        scoreBig.className = "text-5xl font-extrabold font-mono tracking-tighter leading-none mb-1.5 text-[#059669]";
+        verdictTxt.className = "text-xs font-bold text-[#059669] tracking-widest uppercase";
+        scoreCard.className = "p-4 rounded-xl border border-[#059669]/20 bg-[#ecfdf5]/20 text-center";
+      } else {
+        badge.className = "px-3.5 py-1 rounded-full text-xs font-bold tracking-widest uppercase border border-brand-500/20 bg-brand-50 text-brand-500";
+        scoreBig.className = "text-5xl font-extrabold font-mono tracking-tighter leading-none mb-1.5 text-brand-500";
+        verdictTxt.className = "text-xs font-bold text-brand-500 tracking-widest uppercase";
+        scoreCard.className = "p-4 rounded-xl border border-brand-500/20 bg-brand-50/20 text-center";
+      }
+      
+      // Quantitative specifications tables
+      document.getElementById('td-ver').innerText = item.metrics.ver.toFixed(4);
+      document.getElementById('td-cv').innerText = item.metrics.cv.toFixed(4);
+      document.getElementById('td-pw').innerText = item.metrics.pw.toFixed(4);
+      document.getElementById('td-ipdr').innerText = item.metrics.ipdr.toFixed(4);
+      document.getElementById('td-contrast').innerText = item.metrics.dose_contrast.toFixed(2);
+      
+      // Update sidebar summary details
+      document.getElementById('detail-frames-count').innerText = item.has_bitplanes ? item.n_bitplanes : item.n_frames;
+      
+      // Set input defaults
+      document.getElementById('detail-cfg-power').value = 2.5;
+      document.getElementById('detail-cfg-loops').value = 1;
+      
+      // Route View Overlay switches
+      switchView('detail');
+      
+      // Trigger canvases render
       setTimeout(() => {
-        cm4DiscoveryStatus.classList.add('hidden');
-        btnDialogConnect.disabled = false;
-        btnDialogConnect.innerText = "CONECTAR";
-        closeDialog();
+        drawReconstructionSlices();
+        drawLayerProfile();
+        drawDoseHistogram();
         
-        // Update states to CONNECTED
-        isConnected = true;
-        cm4StatusBadge.className = "px-3 py-1 rounded-md bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-widest uppercase flex items-center gap-2";
-        cm4StatusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> CM4 CONECTADO`;
-        btnConnectCm4.className = "px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold tracking-wide shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition duration-200";
-        btnConnectCm4.innerHTML = `<i data-lucide="check"></i> CM4 VINCULADA`;
-        lucide.createIcons();
+        // Initial setup for the sinogram player timeline limits
+        isPlaying = false;
+        document.getElementById('btn-player-play').innerText = "▶ Reproducir";
         
-        appendLog(`[Hardware] Conectado exitosamente a RPi CM4 en ${host}`, 'success');
-        appendLog(`[Hardware] Estado del receptor: IDLE · Parámetros de telemetría de 6.0 FPS cargados en firmware.`, 'success');
+        const zoomVal = Number(frameZoomSlider.value);
+        sinogramCanvas.width = zoomVal;
+        sinogramCanvas.height = zoomVal;
         
-        // Enable printing options if already processed
-        checkFlashingPrivileges();
-      }, 1500);
-    });
+        // Set timeline sliders max limit depending on 1bit planes availability
+        setFrameMode('1bit');
+      }, 50);
+      
+      // Rotate 3D scaffold model mesh colors inside viewport to reflect optimized cure status
+      bioScaffold.material.color.setHex(0x0ea5e9); // Cured sky blue
+      bioScaffold.material.opacity = 0.95;
+    }
 
-    function checkFlashingPrivileges() {
-      if (isConnected && isProcessed) {
-        flasherPanel.classList.remove('opacity-50', 'pointer-events-none');
-        appendLog(`[Sistema] Flujo habilitado: Listo para enviar sinograma consolidado al proyector local.`, 'accent');
+    // 11. NAVIGATION VIEWPORT SWITCHES
+    function switchView(viewName) {
+      currentView = viewName;
+      
+      // Nav buttons UI update
+      const optBtn = document.getElementById('nav-btn-optimizer');
+      const libBtn = document.getElementById('nav-btn-library');
+      
+      optBtn.className = "px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-600 border border-transparent transition";
+      libBtn.className = "px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-600 border border-transparent transition flex items-center gap-1.5";
+      
+      if (viewName === 'optimizer') {
+        optBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 text-brand-500 border border-brand-100 transition";
+      } else if (viewName === 'library') {
+        libBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 text-brand-500 border border-brand-100 transition flex items-center gap-1.5";
+      }
+      
+      // Content containers switch
+      document.getElementById('view-optimizer').classList.add('hidden');
+      document.getElementById('view-library').classList.add('hidden');
+      document.getElementById('view-detail').classList.add('hidden');
+      
+      // Transform snap orientation toolbar display toggles
+      document.getElementById('transform-toolbar').classList.add('hidden');
+      
+      if (viewName === 'optimizer') {
+        document.getElementById('view-optimizer').classList.remove('hidden');
+        document.getElementById('transform-toolbar').classList.remove('hidden');
+        workspaceGrid.visible = true;
+        
+        // Reset scaffold orientation and colors for optimization preview
+        if (!isProcessed) {
+          bioScaffold.material.color.setHex(0x475569); // original raw gray
+          bioScaffold.material.opacity = 0.9;
+        } else {
+          bioScaffold.material.color.setHex(0x0ea5e9); // cured sky blue
+        }
+      } else if (viewName === 'library') {
+        document.getElementById('view-library').classList.remove('hidden');
+        renderLibraryItems();
+      } else if (viewName === 'detail') {
+        document.getElementById('view-detail').classList.remove('hidden');
       }
     }
 
-    // ─── OPTIMIZER COMPUTATIONAL PIPELINE SIMULATOR ───
-    btnProcess.addEventListener('click', () => {
-      isProcessed = false;
+    // 12. TAB ROUTING (DETAIL DIALOG VIEW)
+    const tabBtnImages = document.getElementById('tab-btn-images');
+    const tabBtnFrames = document.getElementById('tab-btn-frames');
+    const tabBtnMetrics = document.getElementById('tab-btn-metrics');
+
+    const tabContentImages = document.getElementById('tab-content-images');
+    const tabContentFrames = document.getElementById('tab-content-frames');
+    const tabContentMetrics = document.getElementById('tab-content-metrics');
+
+    function selectTab(tabName) {
+      activeTab = tabName;
+      
+      // Reset classes
+      tabBtnImages.className = "px-4 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-600 transition";
+      tabBtnFrames.className = "px-4 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-600 transition";
+      tabBtnMetrics.className = "px-4 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-600 transition";
+      
+      tabContentImages.classList.add('hidden');
+      tabContentFrames.classList.add('hidden');
+      tabContentMetrics.classList.add('hidden');
+      
+      if (tabName === 'images') {
+        tabBtnImages.className = "px-4 py-1.5 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition";
+        tabContentImages.classList.remove('hidden');
+      } else if (tabName === 'frames') {
+        tabBtnFrames.className = "px-4 py-1.5 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition";
+        tabContentFrames.classList.remove('hidden');
+      } else if (tabName === 'metrics') {
+        tabBtnMetrics.className = "px-4 py-1.5 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition";
+        tabContentMetrics.classList.remove('hidden');
+      }
+      
+      // Stop player play when switching tabs
+      if (tabName !== 'frames' && isPlaying) {
+        stopPlayerInterval();
+      }
+    }
+
+    // Tab buttons trigger event listeners
+    tabBtnImages.addEventListener('click', () => selectTab('images'));
+    tabBtnFrames.addEventListener('click', () => selectTab('frames'));
+    tabBtnMetrics.addEventListener('click', () => selectTab('metrics'));
+
+    // 13. PROJECTOR PLAYER MOVIE & SLIDER LOGIC
+    let playerPlayInterval = null;
+    let activeFrameMode = '1bit'; // '8bit' or '1bit'
+
+    function setFrameMode(mode) {
+      activeFrameMode = mode;
       isPlaying = false;
-      btnPlay.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5"></i>`;
-      lucide.createIcons();
+      stopPlayerInterval();
+      document.getElementById('btn-player-play').innerText = "▶ Reproducir";
       
-      btnProcess.disabled = true;
-      btnProcess.className = "w-full py-3 px-4 rounded-xl bg-slate-800 text-slate-500 text-sm font-bold tracking-widest uppercase cursor-wait flex items-center justify-center gap-2";
-      btnProcess.innerHTML = `<span class="w-4 h-4 rounded-full border-2 border-slate-600 border-t-cyan-400 animate-spin"></span> OPTIMIZANDO...`;
+      const timeline = document.getElementById('player-timeline');
+      const label = document.getElementById('player-angle-tag');
+      const tag = document.getElementById('frame-count-tag');
+      const meta = document.getElementById('frame-metadata');
       
-      // Visual feedback reset
-      metricsCardContainer.classList.add('opacity-50');
-      quantitativePanel.classList.add('opacity-50');
-      playerPanel.classList.add('opacity-50');
-      flasherPanel.classList.add('opacity-50', 'pointer-events-none');
+      const btn1 = document.getElementById('btn-frame-mode-1bit');
+      const btn8 = document.getElementById('btn-frame-mode-8bit');
       
-      appendLog(`[Optimizador] Iniciando motor de cálculo tomográfico (${activeMethod})...`);
+      btn1.className = "px-4 py-1.5 rounded-lg text-xs font-medium bg-slate-200 text-slate-600 hover:bg-slate-300 transition-all duration-150";
+      btn8.className = "px-4 py-1.5 rounded-lg text-xs font-medium bg-slate-200 text-slate-600 hover:bg-slate-300 transition-all duration-150";
       
-      // Simulating realistic steps of Computed Axial Lithography
-      let step = 0;
-      const steps = [
-        { msg: `Cargando geometría STL y asignando tensores CUDA...`, delay: 400, type: 'normal' },
-        { msg: `Voxelizando malla a rejilla tridimensional de ${activeResolution}³...`, delay: 800, type: 'normal' },
-        { msg: `Calculando transformada de distancia euclidiana (EDT)...`, delay: 1200, type: 'normal' },
-        { msg: `GPU: Inicializando optimización por retroproyección MLEM sobre GPU de 360 ángulos...`, delay: 1800, type: 'accent' },
-        { msg: `[Iter 1] VER: 0.2205 · PW Score: 0.7812`, delay: 2000, type: 'normal' },
-        { msg: `[Iter 15] VER: 0.0894 · PW Score: 0.8995`, delay: 2200, type: 'normal' },
-        { msg: `[Iter 32] VER: 0.0381 · PW Score: 0.9562`, delay: 2400, type: 'normal' },
-        { msg: `[Iter 48] VER: ${mockDb[activeMethod].ver} · PW Score: ${mockDb[activeMethod].pw}`, delay: 2600, type: 'normal' },
-        { msg: `GPU: Criterio de early stopping alcanzado en Iteración 48 (tolerancia < 1e-4)`, delay: 2800, type: 'success' },
-        { msg: `Finalizando cálculo. Consolidando sinograma de ${activeAngles} fotogramas a resolución 256x256...`, delay: 3200, type: 'normal' },
-        { msg: `Optimización finalizada con éxito. Tiempo de cómputo GPU: ${mockDb[activeMethod].time} segundos.`, delay: 3500, type: 'success' }
-      ];
-      
-      steps.forEach(s => {
-        setTimeout(() => {
-          appendLog(s.msg, s.type);
-        }, s.delay);
-      });
-      
-      // Core processing completed
-      setTimeout(() => {
-        isProcessed = true;
-        
-        // Reset process button
-        btnProcess.disabled = false;
-        btnProcess.className = "w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 active:scale-[0.98] font-bold text-sm tracking-widest uppercase shadow-lg shadow-brand-600/10 flex items-center justify-center gap-2 transition duration-200";
-        btnProcess.innerHTML = `<i data-lucide="play-circle" class="w-4 h-4"></i> PROCESAR MODELO`;
-        lucide.createIcons();
-        
-        // Render quantitative details
-        const results = mockDb[activeMethod];
-        metricScore.innerText = results.scoreBio.toFixed(1);
-        metricVerdict.innerText = results.verdict;
-        
-        // Harmonious colors based on verdict
-        if (results.verdict === 'EXCELENTE') {
-          metricScore.className = "text-5xl font-extrabold text-emerald-400 font-mono my-1 tracking-tight";
-          metricVerdict.className = "text-xs px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-extrabold tracking-widest uppercase";
-          metricSummary.innerText = "La uniformidad de la dosis y el contraste de curado son óptimos para hidrogeles celulares.";
-          metricsCard.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/[0.02] p-4 flex flex-col items-center gap-2 text-center relative overflow-hidden transition duration-300 shadow-[0_0_20px_rgba(16,185,129,0.05)]";
-        } else {
-          metricScore.className = "text-5xl font-extrabold text-blue-400 font-mono my-1 tracking-tight";
-          metricVerdict.className = "text-xs px-3 py-1 rounded-full bg-blue-950/40 border border-blue-500/30 text-blue-400 font-extrabold tracking-widest uppercase";
-          metricSummary.innerText = "Alta fidelidad estructural obtenida mediante algoritmo iterativo.";
-          metricsCard.className = "rounded-xl border border-blue-500/20 bg-blue-500/[0.02] p-4 flex flex-col items-center gap-2 text-center relative overflow-hidden transition duration-300";
-        }
-        
-        valVer.innerText = results.ver.toFixed(4);
-        valPw.innerText = results.pw.toFixed(4);
-        valFrames.innerText = activeAngles;
-        valTime.innerText = `${results.time.toFixed(1)}s`;
-        
-        // Enable preview and flasher panels
-        metricsCardContainer.classList.remove('opacity-50');
-        quantitativePanel.classList.remove('opacity-50');
-        playerPanel.classList.remove('opacity-50');
-        
-        // Enable library badge counter
-        btnLibrary.innerText = "Biblioteca (2)";
-        btnLibrary.className = "px-4 py-1.5 rounded-lg hover:bg-white/5 border border-white/5 text-cyan-400 text-xs font-bold transition duration-200";
-        
-        checkFlashingPrivileges();
-      }, 3600);
-    });
+      if (mode === '1bit') {
+        btn1.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-brand-500 text-white shadow transition-all duration-150";
+        timeline.max = selectedJob.n_bitplanes - 1;
+        timeline.value = 0;
+        tag.innerText = `1/${selectedJob.n_bitplanes}`;
+        label.innerText = "0.0°";
+        meta.innerText = "1024×1024px · 19µm/px · 6.0°/s → 60s/vuelta · SPI 55ms/frame";
+        drawSinogramSlice(0, true);
+      } else {
+        btn8.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-brand-50 text-brand-500 border border-brand-200 shadow transition-all duration-150";
+        timeline.max = selectedJob.n_frames - 1;
+        timeline.value = 0;
+        tag.innerText = `1/${selectedJob.n_frames}`;
+        label.innerText = "0.0°";
+        meta.innerText = "1024×1024px · Original 8-bit de simulación · 360 proyecciones";
+        drawSinogramSlice(0, false);
+      }
+    }
 
-    // ─── ACCELERATION CLICK LISTENERS ───
-    accGpu.addEventListener('click', () => {
-      activeUseCuda = true;
-      accGpu.className = "py-2 rounded-lg border border-brand-500/40 bg-brand-600/15 text-cyan-400 text-xs font-bold flex items-center justify-center gap-1.5 transition";
-      accCpu.className = "py-2 rounded-lg border border-white/5 bg-white/5 text-slate-400 text-xs font-medium flex items-center justify-center gap-1.5 transition hover:bg-white/10";
-      appendLog(`[Sistema] Ajustado motor tomográfico a aceleración masiva en GPU (NVIDIA CUDA).`);
-    });
-    
-    accCpu.addEventListener('click', () => {
-      activeUseCuda = false;
-      accCpu.className = "py-2 rounded-lg border border-brand-500/40 bg-brand-600/15 text-cyan-400 text-xs font-bold flex items-center justify-center gap-1.5 transition";
-      accGpu.className = "py-2 rounded-lg border border-white/5 bg-white/5 text-slate-400 text-xs font-medium flex items-center justify-center gap-1.5 transition hover:bg-white/10";
-      appendLog(`[Sistema] Advertencia: Aceleración desactivada. Los tiempos de cómputo en CPU pueden incrementarse notablemente.`, 'warn');
-    });
+    document.getElementById('btn-frame-mode-1bit').addEventListener('click', () => setFrameMode('1bit'));
+    document.getElementById('btn-frame-mode-8bit').addEventListener('click', () => setFrameMode('8bit'));
 
-    // ─── RESOLUTION BUTTONS CLICK LISTENERS ───
-    const resBtns = document.querySelectorAll('.res-btn');
-    resBtns.forEach((btn, idx) => {
-      btn.addEventListener('click', () => {
-        resBtns.forEach(b => {
-          b.className = "res-btn px-2 py-1 rounded border border-white/5 bg-white/5 text-[10px] text-slate-400 font-bold hover:bg-white/10";
-        });
-        btn.className = "res-btn px-2 py-1 rounded border border-cyan-500/40 bg-brand-500/10 text-[10px] text-cyan-400 font-extrabold";
-        activeResolution = [64, 128, 256][idx];
-        appendLog(`[Optimizador] Ajustada resolución de voxelización a grilla tridimensional de ${activeResolution}³.`, 'normal');
-      });
-    });
+    function stopPlayerInterval() {
+      if (playerPlayInterval) {
+        clearInterval(playerPlayInterval);
+        playerPlayInterval = null;
+      }
+    }
 
-    // ─── ANGLES INPUTS CHANGED ───
-    cfgAngles.addEventListener('change', () => {
-      let val = parseInt(cfgAngles.value);
-      if (isNaN(val) || val < 36) val = 36;
-      if (val > 3600) val = 3600;
-      cfgAngles.value = val;
-      activeAngles = val;
-      playerTimeline.max = val - 1;
-      playerFrameTag.innerText = `F: 0/${val}`;
-      appendLog(`[Optimizador] Configurada ráfaga angular de sinograma a ${val} proyecciones equidistantas.`);
-    });
-    
-    cfgMethod.addEventListener('change', () => {
-      activeMethod = cfgMethod.value;
-      appendLog(`[Optimizador] Algoritmo matemático principal cambiado a: ${activeMethod === 'CAL' ? 'Radon Inverso Filtrado (CAL)' : 'Minimización Iterativa MLEM (Sinogram)'}`);
-    });
-    
-    cfgFilter.addEventListener('change', () => {
-      activeFilter = cfgFilter.value;
-      appendLog(`[Optimizador] Filtro de deconvolución de bordes FBP asignado a: ${activeFilter}`);
-    });
+    const btnPlayerPlay = document.getElementById('btn-player-play');
+    const playerTimeline = document.getElementById('player-timeline');
+    const playerAngleTag = document.getElementById('player-angle-tag');
+    const frameCountTag = document.getElementById('frame-count-tag');
 
-    // ─── SINOGRAM PLAYER CONTROL LOGIC ───
-    let playInterval = null;
-    btnPlay.addEventListener('click', () => {
-      if (!isProcessed) return;
-      
+    btnPlayerPlay.addEventListener('click', () => {
       if (isPlaying) {
         isPlaying = false;
-        clearInterval(playInterval);
-        btnPlay.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5"></i>`;
+        btnPlayerPlay.innerText = "▶ Reproducir";
+        stopPlayerInterval();
       } else {
         isPlaying = true;
-        btnPlay.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5"></i>`;
+        btnPlayerPlay.innerText = "⏸ Pausar";
         
-        playInterval = setInterval(() => {
+        const maxLimit = Number(playerTimeline.max);
+        
+        playerPlayInterval = setInterval(() => {
           let curr = Number(playerTimeline.value);
-          curr = (curr + 1) % activeAngles;
+          curr = (curr + 1) % (maxLimit + 1);
           playerTimeline.value = curr;
-          updatePlayerTimeline(curr);
-        }, 40); // ~25 FPS
+          
+          updateTimelineView(curr, maxLimit);
+        }, activeFrameMode === '1bit' ? 33 : 45); // ~30 FPS
       }
-      lucide.createIcons();
     });
 
     playerTimeline.addEventListener('input', () => {
-      if (!isProcessed) {
-        playerTimeline.value = 0;
-        return;
-      }
+      isPlaying = false;
+      btnPlayerPlay.innerText = "▶ Reproducir";
+      stopPlayerInterval();
+      
       const val = Number(playerTimeline.value);
-      updatePlayerTimeline(val);
+      const maxLimit = Number(playerTimeline.max);
+      updateTimelineView(val, maxLimit);
     });
 
-    function updatePlayerTimeline(frame) {
-      playerAngle.innerText = `${frame}°`;
-      playerFrameTag.innerText = `F: ${frame + 1}/${activeAngles}`;
+    function updateTimelineView(frame, maxLimit) {
+      const is1Bit = activeFrameMode === '1bit';
+      const angle = (frame / (maxLimit + 1)) * 360;
       
-      // Update Canvas slice
-      drawSinogramSlice(frame);
+      playerAngleTag.innerText = `${angle.toFixed(1)}°`;
+      frameCountTag.innerText = `${frame + 1}/${maxLimit + 1}`;
       
-      // Link Three.js viewport rotations if manual interaction is stopped
+      // Render canvas frame
+      drawSinogramSlice(frame, is1Bit);
+      
+      // Update Three.js model rotation to match timeline angle dynamically
       if (!isPlaying) {
-        bioScaffold.rotation.y = (frame / 360) * Math.PI * 2;
-        glassVial.rotation.y = (frame / 360) * Math.PI * 2;
+        const rotationRad = (frame / maxLimit) * Math.PI * 2;
+        bioScaffold.rotation.y = rotationRad;
+        glassVial.rotation.y = rotationRad;
       }
     }
 
-    btnClearConsole.addEventListener('click', () => {
-      consoleLogs.innerHTML = "";
+    // Zoom frame handler
+    frameZoomSlider.addEventListener('input', () => {
+      const zoomVal = Number(frameZoomSlider.value);
+      frameZoomLabel.innerText = `${zoomVal}px`;
+      sinogramCanvas.width = zoomVal;
+      sinogramCanvas.height = zoomVal;
+      
+      // Redraw slice
+      const frame = Number(playerTimeline.value);
+      const is1Bit = activeFrameMode === '1bit';
+      drawSinogramSlice(frame, is1Bit);
     });
 
-    // ─── VOLUMETRIC PROJECTOR INTERACTION AND TELEMETRY FLASHER ───
-    btnFlashCm4.addEventListener('click', () => {
-      if (!isConnected || !isProcessed) return;
+    // 14. ROUTING VIEW BUTTON LISTENER HANDLERS
+    document.getElementById('nav-btn-optimizer').addEventListener('click', () => switchView('optimizer'));
+    document.getElementById('nav-btn-library').addEventListener('click', () => switchView('library'));
+    document.getElementById('btn-back-to-library').addEventListener('click', () => switchView('library'));
+    
+    // Close / Export details
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      alert(`Archivo JSON exportado: 'vam_export_${selectedJob.job_id}.json' en descargas.`);
+    });
+
+    // 15. GIZMO MANUAL ADJUSTMENTSsnapSnap Snap 5° rotate snap rotation controls
+    const snapBtn = document.getElementById('btn-snap-5');
+    snapBtn.addEventListener('click', () => {
+      isSnapState = !isSnapState;
+      if (isSnapState) {
+        snapBtn.className = "h-8 px-2.5 rounded-lg text-brand-500 bg-brand-50 border border-brand-200 text-xs font-bold transition";
+        log(`[Sistema] Giro manual magnetizado: Rotación configurada con saltos de 5° estáticos.`);
+      } else {
+        snapBtn.className = "h-8 px-2.5 rounded-lg text-slate-400 hover:text-slate-600 text-xs font-bold transition";
+        log(`[Sistema] Giro manual libre: Saltos magnéticos desactivados.`);
+      }
+    });
+
+    // Manual input fields trigger orientations
+    const inputs = ['input-rot-x', 'input-rot-y', 'input-rot-z'].map(id => document.getElementById(id));
+    inputs.forEach(el => {
+      el.addEventListener('change', () => {
+        let val = parseFloat(el.value);
+        if (isNaN(val)) val = 0;
+        
+        // Snap matching 5 degrees
+        if (isSnapState) {
+          val = Math.round(val / 5) * 5;
+          el.value = val;
+        }
+        
+        const radX = THREE.MathUtils.degToRad(parseFloat(document.getElementById('input-rot-x').value));
+        const radY = THREE.MathUtils.degToRad(parseFloat(document.getElementById('input-rot-y').value));
+        const radZ = THREE.MathUtils.degToRad(parseFloat(document.getElementById('input-rot-z').value));
+        
+        bioScaffold.rotation.set(radX, radY, radZ);
+      });
+    });
+
+    document.getElementById('btn-reset-transform').addEventListener('click', () => {
+      bioScaffold.rotation.set(0,0,0);
+      updateManualOrientationDisplay();
+      log(`[Sistema] Orientación del andamio reseteada a los ejes de fábrica.`);
+    });
+
+    // 16. MOCK CM4 RNDIS VIRTUAL CONNECTION & DISCOVERY
+    const btnDiscoverCm4 = document.getElementById('btn-discover-cm4');
+    const cm4StatusPanel = document.getElementById('cm4-status-panel');
+    const cm4ErrorTag = document.getElementById('cm4-error-tag');
+
+    btnDiscoverCm4.addEventListener('click', () => {
+      btnDiscoverCm4.disabled = true;
+      btnDiscoverCm4.innerText = "BUSCANDO...";
+      cm4ErrorTag.classList.add('hidden');
       
-      // Set values to overlay dashboard
-      printOverlayPower.innerText = `${cfgPower.value} mW/cm²`;
-      printTimerLoops.innerText = `Loop 1 de ${cfgLoops.value}`;
+      log(`[Hardware] CM4 Discovery: Buscando placa de control volumétrica local...`);
       
-      // Show screen overlay
-      printOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        // Successful connection simulation
+        isConnected = true;
+        btnDiscoverCm4.classList.add('hidden');
+        
+        // Show Connected badge
+        cm4StatusPanel.innerHTML = `
+          <div class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-[#059669] rounded-lg text-[11px] font-extrabold tracking-wider uppercase flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span> CONECTADO
+          </div>
+          <button id="btn-disconnect-cm4" class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-red-500 text-[10px] font-bold tracking-wide uppercase transition duration-150">
+            Desconectar
+          </button>
+        `;
+        
+        log(`[Hardware] CM4: Placa de proyección de 6.0 FPS detectada vía USB RNDIS (10.55.0.2). Enlace mDNS dlp3.local activo.`, 'success');
+        
+        // Bind disconnect action dynamically
+        document.getElementById('btn-disconnect-cm4').addEventListener('click', () => {
+          isConnected = false;
+          cm4StatusPanel.innerHTML = `
+            <button id="btn-discover-cm4" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-extrabold tracking-wide uppercase transition-all duration-200 active:scale-95 shadow-md shadow-brand-500/10">
+              CONECTAR
+            </button>
+            <div id="cm4-error-tag" class="hidden text-[9px] text-red-500 font-semibold absolute top-full right-0 mt-1 whitespace-nowrap"></div>
+          `;
+          log(`[Hardware] CM4: Módulo de control físico desacoplado manualmente.`, 'warn');
+          
+          // Re-wire discover click
+          document.getElementById('btn-discover-cm4').addEventListener('click', () => btnDiscoverCm4.click());
+        });
+      }, 1200);
+    });
+
+    // 17. OPTIMIZATION CAL PIPELINE TRIGGER (SIMULATION RUN)
+    const btnRunOpt = document.getElementById('btn-run-optimization');
+    const optErrorTag = document.getElementById('optimizer-error-tag');
+    const rightSidebarPlaceholder = document.getElementById('right-sidebar-placeholder');
+    const rightSidebarResults = document.getElementById('right-sidebar-results');
+
+    btnRunOpt.addEventListener('click', () => {
+      isProcessed = false;
+      optErrorTag.classList.add('hidden');
       
-      // Lazy load overlay Three.js viewport
+      btnRunOpt.disabled = true;
+      btnRunOpt.className = "w-full py-2.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-400 text-xs font-extrabold tracking-widest uppercase cursor-wait flex items-center justify-center gap-2";
+      btnRunOpt.innerHTML = `<span class="w-3.5 h-3.5 rounded-full border-2 border-slate-300 border-t-brand-500 animate-custom-spin"></span> PROCESANDO...`;
+      
+      rightSidebarPlaceholder.classList.remove('hidden');
+      rightSidebarResults.classList.add('hidden');
+      
+      log(`[Optimizador] Iniciando motor tomográfico de autocompensación masiva...`);
+      
+      // Sequenced CUDA logging
+      setTimeout(() => log(`Cargando geometría y tensores tridimensionales en CUDA GPU...`), 300);
+      setTimeout(() => log(`Voxelizando malla a grilla hermética de 128³...`), 700);
+      setTimeout(() => log(`Calculando transformada de campo de distancias EDT (d_h)...`), 1200);
+      setTimeout(() => log(`GPU: Optimizando sinogramas mediante Radon inverso filtrado iterativo (CAL)...`, 'accent'), 1800);
+      setTimeout(() => log(`[Iter 1] VER: 0.2450 · PW Match: 0.7250`), 2100);
+      setTimeout(() => log(`[Iter 15] VER: 0.0860 · PW Match: 0.8920`), 2400);
+      setTimeout(() => log(`[Iter 32] VER: 0.0340 · PW Match: 0.9610`), 2700);
+      setTimeout(() => log(`[Iter 48] VER: 0.0211 · PW Match: 0.9822`), 2900);
+      setTimeout(() => log(`GPU: Convergencia de dosis óptima alcanzada por delta de error (< 1e-4)`, 'success'), 3100);
+      setTimeout(() => log(`Generando reportes de diagnóstico y secuencias DLP de planos binarios de 1 bit...`), 3400);
+      
+      setTimeout(() => {
+        // Optimization resolved successfully
+        isProcessed = true;
+        
+        btnRunOpt.disabled = false;
+        btnRunOpt.className = "w-full py-2.5 rounded-lg bg-brand-500 hover:bg-brand-600 active:scale-95 text-white text-xs font-bold tracking-widest uppercase shadow-md shadow-brand-500/10 transition";
+        btnRunOpt.innerHTML = "PROCESAR";
+        
+        // Hide placeholder and reveal actual matched quantitative outputs
+        rightSidebarPlaceholder.classList.add('hidden');
+        rightSidebarResults.classList.remove('hidden');
+        isSaved = false;
+        
+        // Draw verdict card parameters
+        document.getElementById('results-score-bio').innerText = "86.8";
+        document.getElementById('results-verdict-text').innerText = "EXCELENTE";
+        document.getElementById('results-verdict-text').className = "text-[11px] font-bold tracking-widest uppercase text-[#059669]";
+        document.getElementById('results-verdict-card').className = "p-3.5 rounded-xl text-center border border-[#059669]/20 bg-[#ecfdf5]";
+        
+        // Enable library badge counter increments
+        libraryStatusCount.innerText = `${libraryDatabase.length} modelos guardados`;
+        libraryCountBadge.innerText = libraryDatabase.length;
+        
+        log(`[Optimizador] Prototipo procesado con veredicto de viabilidad biológica EXCELENTE.`, 'success');
+      }, 3800);
+    });
+
+    // Save current job trigger action
+    document.getElementById('btn-save-to-library').addEventListener('click', () => {
+      if (isSaved) return;
+      
+      isSaved = true;
+      document.getElementById('btn-save-to-library').innerText = "✓ GUARDADO EN BIBLIOTECA";
+      document.getElementById('btn-save-to-library').className = "w-full py-2 bg-slate-200 text-slate-500 text-xs font-bold rounded-lg cursor-default";
+      
+      // Inject clone job with live configurations to library list
+      const timestamp = new Date();
+      const fmtTime = `${timestamp.getDate().toString().padStart(2,'0')}/${(timestamp.getMonth()+1).toString().padStart(2,'0')}/${timestamp.getFullYear()} ${timestamp.getHours().toString().padStart(2,'0')}:${timestamp.getMinutes().toString().padStart(2,'0')}`;
+      
+      const newJob = {
+        job_id: `custom_${Date.now()}`,
+        timestamp: fmtTime,
+        model_name: "trifurcatedvasculature.stl",
+        score: 100.0,
+        score_bio: 86.83,
+        verdict: "EXCELENTE",
+        total_time: 77.95,
+        n_frames: activeAngles,
+        n_bitplanes: activeAngles * 3,
+        has_bitplanes: false,
+        params: {
+          method: "CAL",
+          resolution: activeResolution,
+          num_angles: activeAngles,
+          filter: activeFilter
+        },
+        metrics: {
+          ver: 0.000315,
+          cv: 0.037115,
+          pw: 0.047085,
+          ipdr: 0.202765,
+          dose_contrast: 1.052945
+        },
+        realFrames: REAL_FRAMES,
+        diagImages: {
+          reconstruction_slices: 'data/reconstruction_slices.png',
+          layer_profile: 'data/layer_profile.png'
+        }
+      };
+      
+      libraryDatabase.unshift(newJob);
+      renderLibraryItems();
+      
+      log(`[Biblioteca] Proyecto '${newJob.model_name}' guardado correctamente en el índice local.`, 'success');
+    });
+
+    // 18. DLP VOLUMETRIC PRINTING SEQUENCE SYSTEM (SPI EMULATOR)
+    const btnFlashVial = document.getElementById('btn-flash-vial');
+    const modalConfirmPrint = document.getElementById('modal-confirm-print');
+    
+    // Printing confirmation dialog wiring
+    btnFlashVial.addEventListener('click', () => {
+      if (!isConnected) {
+        alert('Dispositivo Raspberry Pi CM4 desconectado. Pulsa "CONECTAR" en la cabecera antes de imprimir.');
+        return;
+      }
+      
+      // Populate dialog parameters
+      document.getElementById('confirm-model-name').innerText = selectedJob.model_name;
+      document.getElementById('confirm-power-val').innerText = `${document.getElementById('detail-cfg-power').value} mW/cm²`;
+      document.getElementById('confirm-loops-val').innerText = `${document.getElementById('detail-cfg-loops').value} vueltas`;
+      
+      modalConfirmPrint.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-confirm-print-cancel').addEventListener('click', () => {
+      modalConfirmPrint.classList.add('hidden');
+    });
+
+    document.getElementById('btn-confirm-print-action').addEventListener('click', () => {
+      modalConfirmPrint.classList.add('hidden');
+      
+      // Open fullscreen telemetry projection screen
+      document.getElementById('print-overlay').classList.remove('hidden');
+      
+      // Initialize Three.js viewport in overlay
       if (!overlayRenderer) {
         initOverlayThree();
       }
       
       isPrinting = true;
-      executeVolumetricPrintingSequence();
+      executeVolumetricHardwarePrinting();
     });
 
-    function executeVolumetricPrintingSequence() {
-      let frame = 0;
-      let totalLoops = parseInt(cfgLoops.value);
-      let currLoop = 1;
-      let startTime = Date.now();
+    function executeVolumetricHardwarePrinting() {
+      const power = parseFloat(document.getElementById('detail-cfg-power').value);
+      const loops = parseInt(document.getElementById('detail-cfg-loops').value);
       
-      // Reset variables
-      printPercent.innerText = "0%";
-      printAngle.innerHTML = "0.0 <span class='text-xs font-semibold text-slate-400'>°</span>";
-      printFrame.innerText = `0 / ${activeAngles}`;
-      printBadge.innerText = "CARGANDO Payload";
-      printBadge.className = "px-3 py-1 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-bold tracking-widest uppercase";
+      document.getElementById('print-model-title-tag').innerText = selectedJob.model_name;
+      document.getElementById('print-power-overlay-tag').innerText = `${power.toFixed(1)} mW/cm²`;
+      document.getElementById('print-loops-label').innerText = `Loop 1 de ${loops}`;
+      
+      // Reset circular dashoffset specifications
+      const circle = document.getElementById('print-circle-progress');
+      circle.setAttribute('stroke-dashoffset', 427.2);
+      
+      // Initialize dialog variables
+      document.getElementById('print-progress-percent').innerText = "0%";
+      document.getElementById('print-current-angle').innerHTML = "0.0 <span class='text-xs font-semibold text-slate-500'>°</span>";
+      
+      const badge = document.getElementById('print-phase-badge');
+      badge.innerText = "CARGANDO MODELO";
+      badge.className = "px-2.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-bold tracking-widest uppercase";
+      
       overlayScaffold.material.opacity = 0.0;
+      overlayScaffold.material.color.setHex(0xa78bfa); // reset curing violet
       
-      // Simulate CM4 log states
-      printHardwareLogs.innerHTML = "";
-      addPrintLog("CM4: Cargando sinograma consolidado en memoria intermedia RAM...", 'normal');
+      const logsBox = document.getElementById('print-overlay-logs');
+      logsBox.innerHTML = "";
+      
+      function printLog(text, type = 'normal') {
+        const line = document.createElement('div');
+        line.innerText = text;
+        if (type === 'error') line.className = 'text-red-400 font-bold';
+        else if (type === 'success') line.className = 'text-emerald-400 font-bold';
+        else if (type === 'accent') line.className = 'text-violet-400 font-semibold';
+        else if (type === 'warn') line.className = 'text-amber-400';
+        logsBox.appendChild(line);
+        logsBox.scrollTop = logsBox.scrollHeight;
+      }
+      
+      // Continuous hardware execution status logs
+      printLog("CM4: Estableciendo puerto RNDIS seguro... OK");
+      setTimeout(() => printLog("CM4: Descomprimiendo Payload ZIP en /tmp/... OK"), 400);
+      setTimeout(() => printLog("CM4: Verificando firmas de sinogramas... 100% OK"), 800);
+      setTimeout(() => {
+        printLog("CM4: Enlazando con el bus SPI del proyector DLP... OK", 'success');
+        printLog("CM4: Estabilizando velocidad angular del vial (6.0 FPS)...", 'normal');
+      }, 1200);
       
       setTimeout(() => {
-        addPrintLog("CM4: Payload mapeado. Iniciando calibración del rotor a velocidad angular estricta (6.0 FPS)...", 'normal');
-      }, 800);
-      
-      setTimeout(() => {
-        addPrintLog("CM4: Acople sincronizado. Disparando emisor de luz ultravioleta lateral (405nm)...", 'accent');
-        printBadge.innerText = "PROYECTANDO";
-        printBadge.className = "px-3 py-1 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-bold tracking-widest uppercase animate-pulse glow-uv";
+        printLog("CM4: Rotador sincronizado. Disparando emisor luminoso ultravioleta (405nm)...", 'accent');
+        badge.innerText = "PROYECTANDO";
+        badge.className = "px-2.5 py-0.5 rounded bg-violet-500/15 border border-violet-500/30 text-violet-400 text-[10px] font-bold tracking-widest uppercase animate-pulse";
         
-        runPrintingCycles();
-      }, 1600);
+        startHardwareTicks();
+      }, 2000);
 
-      function runPrintingCycles() {
-        if (!isPrinting) return;
+      let printTickInterval = null;
+
+      function startHardwareTicks() {
+        let frame = 0;
+        let currLoop = 1;
+        const totalFrames = selectedJob.n_bitplanes;
+        const totalPrintingFrames = totalFrames * loops;
+        const startTime = Date.now();
         
-        const tickRate = 166.6; // Strict 6.0 FPS (1000ms / 6)
-        let printInterval = setInterval(() => {
+        const tickMS = 166.6; // Strict 6.0 FPS (1000/6)
+        
+        printTickInterval = setInterval(() => {
           if (!isPrinting) {
-            clearInterval(printInterval);
+            clearInterval(printTickInterval);
             return;
           }
           
           frame++;
-          const angle = (frame % activeAngles);
-          const totalFrames = activeAngles * totalLoops;
-          const globalFrameCount = (currLoop - 1) * activeAngles + frame;
-          const progressPct = Math.min(100, Math.floor((globalFrameCount / totalFrames) * 100));
+          const angle = (frame % totalFrames);
+          const globalFrameCount = (currLoop - 1) * totalFrames + frame;
+          const progressPct = Math.min(100, Math.floor((globalFrameCount / totalPrintingFrames) * 100));
           
-          // Math display formulas
-          printPercent.innerText = `${progressPct}%`;
-          printAngle.innerHTML = `${(angle * (360/activeAngles)).toFixed(1)} <span class='text-xs font-semibold text-slate-400'>°</span>`;
-          printFrame.innerText = `${angle} / ${activeAngles}`;
+          // Math display update
+          document.getElementById('print-progress-percent').innerText = `${progressPct}%`;
+          document.getElementById('print-current-angle').innerHTML = `${((angle/totalFrames) * 360).toFixed(1)} <span class='text-xs font-semibold text-slate-500'>°</span>`;
+          document.getElementById('print-current-frame').innerText = `${angle} / ${totalFrames}`;
           
-          // Dashoffset circular progress math (477.5 is circumference)
-          const offset = 477.5 - (progressPct / 100) * 477.5;
-          printCircleProgress.setAttribute('stroke-dashoffset', offset);
+          // SVG circular progression loader (circumference = 427.2)
+          const offset = 427.2 - (progressPct / 100) * 427.2;
+          circle.setAttribute('stroke-dashoffset', offset);
           
-          // Polymerization cure simulation opacity increment
-          overlayScaffold.material.opacity = (globalFrameCount / totalFrames) * 0.95;
+          // Scaffold visual cure polymerisation opacity step
+          overlayScaffold.material.opacity = (globalFrameCount / totalPrintingFrames) * 0.95;
           
-          // Timer calculus
-          const remMs = Math.floor((Date.now() - startTime) / 1000);
-          const min = Math.floor(remMs / 60).toString().padStart(2, '0');
-          const sec = Math.floor(remMs % 60).toString().padStart(2, '0');
-          printTimer.innerHTML = `${min}:${sec} <span class='text-xs font-semibold text-slate-400'>s</span>`;
+          // Telemetry elapsed timer
+          const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+          const min = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
+          const sec = Math.floor(elapsedSec % 60).toString().padStart(2, '0');
+          document.getElementById('print-elapsed-time').innerHTML = `${min}:${sec} <span class='text-xs font-semibold text-slate-500'>s</span>`;
           
-          if (frame >= activeAngles) {
+          if (frame >= totalFrames) {
             frame = 0;
-            if (currLoop < totalLoops) {
+            if (currLoop < loops) {
               currLoop++;
-              printTimerLoops.innerText = `Loop ${currLoop} de ${totalLoops}`;
-              addPrintLog(`CM4: Loop ${currLoop-1} finalizado. Iniciando ciclo de compensación residual de dosis...`, 'warn');
+              document.getElementById('print-loops-label').innerText = `Loop ${currLoop} de ${loops}`;
+              printLog(`CM4: Loop ${currLoop-1} finalizado. Iniciando ciclo de compensación residual...`, 'warn');
             } else {
-              // Printing pipeline successfully cured!
-              clearInterval(printInterval);
-              finalizePrinting();
+              // Cured completed
+              clearInterval(printTickInterval);
+              finalizePrint();
             }
           }
-        }, tickRate);
+        }, tickMS);
       }
-      
-      function finalizePrinting() {
-        printBadge.innerText = "FINALIZADO ✓";
-        printBadge.className = "px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-widest uppercase glow-cyan";
-        printCircleProgress.setAttribute('stroke-dashoffset', 0);
+
+      function finalizePrint() {
+        badge.innerText = "FINALIZADO";
+        badge.className = "px-2.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[#059669] text-[10px] font-bold tracking-widest uppercase";
         
-        // Final cure flash highlight in violet
-        overlayScaffold.material.color.setHex(0x22d3ee);
+        // Continuous green neon highlights
+        overlayScaffold.material.color.setHex(0x06b6d4); // cured blue/cyan
         overlayScaffold.material.opacity = 1.0;
         
-        addPrintLog("CM4: Secuencia de proyección axial de sinograma completada exitosamente.", 'success');
-        addPrintLog("CM4: Rotación de vial desacoplada. Dosis acumulada validada por el estimador de fotones.", 'success');
-        addPrintLog("CM4: Prototipo funcional VAM finalizado con veredicto óptimo. Estabilizando resina volumétrica.", 'success');
+        printLog("CM4: Secuencia de proyección axial de sinograma completada exitosamente.", 'success');
+        printLog("CM4: Desacoplando rotor físico. Emisor UV apagado.", 'success');
+        printLog("CM4: Prototipo funcional VAM finalizado con veredicto óptimo.", 'success');
         
-        appendLog(`[RPi CM4] Impresión volumétrica finalizada. Prototipo sólido 3D curado en vial de cuarzo.`, 'success');
+        log(`[RPi CM4] Impresión volumétrica finalizada. Prototipo sólido 3D curado en vial de cuarzo.`, 'success');
         
-        // Close modal button switch
-        btnCancelPrint.innerText = "Finalizar y Volver";
-        btnCancelPrint.className = "w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold text-xs tracking-wider uppercase transition duration-200 glow-cyan/15";
+        // Change button to close
+        const abortBtn = document.getElementById('btn-abort-print');
+        abortBtn.innerText = "Finalizar y Cerrar";
+        abortBtn.className = "w-full py-3 bg-[#059669] hover:bg-emerald-700 text-white text-xs font-bold tracking-wider uppercase rounded-xl transition duration-150 shadow-md shadow-emerald-600/10";
       }
     }
-    
-    function addPrintLog(text, type = 'normal') {
-      const line = document.createElement('div');
-      line.innerText = text;
-      if (type === 'error') line.className = 'text-red-400 font-bold';
-      else if (type === 'success') line.className = 'text-emerald-400 font-bold';
-      else if (type === 'accent') line.className = 'text-violet-400 font-semibold';
-      else if (type === 'warn') line.className = 'text-amber-400';
-      printHardwareLogs.appendChild(line);
-      printHardwareLogs.scrollTop = printHardwareLogs.scrollHeight;
-    }
 
-    // ─── ABORT / FINISH CLOSE PRINT OVERLAY BUTTON ───
-    btnCancelPrint.addEventListener('click', () => {
+    // Abort printing trigger
+    const btnAbortPrint = document.getElementById('btn-abort-print');
+    btnAbortPrint.addEventListener('click', () => {
       isPrinting = false;
+      document.getElementById('print-overlay').classList.add('hidden');
       
-      // Close overlay and reset trigger states
-      printOverlay.classList.add('opacity-0', 'pointer-events-none');
-      
-      // Reset button classes
-      btnCancelPrint.innerText = "Abortar Impresión Volumétrica";
-      btnCancelPrint.className = "w-full py-3 rounded-xl bg-red-950/30 hover:bg-red-500 active:scale-[0.98] border border-red-500/20 hover:border-transparent text-red-400 hover:text-white font-bold text-xs tracking-wider uppercase transition duration-200";
+      // Restore abort class configuration styles
+      btnAbortPrint.innerText = "Abortar Impresión Volumétrica";
+      btnAbortPrint.className = "w-full py-3 bg-red-950/20 hover:bg-red-600 active:scale-95 border border-red-500/20 hover:border-transparent text-red-400 hover:text-white text-xs font-bold tracking-wider uppercase rounded-xl transition duration-150";
     });
 
-    // ─── GIZMOS & SNAP CONFIG EVENTS ───
-    btnSnap5.addEventListener('click', () => {
-      isSnapState = !isSnapState;
-      if (isSnapState) {
-        btnSnap5.className = "h-8 px-3 rounded-lg border border-cyan-500/40 bg-brand-500/10 text-[10px] font-bold text-cyan-400 flex items-center justify-center gap-1 transition glow-cyan/10";
-        appendLog(`[Sistema] Ajuste incremental angular magnetizado a 5° estáticos.`);
-      } else {
-        btnSnap5.className = "h-8 px-3 rounded-lg border border-white/5 bg-dark-900/90 backdrop-blur text-[10px] font-bold text-slate-400 hover:text-white flex items-center justify-center gap-1 transition";
-        appendLog(`[Sistema] Magnetización angular desactivada (Rotación libre).`);
-      }
+    document.getElementById('btn-force-close-overlay').addEventListener('click', () => {
+      isPrinting = false;
+      document.getElementById('print-overlay').classList.add('hidden');
     });
 
-    btnResetOrientation.addEventListener('click', () => {
-      bioScaffold.rotation.set(0, 0, 0);
-      glassVial.rotation.set(0, 0, 0);
-      
-      valRx.innerText = "0°";
-      valRy.innerText = "0°";
-      valRz.innerText = "0°";
-      
-      if (isProcessed) {
-        playerTimeline.value = 0;
-        updatePlayerTimeline(0);
-      }
-      appendLog(`[Sistema] Orientación del modelo 3D reseteada al origen por coordenadas.`);
-    });
+    // 19. DRAG & DROP CUSTOM STL SIMULATOR TRIGGER
+    const stlDropzone = document.getElementById('stl-dropzone');
+    const stlFileLabel = document.getElementById('stl-file-label');
+    const stlSubLabel = document.getElementById('stl-sub-label');
+    const stlIcon = document.getElementById('stl-icon');
 
-    // Simulated dragging model angle changes
-    let isDraggingModel = false;
-    let prevMouseX = 0;
-    
-    // Wire simulation dropzone files
     stlDropzone.addEventListener('click', () => {
-      // Simulate loading another custom vascular STL geometry
-      stlDropzone.classList.add('border-cyan-400', 'bg-cyan-500/[0.04]');
-      stlFileLabel.innerText = "Cargando scaffold_impeller_3D.stl...";
-      stlFileLabel.className = "text-xs font-semibold text-cyan-400 animate-pulse";
-      stlIconContainer.className = "w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 animate-spin";
+      stlDropzone.className = "border-2 border-dashed border-brand-500/50 rounded-lg p-4 text-center cursor-wait bg-brand-50/10";
+      stlFileLabel.innerText = "Importando scaffold_impeller_3D.stl...";
+      stlFileLabel.className = "text-xs text-brand-500 font-bold animate-pulse";
+      stlIcon.className = "text-lg text-brand-500 animate-spin";
       
       setTimeout(() => {
-        stlDropzone.classList.remove('border-cyan-400', 'bg-cyan-500/[0.04]');
+        stlDropzone.className = "border-2 border-dashed border-slate-200 hover:border-brand-500/50 rounded-lg p-4 text-center cursor-pointer bg-slate-50 hover:bg-brand-50/20 transition duration-150";
         stlFileLabel.innerText = "Scaffold_Impeller_3D.stl";
-        stlFileLabel.className = "text-xs font-semibold text-emerald-400";
-        stlSubLabel.innerText = "3D Mesh cargada correctamente ✓";
-        stlIconContainer.className = "w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400";
+        stlFileLabel.className = "text-xs text-emerald-600 font-extrabold";
+        stlSubLabel.innerText = "Malla STL cargada correctamente ✓";
+        stlIcon.className = "text-lg text-emerald-600 font-bold";
         
-        // Remove current geometry and swap inside ThreeScene
+        // Remove and replace knot geometry representation inside Three.js
         scene.remove(bioScaffold);
-        
-        // Draw a fresh Knot representation
-        const newGeo = new THREE.TorusKnotGeometry(4.5, 1.5, 150, 20, 2, 5);
+        const newGeo = new THREE.TorusKnotGeometry(4.4, 1.45, 150, 20, 2, 5);
         bioScaffold.geometry.dispose();
         bioScaffold.geometry = newGeo;
         scene.add(bioScaffold);
         
-        // Reset overlay model geometry as well
-        overlayScene.remove(overlayScaffold);
-        overlayScaffold.geometry.dispose();
-        overlayScaffold.geometry = newGeo.clone();
-        overlayScene.add(overlayScaffold);
+        // Reset overlay too
+        if (overlayScene && overlayScaffold) {
+          overlayScene.remove(overlayScaffold);
+          overlayScaffold.geometry.dispose();
+          overlayScaffold.geometry = newGeo.clone();
+          overlayScene.add(overlayScaffold);
+        }
         
-        appendLog(`[Importador] Malla STL 'Scaffold_Impeller_3D.stl' importada. Geometría alineada al centro del vial de proyección.`, 'success');
-      }, 1200);
+        isProcessed = false;
+        rightSidebarPlaceholder.classList.remove('hidden');
+        rightSidebarResults.classList.add('hidden');
+        
+        // Restore scaffold unoptimized color representation
+        bioScaffold.material.color.setHex(0x475569);
+        bioScaffold.material.opacity = 0.9;
+        
+        log(`[Importador] Malla STL 'Scaffold_Impeller_3D.stl' cargada al volumen del vial de proyección.`, 'success');
+      }, 1000);
     });
 
-    // Load ThreeScene when page compiles
+    // 20. GENERAL ON LOAD INITIALIZATIONS
     window.addEventListener('load', () => {
       initThree();
+      renderLibraryItems();
+      // Pre-cargar frames reales del sinograma
+      preloadRealFrames(VascularScaffoldJob.realFrames);
     });
-
   </script>
 </body>
 </html>
