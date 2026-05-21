@@ -234,17 +234,53 @@ nav {
   position: absolute;
   top: 10px;
   right: 10px;
-  padding: 3px 8px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .06em;
+  padding: 4px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  background: rgba(255,255,255,.88);
+  background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--color-border);
   border-radius: var(--r-sm);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--color-text-secondary);
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.card-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.card-badge.badge-activo::before {
+  background-color: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulse-glow-green 2s infinite ease-in-out;
+}
+
+.card-badge.badge-finalizado::before {
+  background-color: #64748B;
+}
+
+@keyframes pulse-glow-green {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.9);
+  }
 }
 
 .card-body {
@@ -1480,5 +1516,251 @@ footer {
     line-height: 1.35 !important;
     color: #333 !important;
   }
+}
+
+/* ── Project Milestone History Timeline in Modal ──────────────────────────── */
+.modal-status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+}
+
+.modal-status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.modal-status-badge.badge-activo {
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.modal-status-badge.badge-activo::before {
+  background-color: #10B981;
+  box-shadow: 0 0 6px #10B981;
+  animation: pulse-glow-green 2s infinite ease-in-out;
+}
+
+.modal-status-badge.badge-finalizado {
+  background: rgba(100, 116, 139, 0.08);
+  color: #475569;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+.modal-status-badge.badge-finalizado::before {
+  background-color: #64748B;
+}
+
+.modal-history-section {
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.history-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-5);
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.history-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.history-update-badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--color-border);
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+}
+
+.history-tracks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-5);
+}
+
+.history-track {
+  background: rgba(15, 23, 42, 0.015);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  border-radius: var(--r-md);
+  padding: var(--sp-5);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+}
+
+.history-track-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--sp-4);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--sp-2);
+}
+
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-milestone {
+  display: flex;
+  gap: var(--sp-4);
+  position: relative;
+  padding-bottom: var(--sp-5);
+}
+
+.history-milestone:last-child {
+  padding-bottom: 0;
+}
+
+/* Markers */
+.milestone-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 12px;
+}
+
+.milestone-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-neutral);
+  border: 2px solid var(--color-text-secondary);
+  z-index: 2;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.milestone-line {
+  flex: 1;
+  width: 2px;
+  background-color: var(--color-border);
+  margin-top: 4px;
+  margin-bottom: -4px;
+}
+
+.history-milestone:last-child .milestone-line {
+  display: none;
+}
+
+/* Contents */
+.milestone-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.milestone-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.milestone-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.milestone-date {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  background: rgba(15, 23, 42, 0.03);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+.milestone-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.milestone-current-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* Milestone States */
+/* Past (Completed) */
+.milestone-past .milestone-dot {
+  border-color: #475569;
+  background-color: #475569;
+}
+.milestone-past .milestone-line {
+  background-color: #475569;
+}
+.milestone-past .milestone-content {
+  opacity: 0.75;
+}
+
+/* Current (Active Now) */
+.milestone-current .milestone-dot {
+  border-color: #10B981;
+  background-color: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulse-glow-green 2s infinite ease-in-out;
+}
+.milestone-current .milestone-line {
+  background-color: var(--color-border);
+  background-image: linear-gradient(to bottom, #10B981 0%, var(--color-border) 100%);
+}
+.milestone-current .milestone-name {
+  color: var(--color-text-primary);
+}
+
+/* Future (Planned) */
+.milestone-future .milestone-dot {
+  border: 2px dashed var(--color-text-secondary);
+  background-color: var(--color-neutral);
+}
+.milestone-future .milestone-line {
+  background-image: linear-gradient(to bottom, var(--color-border) 50%, transparent 50%);
+  background-size: 2px 6px;
+  background-repeat: repeat-y;
+  background-color: transparent;
+}
+.milestone-future .milestone-name {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+.milestone-future .milestone-content {
+  opacity: 0.6;
 }
 

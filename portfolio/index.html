@@ -12,7 +12,7 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="62209e6b-fa8c-4e49-a478-4ef0bedc26d0"></script>
 
   <!-- Design System Styling -->
-  <link rel="stylesheet" href="style.css?v=1.0.2" />
+  <link rel="stylesheet" href="style.css?v=1.0.3" />
 </head>
 
 <body>
@@ -134,9 +134,8 @@
           <div class="about-cv-box reveal">
             <span class="about-info-label">Configurar CV (PDF)</span>
             <div class="cv-level-selector" role="group" aria-label="Nivel de información para el CV en PDF">
-              <button class="cv-level-btn active" data-level="1" title="CV Básico (Solo Experiencia y Datos)">Básico</button>
-              <button class="cv-level-btn" data-level="2" title="CV Profesional (+ Perfil Sobre mí)">Profesional</button>
-              <button class="cv-level-btn" data-level="3" title="CV Completo (+ Proyectos destacados)">Completo</button>
+              <button class="cv-level-btn active" data-level="bio" title="CV Profesional con Biografía">Bio</button>
+              <button class="cv-level-btn" data-level="proyectos" title="CV Completo con Biografía y Proyectos Destacados">Proyectos</button>
             </div>
             <button class="about-cv-download-btn" id="download-pdf-btn" aria-label="Descargar Currículum en PDF">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -349,6 +348,7 @@
         </div>
         <div class="modal-tags" id="modal-tags"></div>
         <div class="modal-description" id="modal-description"></div>
+        <div class="modal-history-section" id="modal-history-section" style="display:none;"></div>
       </div>
 
       <!-- Demo iframe (hidden by default) -->
@@ -365,7 +365,7 @@
 
 
   <!-- Local projects database -->
-  <script src="projects.js?v=1.0.2"></script>
+  <script src="projects.js?v=1.0.3"></script>
 
   <!-- Reusable cards builder -->
   <script>
@@ -392,7 +392,7 @@
               alt="Captura de ${p.title}"
               loading="lazy"
             />
-            ${p.status ? `<span class="card-badge">${p.status}</span>` : ''}
+            ${p.status ? `<span class="card-badge badge-${p.status.toLowerCase()}">${p.status}</span>` : ''}
           </div>
           <div class="card-body">
             <div class="card-header-row">
@@ -426,7 +426,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="main.js?v=1.0.2"></script>
+  <script src="main.js?v=1.0.3"></script>
 </body>
 
 </html>

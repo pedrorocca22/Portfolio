@@ -294,9 +294,55 @@
 
     // Populate text
     titleEl.textContent = project.title;
-    metaEl.innerHTML    = `${project.year} &middot; <span class="modal-category-wrap card-${project.category}"><span class="category-dot"></span>${project.category === 'software' ? 'Software' : 'Diseño Industrial'}</span>`;
+    metaEl.innerHTML    = `${project.year} &middot; <span class="modal-category-wrap card-${project.category}"><span class="category-dot"></span>${project.category === 'software' ? 'Software' : 'Diseño Industrial'}</span> &middot; <span class="modal-status-badge badge-${project.status ? project.status.toLowerCase() : ''}">${project.status || ''}</span>`;
     tagsEl.innerHTML    = project.tags.map(t => `<span class="tag">${t}</span>`).join('');
     descEl.innerHTML    = project.description;
+
+    // Render milestone history timeline
+    const historySection = document.getElementById('modal-history-section');
+    if (historySection) {
+      if (project.history) {
+        historySection.style.display = 'block';
+        historySection.innerHTML = `
+          <div class="history-header-row">
+            <h3 class="history-section-title">${project.history.title || 'Evolución del Proyecto'}</h3>
+            ${project.updated ? `<span class="history-update-badge">Última act.: ${project.updated}</span>` : ''}
+          </div>
+          <div class="history-tracks-grid">
+            ${project.history.tracks.map(track => `
+              <div class="history-track">
+                <h4 class="history-track-title">${track.name}</h4>
+                <div class="history-timeline">
+                  ${track.phases.map(phase => {
+                    let statusClass = phase.status || 'future';
+                    let badgeHtml = phase.status === 'current' ? '<span class="milestone-current-badge">Fase Actual</span>' : '';
+                    return `
+                      <div class="history-milestone milestone-${statusClass}">
+                        <div class="milestone-marker">
+                          <div class="milestone-dot"></div>
+                          <div class="milestone-line"></div>
+                        </div>
+                        <div class="milestone-content">
+                          <div class="milestone-header">
+                            <span class="milestone-name">${phase.name}</span>
+                            <span class="milestone-date">${phase.date}</span>
+                          </div>
+                          <p class="milestone-desc">${phase.desc}</p>
+                          ${badgeHtml}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        historySection.style.display = 'none';
+        historySection.innerHTML = '';
+      }
+    }
 
     // Demo button & GitHub link
     currentDemoPath = project.demoPath || null;
@@ -440,7 +486,7 @@
 })();
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   8. Dynamic CV Controller (3 Levels & Relocated Print Trigger)
+   8. Dynamic CV Controller (2 Levels & Relocated Print Trigger)
    ═══════════════════════════════════════════════════════════════════════════ */
 (function initDynamicCV() {
   const levelBtns = document.querySelectorAll('.cv-level-btn');
@@ -451,40 +497,31 @@
   const projectsSection = document.getElementById('cv-projects-section');
   const projectsList = document.getElementById('cv-projects-list');
 
-  let currentLevel = 1;
+  let currentLevel = 'bio';
 
   function renderCV(level) {
-    currentLevel = parseInt(level, 10);
+    currentLevel = level;
 
     // Update active state in UI buttons
     levelBtns.forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === currentLevel);
+      btn.classList.toggle('active', btn.dataset.level === currentLevel);
     });
 
-    if (currentLevel === 1) {
-      // Level 1: Basic (Hide Profile and Projects)
-      if (profileSection) profileSection.style.display = 'none';
-      if (projectsSection) projectsSection.style.display = 'none';
-    } else if (currentLevel === 2) {
-      // Level 2: Professional (Show Profile, Hide Projects)
-      if (profileSection) {
-        profileSection.style.display = 'block';
-        // Extract dynamically from DOM about intro
-        const aboutIntro = document.querySelector('.about-intro');
-        if (aboutIntro && profileText) {
-          profileText.textContent = aboutIntro.textContent.trim();
-        }
+    // Both levels (bio and proyectos) include the "Sobre mí" profile section
+    if (profileSection) {
+      profileSection.style.display = 'block';
+      // Extract dynamically from DOM about intro
+      const aboutIntro = document.querySelector('.about-intro');
+      if (aboutIntro && profileText) {
+        profileText.textContent = aboutIntro.textContent.trim();
       }
+    }
+
+    if (currentLevel === 'bio') {
+      // Level Bio: Hide Projects
       if (projectsSection) projectsSection.style.display = 'none';
-    } else if (currentLevel === 3) {
-      // Level 3: Complete (Show Profile & dynamic Projects from projects.js)
-      if (profileSection) {
-        profileSection.style.display = 'block';
-        const aboutIntro = document.querySelector('.about-intro');
-        if (aboutIntro && profileText) {
-          profileText.textContent = aboutIntro.textContent.trim();
-        }
-      }
+    } else if (currentLevel === 'proyectos') {
+      // Level Proyectos: Show dynamic Projects from projects.js
       if (projectsSection && projectsList && typeof PROJECTS !== 'undefined') {
         projectsSection.style.display = 'block';
         projectsList.innerHTML = PROJECTS.map(p => `
@@ -493,7 +530,7 @@
               <span class="cv-project-title">${p.title}</span>
               <span class="cv-project-year">${p.year}</span>
             </div>
-            <span class="cv-project-meta">${p.category === 'software' ? 'Software' : 'Diseño Industrial'} &middot; ${p.tags.join(', ')}</span>
+            <span class="cv-project-meta">${p.category === 'software' ? 'Software' : 'Diseño Industrial'} &middot; ${p.status} &middot; ${p.tags.join(', ')}</span>
             <p class="cv-project-summary">${p.summary}</p>
           </div>
         `).join('');
@@ -519,17 +556,15 @@
     downloadBtn.addEventListener('click', () => {
       // Traceability Event
       if (typeof umami !== 'undefined') {
-        let levelName = 'basico';
-        if (currentLevel === 2) levelName = 'profesional';
-        else if (currentLevel === 3) levelName = 'completo';
-        umami.track('Download CV PDF', { level: levelName });
+        umami.track('Download CV PDF', { level: currentLevel });
       }
       
       window.print();
     });
   }
 
-  // Set default render (Level 1 - Básico)
-  renderCV(1);
+  // Set default render (Level Bio)
+  renderCV('bio');
 })();
+
 
