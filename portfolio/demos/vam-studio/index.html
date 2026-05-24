@@ -865,7 +865,7 @@
     }
 
     // ─── Main App Component (100% Original Layout) ───────────────────────────────
-    export default function App() {
+    function App() {
       const canvasRef = useRef(null);
       const { loadSTL, applyOrientation, setTransformMode, resetTransform, getTransform, setOutsideCb, setSnap } = useThreeScene(canvasRef);
 
