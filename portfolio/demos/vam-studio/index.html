@@ -144,7 +144,7 @@
         rotation_speed_dps: 6.0,
         spi_ms_per_frame: 55
       },
-      frame_sample: "data/frames/frame_0180.png",
+      frame_sample: "data/frames/frame_0180.png?v=2",
       params: {
         method: "CAL",
         resolution: 256,
@@ -182,12 +182,12 @@
       },
       penalties: [],
       images: {
-        reconstruction_slices: "data/reconstruction_slices.png",
-        layer_profile: "data/layer_profile.png",
-        dose_histogram: "data/dose_histogram.png"
+        reconstruction_slices: "data/reconstruction_slices.png?v=2",
+        layer_profile: "data/layer_profile.png?v=2",
+        dose_histogram: "data/dose_histogram.png?v=2"
       },
-      all_frames: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png"),
-      all_bitplanes: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png"),
+      all_frames: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png?v=2"),
+      all_bitplanes: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png?v=2"),
       frames_base: "data/frames/",
       bitplanes_base: "data/frames/"
     };
@@ -929,7 +929,7 @@
 
       useEffect(() => {
         // Pre-cargar el modelo STL real para que la escena 3D no empiece vacía
-        fetch("data/model.stl")
+        fetch("data/model.stl?v=2")
           .then(r => r.arrayBuffer())
           .then(buf => {
             loadSTL(buf);
