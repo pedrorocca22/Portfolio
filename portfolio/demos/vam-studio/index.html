@@ -124,20 +124,20 @@
       );
     }
 
-    // ─── Proyecto Precargado (Trifurcated Vasculature) ───────────────────────────
+    // ─── Proyecto Precargado (VascularScaffold_256) ──────────────────────────────
     const defaultLibraryItem = {
-      job_id: "trifurcated_vasculature",
-      timestamp: "20260521_105424",
-      model_name: "trifurcatedvasculature.stl",
+      job_id: "02c0d64e",
+      timestamp: "20260329_122950",
+      model_name: "VascularScaffold_256.stl",
       score: 100.0,
-      score_bio: 86.83,
+      score_bio: 97.84,
       verdict: "EXCELENTE",
-      total_time: 77.95,
-      n_frames: 36,
-      n_bitplanes: 108,
+      total_time: 81.70,
+      n_frames: 360,
+      n_bitplanes: 1080,
       has_bitplanes: true,
       bitplane_params: {
-        n_bitplanes: 108,
+        n_bitplanes: 1080,
         projector_pixel_um: 19,
         frame_w: 1024,
         frame_h: 1024,
@@ -147,47 +147,47 @@
       frame_sample: "data/frames/frame_0180.png",
       params: {
         method: "CAL",
-        resolution: 128,
+        resolution: 256,
         num_angles: 360,
         filter: "cosine",
-        d_h: 0.82,
-        d_l: 0.15
+        d_h: 0.9,
+        d_l: 0.7
       },
       orient: { rx: 0.0, ry: 0.0, rz: 0.0 },
       metrics: {
-        ver: 0.000315,
-        cv: 0.037115,
-        pw: 0.047085,
-        ipdr: 0.202765,
-        dose_contrast: 1.052945,
-        n_valid_iters: 10,
-        pct_layers_overlap: 0.78,
-        cv_z_p95: 0.0419,
-        cv_z_worst: 0.0441,
-        pw_z_p5: 0.0318,
-        pw_z_worst: -0.0471,
-        n_active_layers: 128,
-        elapsed_time: 77.95,
-        total_time: 77.95,
-        export_time: 2.15,
-        min_gel_dose: 0.7972,
+        ver: 0.000837,
+        cv: 0.008056,
+        pw: 0.007287,
+        ipdr: 0.124866,
+        dose_contrast: 1.092034,
+        n_valid_iters: 92,
+        pct_layers_overlap: 0.0,
+        cv_z_p95: 0.008661,
+        cv_z_worst: 0.031304,
+        pw_z_p5: 0.041479,
+        pw_z_worst: 0.03928,
+        n_active_layers: 255,
+        elapsed_time: 71.86,
+        total_time: 81.70,
+        export_time: 3.27,
+        min_gel_dose: 0.875134,
         max_gel_dose: 1.0000,
-        mean_gel_dose: 0.8890,
-        max_void_dose: 0.8443,
-        mean_void_dose: 0.3365,
-        initial_error: 0.1153,
-        final_error: 0.0003,
-        error_improvement: 99.7,
+        mean_gel_dose: 0.963634,
+        max_void_dose: 0.882421,
+        mean_void_dose: 0.404091,
+        initial_error: 0.151477,
+        final_error: 0.000653,
+        error_improvement: 15.08,
         converged_iter: -1
       },
       penalties: [],
       images: {
         reconstruction_slices: "data/reconstruction_slices.png",
         layer_profile: "data/layer_profile.png",
-        dose_histogram: "data/reconstruction_slices.png"
+        dose_histogram: "data/dose_histogram.png"
       },
-      all_frames: Array.from({length: 36}, (_, i) => "data/frames/frame_" + (i * 10).toString().padStart(4, '0') + ".png"),
-      all_bitplanes: Array.from({length: 36}, (_, i) => "data/frames/frame_" + (i * 10).toString().padStart(4, '0') + ".png"),
+      all_frames: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png"),
+      all_bitplanes: Array.from({length: 360}, (_, i) => "data/frames/frame_" + i.toString().padStart(4, '0') + ".png"),
       frames_base: "data/frames/",
       bitplanes_base: "data/frames/"
     };
@@ -816,6 +816,10 @@
           const stored = localStorage.getItem("vam_library");
           if (stored) {
             list = JSON.parse(stored);
+            if (!list.some(item => item.job_id === "02c0d64e")) {
+              list = [defaultLibraryItem, ...list.filter(item => item.job_id !== "trifurcated_vasculature")];
+              localStorage.setItem("vam_library", JSON.stringify(list));
+            }
           } else {
             list = [defaultLibraryItem];
             localStorage.setItem("vam_library", JSON.stringify(list));
@@ -922,6 +926,24 @@
       };
 
       useEffect(() => { setOutsideCb(setOutside); }, []);
+
+      useEffect(() => {
+        // Pre-cargar el modelo STL real para que la escena 3D no empiece vacía
+        fetch("data/model.stl")
+          .then(r => r.arrayBuffer())
+          .then(buf => {
+            loadSTL(buf);
+            setFileName("VascularScaffold_256.stl");
+            setJobStatus({
+              job_id: "02c0d64e",
+              status: "done",
+              progress: "Cargado de disco",
+              summary: defaultLibraryItem
+            });
+            setIsSaved(true);
+          })
+          .catch(e => console.warn("Failed to preload model.stl", e));
+      }, [loadSTL]);
 
       const setTMode = useCallback((m) => {
         setTModeRaw(m);
