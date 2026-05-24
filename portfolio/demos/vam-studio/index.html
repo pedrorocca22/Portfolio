@@ -618,6 +618,47 @@
         ? (item.all_bitplanes ?? [])
         : (item.all_frames ?? []);
 
+      const [preloadingProgress, setPreloadingProgress] = useState(0);
+      const [isPreloaded, setIsPreloaded] = useState(false);
+      const preloadedImagesRef = useRef([]);
+
+      useEffect(() => {
+        setIsPreloaded(false);
+        setPreloadingProgress(0);
+        preloadedImagesRef.current = [];
+        
+        if (activeFrames.length === 0) return;
+        
+        let loadedCount = 0;
+        const total = activeFrames.length;
+        const imagesArray = new Array(total);
+        
+        activeFrames.forEach((src, idx) => {
+          const img = new Image();
+          img.onload = () => {
+            imagesArray[idx] = img;
+            loadedCount++;
+            const pct = Math.round((loadedCount / total) * 100);
+            setPreloadingProgress(pct);
+            if (loadedCount === total) {
+              preloadedImagesRef.current = imagesArray;
+              setIsPreloaded(true);
+            }
+          };
+          img.onerror = () => {
+            imagesArray[idx] = new Image();
+            loadedCount++;
+            const pct = Math.round((loadedCount / total) * 100);
+            setPreloadingProgress(pct);
+            if (loadedCount === total) {
+              preloadedImagesRef.current = imagesArray;
+              setIsPreloaded(true);
+            }
+          };
+          img.src = src;
+        });
+      }, [activeFrames]);
+
       useEffect(() => {
         if (playing && activeFrames.length > 0) {
           playRef.current = setInterval(() => setFrameIdx(i => (i+1) % activeFrames.length), 33);
@@ -712,12 +753,23 @@
                 {activeFrames.length === 0
                   ? <div style={{ color:"#94a3b8", fontSize:13, padding:"60px 0", textAlign:"center" }}>No hay frames disponibles</div>
                   : <>
-                      <div style={{ background:"#111", borderRadius:10, overflow:"hidden", border:"1px solid #e2e8f0", width:zoomPx, height:zoomPx, position:"relative", flexShrink:0 }}>
-                        <img src={activeFrames[frameIdx]}
-                          style={{ width:zoomPx, height:zoomPx, objectFit:"contain", display:"block", imageRendering:"pixelated" }} />
-                        <div style={{ position:"absolute", bottom:8, right:8, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:10, padding:"2px 7px", borderRadius:4, fontFamily:"'JetBrains Mono',monospace" }}>
-                          {frameIdx+1}/{activeFrames.length}
-                        </div>
+                      <div style={{ background:"#111", borderRadius:10, overflow:"hidden", border:"1px solid #e2e8f0", width:zoomPx, height:zoomPx, position:"relative", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        {!isPreloaded ? (
+                          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:10, padding:20 }}>
+                            <div style={{ width:24, height:24, borderRadius:"50%", border:"2px solid #e2e8f0", borderTopColor:"#2563eb", animation:"spin 0.8s linear infinite" }} />
+                            <span style={{ fontSize:11, color:"#94a3b8", fontFamily:"'JetBrains Mono',monospace", textAlign:"center" }}>
+                              Cargando en memoria: {preloadingProgress}%
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <img src={activeFrames[frameIdx]}
+                              style={{ width:zoomPx, height:zoomPx, objectFit:"contain", display:"block", imageRendering:"pixelated" }} />
+                            <div style={{ position:"absolute", bottom:8, right:8, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:10, padding:"2px 7px", borderRadius:4, fontFamily:"'JetBrains Mono',monospace" }}>
+                              {frameIdx+1}/{activeFrames.length}
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div style={{ fontSize:10, color:"#94a3b8", textAlign:"center" }}>
                         Visualización {zoomPx}px · nativo {frameMode==="1bit" ? `${item.bitplane_params?.frame_w??""}×${item.bitplane_params?.frame_h??""}px` : `1024×1024px`} para proyector
