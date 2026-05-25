@@ -206,10 +206,10 @@ const PROJECTS = [
     summary: "Evolución de la plataforma delta que maximiza la velocidad y el volumen de impresión mediante perfiles extrudidos y rigidez mejorada.",
     description: `<p>Delta20 representa la culminación y evolución de mis desarrollos basados en cinemática delta en 2020. Diseñada tres años después de la Delta17, este equipo consolida el aprendizaje de años de diseño estructural e instrumentación, refinando drásticamente la rigidez, la velocidad operativa y el volumen útil de fabricación.</p><h4>Evolución Estructural y Rigidez</h4><p>Mientras que Delta17 utilizaba brazos magnéticos experimentales y chapa autoportante fina, Delta20 adopta una estructura unificada que combina perfiles de extrusión de aluminio industrial de gran sección con placas de acople mecanizadas CNC a medida. Esta hibridación estructural reduce aún más el centro de gravedad e incrementa la rigidez contra vibraciones dinámicas, permitiendo duplicar las velocidades de aceleración angular sin producir 'ghosting' o artefactos visuales en las piezas impresas.</p><h4>Desafíos Mecatrónicos y Declive de la Tecnología</h4><p>Aunque hoy en día las máquinas delta han cedido terreno ante las cartesianas del tipo CoreXY debido a su gran volumen exterior respecto a su área de impresión, representaron hitos técnicos formidables. Delta20 destaca por su espectacular velocidad y precisión cinemática vertical. Cuenta con autonivelación de cama mediante sensores ópticos de alta precisión y un sistema de extrusión optimizado de bajo peso.</p><h4>Avances Técnicos</h4><ul><li><strong>Estructura Híbrida Reforzada</strong> — Perfiles rígidos y mecanizados CNC robustos que soportan mayores velocidades operativas.</li><li><strong>Calibración Óptica Avanzada</strong> — Sistema de autonivelado automático por sonda infrarroja que calcula desvíos de planicidad en microsegundos.</li><li><strong>Cámara de Impresión Optimizada</strong> — Mayor espacio volumétrico vertical útil para piezas cilíndricas esbeltas.</li></ul>`,
     images: [
+      "assets/delta20/cb35dd85264337.5d76d0a57c767.jpg",
       "assets/delta20/2d9ba185264337.5d76d0a583780.jpg",
       "assets/delta20/739ece85264337.5d76d0a57f8f1.jpg",
       "assets/delta20/bf764585264337.5d76d0a57ac9a.jpg",
-      "assets/delta20/cb35dd85264337.5d76d0a57c767.jpg",
       "assets/delta20/f4cf1c85264337.5d76d0a57b9a1.jpg",
       "assets/delta20/f5600e85264337.5d76d0a5825bf.jpg"
     ],
@@ -238,13 +238,13 @@ const PROJECTS = [
     summary: "Desarrollo de un equipo de corte y fresado CNC de escritorio para pruebas de precisión sobre acrílicos y metales blandos como aluminio.",
     description: `<p>CNC19 es un desarrollo de fresadora y equipo de corte CNC de escritorio, desarrollado en 2019. Fue mi único proyecto enfocado enteramente en tecnologías de manufactura sustractiva compacta, buscando llevar la potencia del mecanizado de precisión de taller a un formato portátil y accesible.</p><h4>Desarrollo de Hardware y Transmisión de Esfuerzos</h4><p>El mayor reto de una máquina sustractiva de escritorio es absorber las fuerzas laterales del fresado sin deformaciones estructurales en un espacio reducido. Utilizando chapa plegada de aluminio de alto espesor y mecanizados de precisión, se logró una bancada rígida. El equipo cuenta con un husillo (spindle) de baja potencia optimizado para trabajos de grabado y corte ligero.</p><h4>Pruebas de Materiales y Limitaciones</h4><p>Aunque el uso del equipo se vio limitado en entornos cerrados por el ruido acústico generado durante el fresado, el sistema demostró ser altamente capaz. Se realizaron pruebas de corte exitosas y grabados de alta precisión sobre diversos materiales como acrílicos, maderas técnicas y chapas finas de aluminio, validando la estabilidad geométrica del eje Z y la rigidez lateral.</p><h4>Especificaciones Técnicas</h4><ul><li><strong>Husillo Compacto</strong> — Spindle de bajas revoluciones adaptado para disipar calor de forma eficiente en pasadas continuas.</li><li><strong>Ejes de Transmisión</strong> — Husillos de bolas recirculantes en todos los ejes para garantizar una repetibilidad centesimal y resistir esfuerzos axiales.</li><li><strong>Carcasa Insonorizada</strong> — Concepto de cubierta integrada de protección para mitigar la dispersión de virutas y amortiguar el sonido.</li></ul>`,
     images: [
+      "assets/cnc19/5b2afd85264337.5d76d0a588eb8.jpg",
       "assets/cnc19/19186e85264337.5d76d0a589317.jpg",
       "assets/cnc19/26c11f85264337.5d76d0a57263d.jpg",
       "assets/cnc19/3427b185264337.5d76d0a57592c.jpg",
       "assets/cnc19/4cf45085264337.5d76d0a583b5e.jpg",
       "assets/cnc19/5015d485264337.5d76d0a58803c.jpg",
       "assets/cnc19/55cf4085264337.5d76d0a58a05c.jpg",
-      "assets/cnc19/5b2afd85264337.5d76d0a588eb8.jpg",
       "assets/cnc19/6c6c2985264337.5d76d0a585ba0.jpg",
       "assets/cnc19/8bf47785264337.5d76d0a5851ec.jpg",
       "assets/cnc19/a1db9f85264337.5d76d0a584267.jpg",
@@ -316,14 +316,14 @@ const PROJECTS = [
     summary: "Impresora 3D de cinemática delta diseñada para explorar velocidades extremas y alta precisión a través de chapa de aluminio plegada.",
     description: `<p>Delta17 es una impresora 3D de alta velocidad basada en cinemática delta, desarrollada en 2017 durante mi etapa en ION Diseño Industrial. En una época en la que la impresión 3D comercial era incipiente y dominada por el ecosistema DIY, este proyecto nació como un desafío de experimentación en hardware, software y procesos avanzados de fabricación metalmecánica.</p><h4>Desafío Cinemático y Velocidad</h4><p>A diferencia de las máquinas cartesianas convencionales, los sistemas delta emplean tres brazos articulados controlados coordinadamente para mover el cabezal de impresión. Esto reduce la masa móvil en el efector final a su mínima expresión, permitiendo aceleraciones extremas y velocidades de traslación muy superiores, manteniendo una excelente precisión en la deposición de material.</p><h4>Diseño Estructural e Inspiración Aeroespacial</h4><p>El chasis del equipo refleja la influencia directa del trabajo diario para la industria aeroespacial argentina en ION. Está construido mediante chapa plegada de aluminio de alta precisión y mecanizados CNC a medida. Esta aproximación estructural elimina las vibraciones resonantes a altas velocidades sin comprometer la ligereza del conjunto, logrando piezas con tolerancias sumamente exigentes.</p><h4>Especificaciones de Fabricación</h4><ul><li><strong>Chasis Autoportante</strong> — Estructura monolítica rígida optimizada para plegado CNC en aluminio de aleación aeroespacial.</li><li><strong>Cinemática Delta Optimizada</strong> — Brazos articulados de fibra de carbono con rótulas magnéticas de juego cero para eliminar el 'backlash'.</li><li><strong>Electrónica de Control</strong> — Placas de procesamiento de 32 bits configuradas con algoritmos cinemáticos complejos para el cálculo en tiempo real de coordenadas delta.</li></ul>`,
     images: [
+      "assets/delta17/b7b1ca85264337.5d76d0a584a06.jpg",
       "assets/delta17/34e21a85264337.5d76d0a57830f.jpg",
       "assets/delta17/480fc685264337.5d76d0a57a869.jpg",
       "assets/delta17/60cc0085264337.5d76d0a572ccd.jpg",
       "assets/delta17/871a9b85264337.5d76d0a57a161.jpg",
       "assets/delta17/8ad3f285264337.5d76d0a574dc4.jpg",
       "assets/delta17/9ff78d85264337.5d76d0a575cdb.jpg",
-      "assets/delta17/b2e63585264337.5d76d0a574889.jpg",
-      "assets/delta17/b7b1ca85264337.5d76d0a584a06.jpg"
+      "assets/delta17/b2e63585264337.5d76d0a574889.jpg"
     ],
     history: {
       title: "Desarrollo del Equipo",
