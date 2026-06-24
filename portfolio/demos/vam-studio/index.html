@@ -72,8 +72,16 @@
 <body>
   <div id="root"></div>
 
+  <script>
+    Babel.registerPreset('custom-react', {
+      presets: [
+        [Babel.availablePresets['react'], { runtime: 'classic' }]
+      ]
+    });
+  </script>
+
   <!-- Aplicación VAM Studio React adaptada con capa de emulación -->
-  <script type="text/babel">
+  <script type="text/babel" data-presets="custom-react">
     const { useEffect, useRef, useState, useCallback } = React;
 
     // ─── Constants ───────────────────────────────────────────────────────────────
