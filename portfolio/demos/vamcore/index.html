@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VAM Studio · Suite Profesional de Litografía Volumétrica</title>
+  <title>VAMCORE · Suite Profesional de Litografía Volumétrica</title>
   
   <!-- Google Fonts: DM Sans y JetBrains Mono -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -80,7 +80,7 @@
     });
   </script>
 
-  <!-- Aplicación VAM Studio React adaptada con capa de emulación -->
+  <!-- Aplicación VAMCORE React adaptada con capa de emulación -->
   <script type="text/babel" data-presets="custom-react">
     const { useEffect, useRef, useState, useCallback } = React;
 
@@ -686,7 +686,7 @@
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(item.summary || item, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `vam_export_${item.job_id}.json`);
+        downloadAnchor.setAttribute("download", `vamcore_export_${item.job_id}.json`);
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
@@ -1276,7 +1276,7 @@
           }}>
             <div style={{ display:"flex", alignItems:"center", gap:7 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#2563eb" }} />
-              <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#0f172a" }}>VAM Studio</span>
+              <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#0f172a" }}>VAMCORE</span>
             </div>
             <div style={{ display:"flex", gap:2, marginLeft:14 }}>
               {["optimizer","library"].map(v => (
@@ -1464,7 +1464,7 @@
               <div style={{ height:TOP_H, display:"flex", alignItems:"center", gap:12, padding:"0 20px", background:"#fff", borderBottom:"1px solid #e2e8f0", boxShadow:"0 1px 3px rgba(0,0,0,0.04)", flexShrink:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                   <div style={{ width:7, height:7, borderRadius:"50%", background:"#2563eb" }} />
-                  <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#0f172a" }}>VAM Studio</span>
+                  <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#0f172a" }}>VAMCORE</span>
                 </div>
                 <div style={{ display:"flex", gap:2, marginLeft:14 }}>
                   {["optimizer","library"].map(v => (

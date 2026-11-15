@@ -4,35 +4,35 @@
 
 const PROJECTS = [
   {
-    id: "vam-studio",
-    title: "VAM Studio",
+    id: "vamcore",
+    title: "VAMCORE",
     category: "software",
-    tags: ["Volumetric 3D", "Computed Axial Lithography", "React", "PyTorch/CUDA"],
+    tags: ["Volumetric 3D", "Computed Axial Lithography", "Prisma Engine", "React", "PyTorch/CUDA"],
     year: 2026,
-    status: "Activo",
-    updated: "Mayo 2026",
-    summary: "Suite profesional de optimización tomográfica y control para Manufactura Aditiva Volumétrica (VAM) y Litografía Axial Computada (CAL).",
-    description: `<p>VAM Studio es una suite de software profesional e integrada de extremo a extremo para Manufactura Aditiva Volumétrica (VAM) y Litografía Axial Computada (CAL). Resuelve los complejos desafíos matemáticos y mecánicos de la fotopolimerización volumétrica continua mediante algoritmos avanzados de tomografía y un puente de comunicación de alta velocidad con el hardware.</p><h4>Características Clave</h4><ul><li><strong>Workspace Reactivo Moderno</strong> — Una interfaz dinámica con visualización de mallas STL en 3D en tiempo real (Three.js) y monitor de estado con telemetría integrada de la impresora (velocidad angular, FPS, fotogramas).</li><li><strong>Motor de Optimización GPU</strong> — Optimización tomográfica acelerada por hardware (PyTorch + CUDA) capaz de procesar sinogramas completos en resolución 256³ en menos de 40 segundos, reduciendo drásticamente el tiempo de cálculo.</li><li><strong>Cálculo Automático de Orientación</strong> — Algoritmo de refinamiento de orientación óptimo (Nelder-Mead) para minimizar auto-absorciones, aberraciones ópticas y sobreexposición en biotintas densas.</li><li><strong>Transmisión REST de Alta Velocidad</strong> — Empaquetado asíncrono y streaming de secuencias de proyección 1-bit / 8-bit con control de sincronización de movimiento rotatorio (6.0 FPS constantes) a una unidad de control Raspberry Pi CM4.</li><li><strong>Seguridad de Red y Filtros</strong> — Arquitectura desacoplada y segura con mitigación de vulnerabilidades de Path Traversal (Zip-Slip) y enlace local hardened.</li></ul><h4>Validación Física y Prototipo de Equipo</h4><p>El proyecto no se limita al software; incluye el diseño y ensamble de una plataforma experimental física funcional para VAM:</p><ul><li><strong>Cámara de Proyección Rotatoria</strong> — Diseño mecánico de un vial de cuarzo contenedor de resina/hidrogel sincronizado en rotación continua mediante un motor a pasos de alta precisión.</li><li><strong>Sincronización Óptico-Mecánica</strong> — Acople de velocidad angular exacta (6.0 FPS con una rotación estable de 6° por fotograma) con la ráfaga de imágenes del proyector DLP UV de 405 nm.</li><li><strong>Prototipo Funcional</strong> — Pruebas de fotocurado exitosas validando la homogeneidad de la dosis y la precisión cinemática en materiales de prueba.</li></ul>`,
-    images: ["assets/vam_studio/vam_studio_hero.png", "assets/vam_studio/workflow_printing.mp4"],
-    github: "https://github.com/pedrorocca22/VAM_app",
-    demoPath: "demos/vam-studio/index.html?demo=1",
+    status: "Beta",
+    updated: "Noviembre 2026",
+    summary: "Software completo de impresión volumétrica tomográfica: del modelo 3D a la proyección, con su propio motor tomográfico Prisma y evaluación Score Bio /100.",
+    description: `<p>VAMCORE es un software completo para impresión volumétrica tomográfica (Manufactura Aditiva Volumétrica, Litografía Axial Computada). A partir de un archivo STL calcula la secuencia de imágenes que emite el proyector mientras el vial rota, evalúa la calidad de la impresión simulada y envía la secuencia a la impresora sincronizada con el motor de rotación.</p><h4>Prisma, el motor propio</h4><p>Prisma es un motor tomográfico propio escrito en PyTorch y acelerado en GPU. Modela la refracción del vial y la absorción de la resina dentro de la misma optimización, lo que permite imprimir sin baño de igualación de índice. Cada resultado incluye un <strong>Score Bio /100</strong> que combina la dosis simulada, la tolerancia de exposición y una prueba de robustez frente a errores de la máquina.</p><h4>Características Clave</h4><ul><li><strong>Motor Prisma</strong> — Proyector tomográfico disperso en GPU (o CPU), optimización CAL, vóxeles con ocupación parcial y orientación automática de la pieza.</li><li><strong>Física del vial y la resina</strong> — Refracción y pérdidas en las paredes del vial, absorción de Beer–Lambert.</li><li><strong>Evaluación</strong> — Métricas de dosis, tolerancia de exposición, 20 escenarios de robustez y Score Bio.</li><li><strong>Interfaz web</strong> — Visor 3D, configuración de vial, resina y optimización, resultados y biblioteca de trabajos (React + Three.js + FastAPI).</li><li><strong>Impresora</strong> — La secuencia se envía por HTTP y se reproduce sincronizada con la rotación (Klipper).</li><li><strong>Rendimiento</strong> — En una RTX 4060 Ti: 256³ optimizado en 14 s, pipeline completo en unos 26 s.</li></ul><p><em>Versión beta: los resultados son simulados. El Score Bio mide la calidad de las imágenes generadas y no garantiza una impresión exitosa; aún no se han realizado pruebas de impresión.</em></p>`,
+    images: ["assets/vamcore/vamcore_interfaz.png", "assets/vamcore/prisma_pipeline.png", "assets/vamcore/vamcore_promo.mp4"],
+    github: "https://github.com/pedrorocca22/vamcore",
+    demoPath: "demos/vamcore/index.html?demo=1",
     history: {
-      title: "Desarrollo y Simulación de Manufactura Volumétrica",
+      title: "Desarrollo de VAMCORE",
       tracks: [
         {
           name: "Motor Tomográfico & UI (Software)",
           phases: [
-            { name: "Cálculo en GPU", status: "past", date: "Q4 2025", desc: "Desarrollo del solver de Radon inverso en PyTorch/CUDA y optimización MLEM." },
-            { name: "Suite VAM Studio", status: "current", date: "Mayo 2026", desc: "Interfaz React unificada. Carga STL interactiva, optimizador de orientación Nelder-Mead y motor de empaquetado asíncrono activos." },
-            { name: "Repositorio en la Nube", status: "future", date: "Q4 2026", desc: "Plataforma colaborativa en la nube para el intercambio de sinogramas y dosis de curado." }
+            { name: "Cálculo en GPU", status: "past", date: "Q4 2025", desc: "Solver de Radon inverso en PyTorch/CUDA y optimización MLEM." },
+            { name: "VAMCORE + motor Prisma", status: "current", date: "Noviembre 2026", desc: "Renombrado desde VAM Studio. Motor Prisma propio con física de vial y resina, Score Bio /100, interfaz web y video promocional." },
+            { name: "Repositorio en la Nube", status: "future", date: "2027", desc: "Plataforma colaborativa para el intercambio de sinogramas y dosis de curado." }
           ]
         },
         {
           name: "Unidad Proyectora (Hardware)",
           phases: [
-            { name: "Diseño Mecatrónico", status: "past", date: "Q1 2026", desc: "Diseño del rotor de vial, cálculos del sistema óptico DLP (405nm) y bus de comunicación SPI." },
-            { name: "Prototipo de Proyección", status: "current", date: "Mayo 2026", desc: "Sistema de rotación física acoplado. Telemetría funcional a 6.0 FPS estables. En validaciones preliminares de polimerización." },
-            { name: "Validación Multi-material", status: "future", date: "Q3 2026", desc: "Ensayos con GelMA funcionalizada y biotintas fotosensibles con células suspendidas." }
+            { name: "Diseño Mecatrónico", status: "past", date: "Q1 2026", desc: "Diseño del rotor de vial, sistema óptico DLP (405 nm) y bus de comunicación SPI." },
+            { name: "Prototipo de Proyección", status: "current", date: "Noviembre 2026", desc: "Rotación física acoplada con reproducción sincronizada vía Klipper. Pendiente: primeras pruebas de impresión." },
+            { name: "Validación Multi-material", status: "future", date: "2027", desc: "Ensayos con GelMA funcionalizada y biotintas fotosensibles con células suspendidas." }
           ]
         }
       ]
